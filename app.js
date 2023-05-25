@@ -91,6 +91,25 @@ app.get('/v1/mecanica/aluno/:id', cors(), async function (request, response){
     response.status(dadosAluno.status)
 })
 
+//EndPoint que retorna todos os alunos
+app.get('/v1/mecanica/aluno', cors(), async function (request, response){
+    let dadosAluno = await controllerAluno.getAlunos()
+
+    response.json(dadosAluno)
+    response.status(dadosAluno.status)
+})
+
+app.delete('/v1/mecanica/aluno/:id', cors(), async function (request, response){
+    let idAluno = request.params.id
+
+    let resultDadosAluno = await controllerAluno.deletarAluno(idAluno)
+
+    response.status(resultDadosAluno.status)
+    response.json(resultDadosAluno)
+})
+
+
+
 app.listen(8080, function () {
     console.log('Servidor aguardando requisiçõs na porta 8080')
 })
