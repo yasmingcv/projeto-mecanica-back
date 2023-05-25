@@ -108,6 +108,12 @@ app.delete('/v1/mecanica/aluno/:id', cors(), async function (request, response){
     response.json(resultDadosAluno)
 })
 
+/**************************************************** PROFESSORES *****************************************************/
+// Responsável: Daniela
+
+/**************************** CRUD ****************************/
+
+
 
 
 app.listen(8080, function () {
