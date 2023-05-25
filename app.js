@@ -80,3 +80,17 @@ app.put('/v1/mecanica/aluno/:id', cors(), bodyParserJSON, async function (reques
 
     }
 })
+
+//EndPoint que retorna um aluno filtrando pelo ID
+app.get('/v1/mecanica/aluno/:id', cors(), async function (request, response){
+    let idAluno = request.params.id
+
+    let dadosAluno = await controllerAluno.getBuscarAlunoID(idAluno)
+
+    response.json(dadosAluno)
+    response.status(dadosAluno.status)
+})
+
+app.listen(8080, function () {
+    console.log('Servidor aguardando requisiçõs na porta 8080')
+})

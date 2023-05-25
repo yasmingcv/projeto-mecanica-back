@@ -16,13 +16,13 @@ const insertAluno = async function (dadosAluno) {
                 nome,
                 email,
                 senha,
-                id_status,
+                id_status_aluno,
                 numero_matricula
             ) values (
                 '${dadosAluno.nome}',
                 '${dadosAluno.email}',
                 '${dadosAluno.senha}',
-                 ${dadosAluno.id_status},
+                 ${dadosAluno.id_status_aluno},
                 '${dadosAluno.numero_matricula}'
             )`
 
@@ -41,7 +41,7 @@ const updateAluno = async function (dadosAluno) {
                 nome = '${dadosAluno.nome}',
                 email = '${dadosAluno.email}',
                 senha = '${dadosAluno.senha}',
-                id_status = ${dadosAluno.id_status}
+                id_status_aluno = ${dadosAluno.id_status_aluno}
 
                 where id = ${dadosAluno.id}
                 `
@@ -81,5 +81,6 @@ const selectByNameAluno = async function (nome) {
 
 module.exports = {
     insertAluno,
-    updateAluno
+    updateAluno,
+    selectByIdAluno
 }

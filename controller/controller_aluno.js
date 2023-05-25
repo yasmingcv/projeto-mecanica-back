@@ -16,7 +16,8 @@ const inserirAluno = async function (dadosAluno) { // refazer *
     if (dadosAluno.nome == '' || dadosAluno.nome == undefined || dadosAluno.nome.length > 200 ||
         dadosAluno.email == '' || dadosAluno.email == undefined || dadosAluno.email.length > 255 ||
         dadosAluno.senha == '' || dadosAluno.senha == undefined || dadosAluno.senha.length > 16 ||
-        dadosAluno.numero_matricula == '' || dadosAluno.numero_matricula == undefined || dadosAluno.numero_matricula.length > 45
+        dadosAluno.numero_matricula == '' || dadosAluno.numero_matricula == undefined || dadosAluno.numero_matricula.length > 45 ||
+        dadosAluno.id_status_aluno == '' || isNaN(dadosAluno.id_status_aluno) || id_status_aluno == undefined
     ) {
         return message.ERROR_REQUIRED_FIELDS //400
     } else {
@@ -36,7 +37,8 @@ const atualizarAluno = async function (dadosAluno, idAluno) { // refazer *
     if (dadosAluno.nome == '' || dadosAluno.nome == undefined || dadosAluno.nome.length > 200 ||
         dadosAluno.email == '' || dadosAluno.email == undefined || dadosAluno.email.length > 255 ||
         dadosAluno.senha == '' || dadosAluno.senha == undefined || dadosAluno.senha.length > 16 ||
-        dadosAluno.numero_matricula == '' || dadosAluno.numero_matricula == undefined || dadosAluno.numero_matricula.length > 45
+        dadosAluno.numero_matricula == '' || dadosAluno.numero_matricula == undefined || dadosAluno.numero_matricula.length > 45 ||
+        dadosAluno.id_status_aluno == '' || isNaN(dadosAluno.id_status_aluno) || id_status_aluno == undefined
     ) {
         return message.ERROR_REQUIRED_FIELDS //400
 
@@ -45,10 +47,30 @@ const atualizarAluno = async function (dadosAluno, idAluno) { // refazer *
 
     } else {
         dadosAluno.id = idAluno
-        let resultDadosAluno = await alunoDAO.updateAluno(dadosAluno)
-        let dadosAlunoJSON = {}
 
-        dadosAlunoJSON.status = message.SUCCESS_UPDATED_ITEM.status //200
+        let alunoId = await alunoDAO.selectByIdAluno(idAluno)
+
+        if (alunoId) {
+
+            let resultDadosAluno = await alunoDAO.updateAluno(dadosAluno)
+            let dadosAlunoJSON = {}
+
+            if (resultDadosAluno) {
+                dadosAlunoJSON.status = message.SUCCESS_UPDATED_ITEM.status //200
+                dadosAlunoJSON.aluno = alunoId
+
+                return dadosAlunoJSON
+
+            } else {
+                return message.ERROR_INTERNAL_SERVER //500
+            }
+
+           
+        } else {
+            dadosAlunoJSON.status = message.ERROR_NOT_FOUND
+        }
+
+
 
         //Fazer o tratamento para ver se o aluno existe
     }
