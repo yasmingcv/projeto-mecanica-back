@@ -31,13 +31,11 @@ const insertAdministrador = async function (dadosAdministrador) {
 }
 
 const updateAdministrador = async function (dadosAdministrador) {
-    let sql = `update tbl_aluno set
-                nome = '${dadosAluno.nome}',
-                email = '${dadosAluno.email}',
-                senha = '${dadosAluno.senha}',
-                id_status_aluno = ${dadosAluno.id_status_aluno}
+    let sql = `update tbl_administrador set
+                nome = '${dadosAdministrador.email}',
+                email = '${dadosAdministrador.senha}'
 
-                where id = ${dadosAluno.id}
+                where id = ${dadosAdministrador.id}
                 `
 
     let resultStatus = await prisma.$executeRawUnsafe(sql)
@@ -50,7 +48,7 @@ const updateAdministrador = async function (dadosAdministrador) {
 }
 
 const deleteAdministrador = async function (id) {
-    let sql = `delete from tbl_aluno where id = ${id}`
+    let sql = `delete from tbl_administrador where id = ${id}`
 
     let resultStatus = await prisma.$executeRawUnsafe(sql)
 
@@ -62,7 +60,7 @@ const deleteAdministrador = async function (id) {
 }
 
 const selectAllAdministradores = async function () {
-    let sql = 'select * from tbl_aluno'
+    let sql = 'select * from tbl_administrador'
 
     let rsAluno = await prisma.$queryRawUnsafe(sql)
 
@@ -74,7 +72,7 @@ const selectAllAdministradores = async function () {
 }
 
 const selectByIdAdministrador = async function (id) {
-    let sql = 'select * from tbl_aluno where id = ' + id
+    let sql = 'select * from tbl_administrador where id = ' + id
 
     let rsAluno = await prisma.$queryRawUnsafe(sql)
 
@@ -88,7 +86,7 @@ const selectByIdAdministrador = async function (id) {
 
 //Retorna o ultimo ID inserido no BD
 const selectLastId = async function (){
-    let sql = 'select * from tbl_aluno order by id desc limit 1;'
+    let sql = 'select * from tbl_administrador order by id desc limit 1;'
 
     let rsAluno = await prisma.$queryRawUnsafe(sql)
 
@@ -98,4 +96,13 @@ const selectLastId = async function (){
         return false
     }
 
+}
+
+module.exports = {
+    insertAdministrador,
+    updateAdministrador,
+    deleteAdministrador,
+    selectAllAdministradores,
+    selectByIdAdministrador,
+    selectLastId
 }
