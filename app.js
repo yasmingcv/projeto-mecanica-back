@@ -126,7 +126,7 @@ app.get('/v1/mecanica/professor', cors(), async function (request, response) {
 //Endpoint: Retorna um professor pelo ID
 app.get('/v1/mecanica/professor/:id', cors(), async function (request, response) {
    
-    //Recebe 
+    //Recebe p
     let idProfessor = request.params.id;
 
     let dadosProfessorByID = await controllerProfessor.getBuscarProfessorID(idProfessor);
@@ -148,6 +148,20 @@ app.get('/v1/mecanica/professor/:nome', cors(), async function (request, respons
     response.json(dadosProfessorByName);
     
 });
+
+// //Endpoint: Atualiza um Professor filtrando pelo id
+// app.put('/v1/mecanica/professor/:id', cors(), async function (request, response) {
+    
+   
+//     //Recebe 
+//     let nomeProfessor = request.params.nome;
+
+//     let dadosProfessorByName = await controllerProfessor.getBuscarProfessorNome(nomeProfessor);
+
+//     response.status(dadosProfessorByName.status);
+//     response.json(dadosProfessorByName);
+    
+// });
 
 
 
