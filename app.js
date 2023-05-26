@@ -34,7 +34,8 @@ app.use((request, response, next) => {
 /**************************************************** ALUNOS *****************************************************/
 
 //Import do arquivo da controller que irá solicitar a model os dados do BD
-var controllerAluno = require('./controller/controller_aluno.js')
+var controllerAluno = require('./controller/controller_aluno.js');
+var controllerProfessor = require('./controller/controller_professor.js');
 
 
 
@@ -109,10 +110,44 @@ app.delete('/v1/mecanica/aluno/:id', cors(), async function (request, response){
 })
 
 /**************************************************** PROFESSORES *****************************************************/
-// Responsável: Daniela
+
 
 /**************************** CRUD ****************************/
+// Endpoint: Retorna todos os professores
+app.get('/v1/mecanica/professor', cors(), async function (request, response) {
+   
+    let dadosProfessor = await controllerProfessor.getProfessores();
 
+    response.status(dadosProfessor.status);
+    response.json(dadosProfessor)
+    
+});
+
+//Endpoint: Retorna um professor pelo ID
+app.get('/v1/mecanica/professor/:id', cors(), async function (request, response) {
+   
+    //Recebe 
+    let idProfessor = request.params.id;
+
+    let dadosProfessorByID = await controllerProfessor.getBuscarProfessorID(idProfessor);
+
+    response.status(dadosProfessorByID.status);
+    response.json(dadosProfessorByID);
+    
+});
+
+//Endpoint: Retorna um professor pelo Nome
+app.get('/v1/mecanica/professor/:nome', cors(), async function (request, response) {
+   
+    //Recebe 
+    let nomeProfessor = request.params.nome;
+
+    let dadosProfessorByName = await controllerProfessor.getBuscarProfessorNome(nomeProfessor);
+
+    response.status(dadosProfessorByName.status);
+    response.json(dadosProfessorByName);
+    
+});
 
 
 
