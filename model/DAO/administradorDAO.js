@@ -1,6 +1,6 @@
 /*****************************************************************************************
- * Objetivo: Arquivo responsável pela manipiulação de dados dos alunos no banco de dados
- * Data: 22/05/2023
+ * Objetivo: Arquivo responsável pela manipiulação de dados do administrador no banco de dados
+ * Data: 26/05/2023
  * Autora: Yasmin Gonçalves
  * Versão: 1.0
  ****************************************************************************************/
@@ -11,19 +11,13 @@ var { PrismaClient } = require('@prisma/client')
 //Instancia do prisma
 var prisma = new PrismaClient()
 
-const insertAluno = async function (dadosAluno) {
-    let sql = `insert into tbl_aluno (
-                nome,
+const insertAdministrador = async function (dadosAdministrador) {
+    let sql = `insert into tbl_administrador (
                 email,
-                senha,
-                id_status_aluno,
-                numero_matricula
+                senha
             ) values (
-                '${dadosAluno.nome}',
-                '${dadosAluno.email}',
-                '${dadosAluno.senha}',
-                 ${dadosAluno.id_status_aluno},
-                '${dadosAluno.numero_matricula}'
+                '${dadosAdministrador.email}',
+                '${dadosAdministrador.senha}'
             )`
 
     //Executa o scriptSQL do bd
@@ -36,7 +30,7 @@ const insertAluno = async function (dadosAluno) {
     }
 }
 
-const updateAluno = async function (dadosAluno) {
+const updateAdministrador = async function (dadosAdministrador) {
     let sql = `update tbl_aluno set
                 nome = '${dadosAluno.nome}',
                 email = '${dadosAluno.email}',
@@ -55,7 +49,7 @@ const updateAluno = async function (dadosAluno) {
     }
 }
 
-const deleteAluno = async function (id) {
+const deleteAdministrador = async function (id) {
     let sql = `delete from tbl_aluno where id = ${id}`
 
     let resultStatus = await prisma.$executeRawUnsafe(sql)
@@ -67,10 +61,8 @@ const deleteAluno = async function (id) {
     }
 }
 
-const selectAllAlunos = async function () {
-    let sql = `select tbl_aluno.*, tbl_status_aluno.status
-                from tbl_aluno 
-                inner join tbl_status_aluno on tbl_status_aluno.id = tbl_aluno.id_status_aluno order by tbl_aluno.id`
+const selectAllAdministradores = async function () {
+    let sql = 'select * from tbl_aluno'
 
     let rsAluno = await prisma.$queryRawUnsafe(sql)
 
@@ -81,11 +73,8 @@ const selectAllAlunos = async function () {
     }
 }
 
-const selectByIdAluno = async function (id) {
-    let sql = `select tbl_aluno.*, tbl_status_aluno.status
-	           from tbl_aluno 
-               inner join tbl_status_aluno on tbl_status_aluno.id = tbl_aluno.id_status_aluno
-               where tbl_aluno.id = ${id}`
+const selectByIdAdministrador = async function (id) {
+    let sql = 'select * from tbl_aluno where id = ' + id
 
     let rsAluno = await prisma.$queryRawUnsafe(sql)
 
@@ -96,9 +85,6 @@ const selectByIdAluno = async function (id) {
     }
 }
 
-const selectByNameAluno = async function (nome) {
-
-}
 
 //Retorna o ultimo ID inserido no BD
 const selectLastId = async function (){
@@ -112,13 +98,4 @@ const selectLastId = async function (){
         return false
     }
 
-}
-
-module.exports = {
-    insertAluno,
-    updateAluno,
-    selectByIdAluno,
-    selectAllAlunos,
-    selectLastId,
-    deleteAluno
 }

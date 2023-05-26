@@ -101,7 +101,9 @@ const getBuscarAlunoID = async function (id) {
             dadosAlunoJSON.message = message.SUCCESS_REQUEST.message
 
             dadosAlunoJSON.aluno = dadosAluno
+
             return dadosAlunoJSON
+            
         } else {
             return message.ERROR_NOT_FOUND
         }
