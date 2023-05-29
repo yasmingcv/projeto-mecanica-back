@@ -13,6 +13,7 @@ var message = require('./modulo/config.js');
 
 //Inserir um novo Professor
 const inserirProfessor = async (dadosProfessor) => {
+    console.log(dadosProfessor);
 
     //Validação para campos obrigatórios e numero de caracteres
     if (
@@ -24,6 +25,8 @@ const inserirProfessor = async (dadosProfessor) => {
     } else {
 
         let resultadoDadosProfessor = professorDAO.insertProfessor(dadosProfessor)
+
+        console.log(resultadoDadosProfessor);
 
         //Valida pra se o DB inseriu os dados corretamente
         if (resultadoDadosProfessor) {
@@ -135,7 +138,6 @@ const getProfessores = async () => {
 const getBuscarProfessorNome = async (nome) => {
 
     let nomeProfessor = nome
-    console.log(nomeProfessor);
 
 
     let dadosByNomeProfessorJSON = {}
@@ -151,6 +153,7 @@ const getBuscarProfessorNome = async (nome) => {
 
         if (dadosByNomeProfessor) {
             //Criando um JSON com o atrbuto professores, para encaminhar um array de professores
+            dadosByNomeProfessorJSON.status = message.SUCCESS_REQUEST.status;
             dadosByNomeProfessorJSON.professores = dadosByNomeProfessor;
 
             console.log(dadosByNomeProfessorJSON);
