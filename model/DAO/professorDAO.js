@@ -13,7 +13,6 @@ var prisma = new PrismaClient();
 
 
 const insertProfessor = async (dadosProfessor) => {
-    console.log(1 + 'dadosProfessor');
 
     let sql = `insert into tbl_professor (
         nome,

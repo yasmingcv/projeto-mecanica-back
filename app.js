@@ -226,7 +226,6 @@ app.delete('/v1/mecanica/professor/:id', cors(), async function (request, respon
 });
 
 
-
 /**************************************************** ADMINISTRADOR *****************************************************/
 
 //EndPoint: lista todos os administradores
