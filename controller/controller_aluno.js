@@ -43,6 +43,7 @@ const inserirAluno = async function (dadosAluno) {
     }
 }
 
+// Atualiza um aluno
 const atualizarAluno = async function (dadosAluno, idAluno) {
     if (dadosAluno.nome == '' || dadosAluno.nome == undefined || dadosAluno.nome.length > 200 ||
         dadosAluno.email == '' || dadosAluno.email == undefined || dadosAluno.email.length > 255 ||
@@ -125,14 +126,14 @@ const getAlunos = async function () {
         return dadosAlunosJSON
 
     } else {
-        return message.ERROR_NOT_FOUND
+        return message.ERROR_NOT_FOUND //404
     }
 
 }
 
 const deletarAluno = async function (id) {
     if (id == ' ' || id == undefined || isNaN(id) || id == null) {
-        return message.ERROR_INVALID_ID
+        return message.ERROR_INVALID_ID //400
 
     } else {
         let buscarById = await getBuscarAlunoID(id)
