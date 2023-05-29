@@ -143,14 +143,14 @@ app.get('/v1/mecanica/professor/nome/:nome', cors(), async function (request, re
     let nomeProfessor = request.params.nome;
 
     let dadosProfessorByName = await controllerProfessor.getBuscarProfessorNome(nomeProfessor);
-
+    
     response.status(dadosProfessorByName.status);
     response.json(dadosProfessorByName);
 
 });
 
-//Endpoint: Atualiza um Professor filtrando pelo id
-app.post('/v1/mecanica/professor', cors(), async function (request, response) {
+//Endpoint: Cria um Professor 
+app.post('/v1/mecanica/professor', cors(), bodyParserJSON, async function (request, response) {
 
     let contentType = request.headers['content-type'];
 
@@ -158,6 +158,7 @@ app.post('/v1/mecanica/professor', cors(), async function (request, response) {
     if (String(contentType).toLocaleLowerCase() == 'application/json') {
         //Recebe os dados encaminhados na requisição 
         let dadosBody = request.body;
+        console.log(request.body);
 
         let resultDadosProfessor = await controllerProfessor.inserirProfessor(dadosBody);
 
@@ -173,19 +174,20 @@ app.post('/v1/mecanica/professor', cors(), async function (request, response) {
 });
 
 //Endpoint: Atualiza um Professor filtrando pelo id
-app.put('/v1/mecanica/professor/:id', cors(), async function (request, response) {
+app.put('/v1/mecanica/professor/:id', cors(), bodyParserJSON, async function (request, response) {
 
     let contentType = request.headers['content-type'];
 
     //Validação para receber dados apenas no formato JSON
     if (String(contentType).toLocaleLowerCase() == 'application/json') {
 
+        
         //Recebe o ID do aluno pelo parametro
         let idProfessor = request.params.id;
         //Recebe os dados encaminhados na requisição 
         let dadosBody = request.body;
+        console.log(dadosBody);
 
-        
     
         //Encaminha os dados para a controller
         let resultDadosProfessor = await controllerProfessor.atualizarProfessor(dadosBody, idProfessor);
@@ -224,6 +226,7 @@ app.delete('/v1/mecanica/professor/:id', cors(), async function (request, respon
 
 
 });
+
 
 
 app.listen(8080, function () {
