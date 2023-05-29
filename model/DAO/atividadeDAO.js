@@ -20,14 +20,50 @@ const insertAtividade = async (dadosAtividade) => {
                 id_tipo,
                 id_unidade_curricular
                 ) values (
-                        '2:00:00',
-                        'endereço do link',
-                        'Construindo uma peça',
-                        2,
-                        1
+                        '${dadosAtividade.tempoPrevisto}',
+                        '${dadosAtividade.foto}',
+                        '${dadosAtividade.nome}',
+                        ${dadosAtividade.idTipo},
+                        ${dadosAtividade.idUnidadeCurricular}
                         );`
+
+
+    //Executa o scriptSQL no BD
+    let resultStatus = await prisma.$executeRawUnsafe(sql);
+
+    if (resultStatus) {
+        return true;
+    } else {
+        return false;
+    }
 
 }
 
+const updateAtividade = async (dadosAtividade) => {
+
+    const sql = `
+    update tbl_professor set
+                        tempo_previsto = '${dadosAtividade.nome}',
+                        foto = '${dadosAtividade.email}',
+                        nome = '${dadosAtividade.email}',
+                        id_tipo = '${dadosAtividade.email}',
+                        id_unidade_curricular = '${dadosProfessor.senha}'
+                where id = ${dadosProfessor.id}
+    `
+    //Executa o scriptSQL no BD
+    let resultStatus = await prisma.$executeRawUnsafe(sql);
+
+    if (resultStatus) {
+        return true;
+    } else {
+        return false;
+    }
+
+}
+
+module.exports = {
+    insertAtividade,
+    updateAtividade
+}
 
 
