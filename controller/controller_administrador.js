@@ -13,6 +13,7 @@ var message = require('./modulo/config.js')
 //Import do arquivo DAO para acessar dados do aluno no BD
 var administradorDAO = require('../model/DAO/administradorDAO.js')
 
+
 //Insere um administrador
 const inserirAdministrador = async function (dadosAdministrador) {
 

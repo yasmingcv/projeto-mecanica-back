@@ -12,6 +12,7 @@ var { PrismaClient } = require('@prisma/client')
 var prisma = new PrismaClient()
 
 const insertAdministrador = async function (dadosAdministrador) {
+
     let sql = `insert into tbl_administrador (
                 email,
                 senha
@@ -32,8 +33,8 @@ const insertAdministrador = async function (dadosAdministrador) {
 
 const updateAdministrador = async function (dadosAdministrador) {
     let sql = `update tbl_administrador set
-                nome = '${dadosAdministrador.email}',
-                email = '${dadosAdministrador.senha}'
+                email = '${dadosAdministrador.email}',
+                senha = '${dadosAdministrador.senha}'
 
                 where id = ${dadosAdministrador.id}
                 `

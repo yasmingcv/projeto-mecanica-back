@@ -36,7 +36,7 @@ app.use((request, response, next) => {
 //Import do arquivo da controller que irá solicitar a model os dados do BD
 var controllerAluno = require('./controller/controller_aluno.js');
 var controllerProfessor = require('./controller/controller_professor.js');
-
+var controllerAdministrador = require('./controller/controller_administrador.js')
 
 
 //EndPoint para inserir um novo aluno
@@ -109,7 +109,7 @@ app.delete('/v1/mecanica/aluno/:id', cors(), async function (request, response) 
     response.json(resultDadosAluno)
 })
 
-/**************************************************** PROFESSORES *****************************************************/
+/**************************************************** PROFESSOR *****************************************************/
 
 
 /**************************** CRUD ****************************/
@@ -224,6 +224,81 @@ app.delete('/v1/mecanica/professor/:id', cors(), async function (request, respon
 
 
 });
+
+
+/**************************************************** ADMINISTRADOR *****************************************************/
+
+//EndPoint: lista todos os administradores
+app.get('/v1/mecanica/administrador', cors(), async function (request, response){
+    let dadosAdministradores = await controllerAdministrador.getAdministradores()
+
+    response.json(dadosAdministradores)
+    response.status(dadosAdministradores.status)
+})
+
+//EndPoint: busca o administrador pelo id
+app.get('/v1/mecanica/administrador/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let dadosAdministrador = await controllerAdministrador.getBuscarAdministradorID(id)
+
+    response.json(dadosAdministrador)
+    response.status(dadosAdministrador.status)
+})
+
+//EndPoint: insere um novo administrador
+app.post('/v1/mecanica/administrador', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLocaleLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados na requisição 
+        let dadosBody = request.body
+
+        let resultDadosAdm = await controllerAdministrador.inserirAdministrador(dadosBody);
+
+        response.status(resultDadosAdm.status)
+        response.json(resultDadosAdm)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+//EndPoint: atualiza um administrador
+app.put('/v1/mecanica/administrador/:id', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID do adm pelo parametro
+        let idAdministrador = request.params.id
+        //Recebe os dados do adm encaminhados no corpo da requisição
+        let dadosBody = request.body
+
+        //Encaminha os dados para a controlller
+        let resultDadosAdministrador = await controllerAdministrador.atualizarAdministrador(dadosBody, idAdministrador)
+
+        response.status(resultDadosAdministrador.status)
+        response.json(resultDadosAdministrador)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+
+    }
+})
+
+//EndPoint: apaga um administrador
+app.delete('/v1/mecanica/administrador/:id', cors(), async function (request, response){
+    let idAdministrador = request.params.id
+
+    let resultDadosAdministrador = await controllerAdministrador.deletarAdministrador(idAdministrador)
+
+    response.status(resultDadosAdministrador.status)
+    response.json(resultDadosAdministrador)
+})
 
 
 app.listen(8080, function () {
