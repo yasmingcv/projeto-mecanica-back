@@ -63,10 +63,10 @@ const deleteAdministrador = async function (id) {
 const selectAllAdministradores = async function () {
     let sql = 'select * from tbl_administrador'
 
-    let rsAluno = await prisma.$queryRawUnsafe(sql)
+    let resultDadosAdministrador = await prisma.$queryRawUnsafe(sql)
 
-    if (rsAluno.length > 0) {
-        return rsAluno
+    if (resultDadosAdministrador.length > 0) {
+        return resultDadosAdministrador
     } else {
         return false
     }
@@ -75,10 +75,10 @@ const selectAllAdministradores = async function () {
 const selectByIdAdministrador = async function (id) {
     let sql = 'select * from tbl_administrador where id = ' + id
 
-    let rsAluno = await prisma.$queryRawUnsafe(sql)
+    let resultDadosAdministrador = await prisma.$queryRawUnsafe(sql)
 
-    if (rsAluno.length > 0) {
-        return rsAluno
+    if (resultDadosAdministrador.length > 0) {
+        return resultDadosAdministrador
     } else {
         return false
     }
@@ -89,10 +89,10 @@ const selectByIdAdministrador = async function (id) {
 const selectLastId = async function (){
     let sql = 'select * from tbl_administrador order by id desc limit 1;'
 
-    let rsAluno = await prisma.$queryRawUnsafe(sql)
+    let resultDadosAdministrador = await prisma.$queryRawUnsafe(sql)
 
-    if(rsAluno.length > 0){
-        return rsAluno
+    if(resultDadosAdministrador.length > 0){
+        return resultDadosAdministrador
     } else {
         return false
     }

@@ -46,7 +46,7 @@ const atualizarAdministrador = async function (dadosAdministrador, idAdministrad
         dadosAdministrador.senha == '' || dadosAdministrador.senha == undefined || dadosAdministrador.senha > 513) {
 
         return message.ERROR_REQUIRED_FIELDS // 400
-    } else if (idAdministrador == '' || idAdministrador == undefined || !isNaN(dadosAdministrador)) {
+    } else if (idAdministrador == '' || idAdministrador == undefined || isNaN(idAdministrador)) {
         return message.ERROR_INVALID_ID //400
 
     } else {
@@ -113,7 +113,7 @@ const getBuscarAdministradorID = async function (id) {
 
         if(dadosAdm) {
             dadosAdmJSON.message = message.SUCCESS_REQUEST.message
-            dadosAdmJSON.status = message.SUCCESS_REQUEST.status
+            dadosAdmJSON.status = message.SUCCESS_REQUEST.status //200
             dadosAdmJSON.administrador = dadosAdm
 
             return dadosAdmJSON

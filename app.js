@@ -37,6 +37,7 @@ app.use((request, response, next) => {
 var controllerAluno = require('./controller/controller_aluno.js');
 var controllerProfessor = require('./controller/controller_professor.js');
 var controllerAdministrador = require('./controller/controller_administrador.js')
+var controllerTurma = require('./controller/controller_turma.js')
 
 
 //EndPoint para inserir um novo aluno
@@ -111,8 +112,6 @@ app.delete('/v1/mecanica/aluno/:id', cors(), async function (request, response) 
 
 /**************************************************** PROFESSOR *****************************************************/
 
-
-/**************************** CRUD ****************************/
 // Endpoint: Retorna todos os professores
 app.get('/v1/mecanica/professor', cors(), async function (request, response) {
 
@@ -300,6 +299,49 @@ app.delete('/v1/mecanica/administrador/:id', cors(), async function (request, re
     response.json(resultDadosAdministrador)
 })
 
+/**************************************************** TURMA *****************************************************/
+
+//EndPoint: insere uma nova turmas
+app.post('/v1/mecanica/turma', cors(), bodyParserJSON, async function (request, response) {
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body
+
+        let resultDadosTurma = await controllerTurma.inserirTurma(dadosBody)
+
+        response.status(resultDadosTurma.status)
+        response.json(resultDadosTurma)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+//EndPoint para atualizar uma turma filtrando pelo ID
+app.put('/v1/mecanica/turma/:id', cors(), bodyParserJSON, async function (request, response) {
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID da turma pelo parametro
+        let idTurma = request.params.id
+        //Recebe os dados da turma encaminhados no corpo da requisição
+        let dadosBody = request.body
+
+        //Encaminha os dados para a controlller
+        let resultDadosTurma = await controllerTurma.atualizarTurma(dadosBody, idTurma)
+
+        response.status(resultDadosTurma.status)
+        response.json(resultDadosTurma)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+
+    }
+})
 
 app.listen(8080, function () {
     console.log('Servidor aguardando requisiçõs na porta 8080')
