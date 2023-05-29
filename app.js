@@ -40,7 +40,7 @@ var controllerProfessor = require('./controller/controller_professor.js');
 
 
 //EndPoint para inserir um novo aluno
-app.post('/v1/mecanica/aluno', cors(), bodyParserJSON, async function (request, response){
+app.post('/v1/mecanica/aluno', cors(), bodyParserJSON, async function (request, response) {
     let contentType = request.headers['content-type']
 
     if (String(contentType).toLowerCase() == 'application/json') {
@@ -83,7 +83,7 @@ app.put('/v1/mecanica/aluno/:id', cors(), bodyParserJSON, async function (reques
 })
 
 //EndPoint que retorna um aluno filtrando pelo ID
-app.get('/v1/mecanica/aluno/:id', cors(), async function (request, response){
+app.get('/v1/mecanica/aluno/:id', cors(), async function (request, response) {
     let idAluno = request.params.id
 
     let dadosAluno = await controllerAluno.getBuscarAlunoID(idAluno)
@@ -93,14 +93,14 @@ app.get('/v1/mecanica/aluno/:id', cors(), async function (request, response){
 })
 
 //EndPoint que retorna todos os alunos
-app.get('/v1/mecanica/aluno', cors(), async function (request, response){
+app.get('/v1/mecanica/aluno', cors(), async function (request, response) {
     let dadosAluno = await controllerAluno.getAlunos()
 
     response.json(dadosAluno)
     response.status(dadosAluno.status)
 })
 
-app.delete('/v1/mecanica/aluno/:id', cors(), async function (request, response){
+app.delete('/v1/mecanica/aluno/:id', cors(), async function (request, response) {
     let idAluno = request.params.id
 
     let resultDadosAluno = await controllerAluno.deletarAluno(idAluno)
@@ -115,17 +115,17 @@ app.delete('/v1/mecanica/aluno/:id', cors(), async function (request, response){
 /**************************** CRUD ****************************/
 // Endpoint: Retorna todos os professores
 app.get('/v1/mecanica/professor', cors(), async function (request, response) {
-   
+
     let dadosProfessor = await controllerProfessor.getProfessores();
 
     response.status(dadosProfessor.status);
     response.json(dadosProfessor)
-    
+
 });
 
 //Endpoint: Retorna um professor pelo ID
 app.get('/v1/mecanica/professor/:id', cors(), async function (request, response) {
-   
+
     //Recebe p
     let idProfessor = request.params.id;
 
@@ -133,12 +133,12 @@ app.get('/v1/mecanica/professor/:id', cors(), async function (request, response)
 
     response.status(dadosProfessorByID.status);
     response.json(dadosProfessorByID);
-    
+
 });
 
 //Endpoint: Retorna um professor pelo Nome
-app.get('/v1/mecanica/professor/:nome', cors(), async function (request, response) {
-   
+app.get('/v1/mecanica/professor/nome/:nome', cors(), async function (request, response) {
+
     //Recebe 
     let nomeProfessor = request.params.nome;
 
@@ -146,23 +146,84 @@ app.get('/v1/mecanica/professor/:nome', cors(), async function (request, respons
 
     response.status(dadosProfessorByName.status);
     response.json(dadosProfessorByName);
-    
+
 });
 
-// //Endpoint: Atualiza um Professor filtrando pelo id
-// app.put('/v1/mecanica/professor/:id', cors(), async function (request, response) {
+//Endpoint: Atualiza um Professor filtrando pelo id
+app.post('/v1/mecanica/professor', cors(), async function (request, response) {
+
+    let contentType = request.headers['content-type'];
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLocaleLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados na requisição 
+        let dadosBody = request.body;
+
+        let resultDadosProfessor = await controllerProfessor.inserirProfessor(dadosBody);
+
+        response.status(resultDadosProfessor.status);
+        response.json(resultDadosProfessor);
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
+
+
+});
+
+//Endpoint: Atualiza um Professor filtrando pelo id
+app.put('/v1/mecanica/professor/:id', cors(), async function (request, response) {
+
+    let contentType = request.headers['content-type'];
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLocaleLowerCase() == 'application/json') {
+
+        //Recebe o ID do aluno pelo parametro
+        let idProfessor = request.params.id;
+        //Recebe os dados encaminhados na requisição 
+        let dadosBody = request.body;
+
+        
     
-   
-//     //Recebe 
-//     let nomeProfessor = request.params.nome;
-
-//     let dadosProfessorByName = await controllerProfessor.getBuscarProfessorNome(nomeProfessor);
-
-//     response.status(dadosProfessorByName.status);
-//     response.json(dadosProfessorByName);
+        //Encaminha os dados para a controller
+        let resultDadosProfessor = await controllerProfessor.atualizarProfessor(dadosBody, idProfessor);
     
-// });
+        response.status(resultDadosProfessor.status);
+        response.json(resultDadosProfessor);
 
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE);
+    }
+
+
+});
+
+//Endpoint: Deleta um professor existente filtrando pelo id
+app.delete('/v1/mecanica/professor/:id', cors(), async function (request, response) {
+
+    //Recebe o ID do aluno pelo parametro
+    let idProfessor = request.params.id;
+
+    let buscaPeloId = await controllerProfessor.getBuscarProfessorID(idProfessor)
+
+    if (buscaPeloId.status !== 404) {
+    
+        //Encaminha os dados para a controller
+        let resultDadosProfessor = await controllerProfessor.deletarProfessor(idProfessor);
+    
+        response.status(resultDadosProfessor.status);
+        response.json(resultDadosProfessor);
+        
+    }else{
+        response.status(buscaPeloId.status)
+        response.json(buscaPeloId)
+    }
+
+
+});
 
 
 app.listen(8080, function () {
