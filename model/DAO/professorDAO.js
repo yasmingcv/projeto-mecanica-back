@@ -147,7 +147,7 @@ const selectByNameProfessor = async (name) => {
 
 };
 
-const selectLastId = async (id) => {
+const selectLastId = async () => {
 
     let sql = 'select * from tbl_professor order by id desc limit 1;'
 
