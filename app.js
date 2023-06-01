@@ -450,5 +450,3 @@ app.delete('/v1/mecanica/atividade/:id', cors(), async function (request, respon
 app.listen(8080, function () {
     console.log('Servidor aguardando requisiçõs na porta 8080')
 })
-
-
