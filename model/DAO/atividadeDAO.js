@@ -27,9 +27,9 @@ const insertAtividade = async (dadosAtividade) => {
                         ${dadosAtividade.idUnidadeCurricular}
                         );`
 
-
+                    console.log(sql);
     //Executa o scriptSQL no BD
-    let resultStatus = await prisma.$executeRawUnsafe(sql);
+    let resultStatus = await prisma.$queryRawUnsafe(sql);
 
     if (resultStatus) {
         return true;

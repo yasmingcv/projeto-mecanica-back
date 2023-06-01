@@ -38,6 +38,7 @@ var controllerAluno = require('./controller/controller_aluno.js');
 var controllerProfessor = require('./controller/controller_professor.js');
 var controllerAdministrador = require('./controller/controller_administrador.js')
 var controllerTurma = require('./controller/controller_turma.js')
+var controllerAtividade = require('./controller/controller_atividade.js')
 const { process_params } = require('express/lib/router')
 
 
@@ -375,7 +376,8 @@ app.delete('/v1/mecanica/turma/:id', cors(), async function (request, response){
 
 //EndPoint: retorna todas as atividades
 app.get('/v1/mecanica/atividade', cors(), async function (request, response){
-    let dadosAtividades = await controllerAtividade.getAtividades()
+    let dadosAtividades = await controllerAtividade.getAllAtividades()
+    console.log(dadosAtividades);
 
     response.json(dadosAtividades)
     response.status(dadosAtividades.status)
@@ -385,7 +387,7 @@ app.get('/v1/mecanica/atividade', cors(), async function (request, response){
 app.get('/v1/mecanica/atividade/:id', cors(), async function (request, response){
     let id = request.params.id
 
-    let dadosAtividade = await controllerAtividade.getBuscarAtividadeID(id)
+    let dadosAtividade = await controllerAtividade.getAllAtividades(id)
 
     response.json(dadosAtividade)
     response.status(dadosAtividade.status)
