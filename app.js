@@ -38,6 +38,7 @@ var controllerAluno = require('./controller/controller_aluno.js');
 var controllerProfessor = require('./controller/controller_professor.js');
 var controllerAdministrador = require('./controller/controller_administrador.js')
 var controllerTurma = require('./controller/controller_turma.js')
+const { process_params } = require('express/lib/router')
 
 
 //EndPoint para inserir um novo aluno
@@ -57,7 +58,6 @@ app.post('/v1/mecanica/aluno', cors(), bodyParserJSON, async function (request, 
         response.json(message.ERROR_INVALID_CONTENT_TYPE)
     }
 })
-
 
 //EndPoint para atualizar um aluno filtrando pelo ID
 app.put('/v1/mecanica/aluno/:id', cors(), bodyParserJSON, async function (request, response) {
@@ -319,7 +319,7 @@ app.post('/v1/mecanica/turma', cors(), bodyParserJSON, async function (request, 
     }
 })
 
-//EndPoint para atualizar uma turma filtrando pelo ID
+//EndPoint: atualiza uma turma filtrando pelo ID
 app.put('/v1/mecanica/turma/:id', cors(), bodyParserJSON, async function (request, response) {
     let contentType = request.headers['content-type']
 
@@ -343,6 +343,7 @@ app.put('/v1/mecanica/turma/:id', cors(), bodyParserJSON, async function (reques
     }
 })
 
+//EndPoint: retorna todas as turmas 
 app.get('/v1/mecanica/turma', cors(), async function (request, response){
     let dadosTurmas = await controllerTurma.getTurmas()
 
@@ -350,6 +351,7 @@ app.get('/v1/mecanica/turma', cors(), async function (request, response){
     response.status(dadosTurmas.status)
 })
 
+//EndPoint: retorna uma turma filtrando pelo ID
 app.get('/v1/mecanica/turma/:id', cors(), async function (request, response){
     let id = request.params.id
 
@@ -359,6 +361,7 @@ app.get('/v1/mecanica/turma/:id', cors(), async function (request, response){
     response.status(dadosTurma.status)
 })
 
+//EndPoint: apaga uma turma filtrando pelo ID
 app.delete('/v1/mecanica/turma/:id', cors(), async function (request, response){
     let id = request.params.id
 
@@ -368,6 +371,84 @@ app.delete('/v1/mecanica/turma/:id', cors(), async function (request, response){
     response.json(resultDadosTurma)
 })
 
+/**************************************************** ATIVIDADE *****************************************************/ //  !!!!!!!!!!!!!!!!!!!!!!
+
+//EndPoint: retorna todas as atividades
+app.get('/v1/mecanica/atividade', cors(), async function (request, response){
+    let dadosAtividades = await controllerAtividade.getAtividades()
+
+    response.json(dadosAtividades)
+    response.status(dadosAtividades.status)
+})
+
+//EndPoint: retorna uma atividade filtrando pelo ID 
+app.get('/v1/mecanica/atividade/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let dadosAtividade = await controllerAtividade.getBuscarAtividadeID(id)
+
+    response.json(dadosAtividade)
+    response.status(dadosAtividade.status)
+})
+
+//EndPoint: insere uma nova atividade
+app.post('/v1/mecanica/atividade', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body
+
+        let resultDadosAtividade = await controllerAtividade.inserirAtividade(dadosBody)
+
+        response.status(resultDadosAtividade.status)
+        response.json(resultDadosAtividade)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+//EndPoint: atualiza uma atividade, filtrando pelo ID
+app.put('/v1/mecanica/atividade/:id', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID da atividade pelo parametro
+        let id = request.params.id
+        //Recebe os dados da atividade encaminhados no corpo da requisição
+        let dadosBody = request.body
+
+        //Encaminha os dados para a controlller
+        let resultDadosAtividade = await controllerAtividade.atualizarAtividade(dadosBody, id)
+
+        response.status(resultDadosAtividade.status)
+        response.json(resultDadosAtividade)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+
+    }
+})
+
+//EndPoint: apaga uma atividade filtrando pelo ID
+app.delete('/v1/mecanica/atividade/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let resultDadosAtividade = await controllerAtividade.deletarAtividade(id)
+
+    response.status(resultDadosAtividade.status)
+    response.json(resultDadosAtividade)
+})
+
+
+
+
+
 app.listen(8080, function () {
     console.log('Servidor aguardando requisiçõs na porta 8080')
 })
+
+
