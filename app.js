@@ -301,7 +301,7 @@ app.delete('/v1/mecanica/administrador/:id', cors(), async function (request, re
 
 /**************************************************** TURMA *****************************************************/
 
-//EndPoint: insere uma nova turmas
+//EndPoint: insere uma nova turma
 app.post('/v1/mecanica/turma', cors(), bodyParserJSON, async function (request, response) {
     let contentType = request.headers['content-type']
 
@@ -341,6 +341,31 @@ app.put('/v1/mecanica/turma/:id', cors(), bodyParserJSON, async function (reques
         response.json(message.ERROR_INVALID_CONTENT_TYPE)
 
     }
+})
+
+app.get('/v1/mecanica/turma', cors(), async function (request, response){
+    let dadosTurmas = await controllerTurma.getTurmas()
+
+    response.json(dadosTurmas)
+    response.status(dadosTurmas.status)
+})
+
+app.get('/v1/mecanica/turma/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let dadosTurma = await controllerTurma.getBuscarTurmaId(id)
+
+    response.json(dadosTurma)
+    response.status(dadosTurma.status)
+})
+
+app.delete('/v1/mecanica/turma/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let resultDadosTurma = await controllerTurma.deletarTurma(id)
+
+    response.status(resultDadosTurma.status)
+    response.json(resultDadosTurma)
 })
 
 app.listen(8080, function () {

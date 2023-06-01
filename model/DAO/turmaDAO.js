@@ -32,6 +32,7 @@ const insertTurma = async function (dadosTurma) {
 }
 
 const updateTurma = async function (dadosTurma) {
+
     let sql = `update tbl_turma set
                 nome = '${dadosTurma.nome}',
                 ano = '${dadosTurma.ano}'
@@ -43,6 +44,7 @@ const updateTurma = async function (dadosTurma) {
 
     if(resultStatus){
         return true 
+        
     } else {
         return false
     }

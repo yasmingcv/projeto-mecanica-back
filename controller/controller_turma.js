@@ -39,12 +39,15 @@ const inserirTurma = async function (dadosTurma) {
 }
 
 const atualizarTurma = async function (dadosTurma, idTurma) {
+
     if(dadosTurma.nome == '' || dadosTurma.nome == undefined || dadosTurma.nome > 100 ||
        dadosTurma.ano == '' || dadosTurma.ano == undefined || isNaN(dadosTurma.ano)
     ) {
         return message.ERROR_REQUIRED_FIELDS // 400
+
     } else if (idTurma == '' || idTurma == undefined || isNaN(idTurma)){
         return message.ERROR_INVALID_ID //400
+
     } else {
         dadosTurma.id = idTurma
         dadosTurmaJSON = {}
@@ -52,7 +55,7 @@ const atualizarTurma = async function (dadosTurma, idTurma) {
         let statusId = await turmaDAO.selectByIdTurma(idTurma)
 
         if(statusId) {
-            let resultDadosTurma = await turmaDAO.updateTurma(idTurma)
+            let resultDadosTurma = await turmaDAO.updateTurma(dadosTurma)
             let turmaId = await turmaDAO.selectLastId()
 
             if(resultDadosTurma) {
@@ -61,6 +64,7 @@ const atualizarTurma = async function (dadosTurma, idTurma) {
                 dadosTurmaJSON.turma = turmaId
 
                 return dadosTurmaJSON
+
             } else {
                 return message.ERROR_INTERNAL_SERVER //500
             }
