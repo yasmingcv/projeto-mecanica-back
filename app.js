@@ -39,7 +39,7 @@ var controllerProfessor = require('./controller/controller_professor.js');
 var controllerAdministrador = require('./controller/controller_administrador.js')
 var controllerTurma = require('./controller/controller_turma.js')
 var controllerAtividade = require('./controller/controller_atividade.js')
-const { process_params } = require('express/lib/router')
+var controllerUnidadeCurricular = require('./controller/controller_unidade_curricular.js')
 
 
 //EndPoint para inserir um novo aluno
@@ -372,7 +372,7 @@ app.delete('/v1/mecanica/turma/:id', cors(), async function (request, response){
     response.json(resultDadosTurma)
 })
 
-/**************************************************** ATIVIDADE *****************************************************/ //  !!!!!!!!!!!!!!!!!!!!!!
+/**************************************************** ATIVIDADE *****************************************************/
 
 //EndPoint: retorna todas as atividades
 app.get('/v1/mecanica/atividade', cors(), async function (request, response){
@@ -424,7 +424,6 @@ app.put('/v1/mecanica/atividade/:id', cors(), bodyParserJSON, async function (re
         
         //Encaminha os dados para a controlller
         let resultDadosAtividade = await controllerAtividade.atualizarAtividade(dadosBody, id)
-        console.log('app -- ' + resultDadosAtividade);
 
         response.status(resultDadosAtividade.status)
         response.json(resultDadosAtividade)
@@ -460,7 +459,7 @@ app.get('/v1/mecanica/atividade/nome/:nome', cors(), async function (request, re
 });
 
 //Endpoint: Retorna uma atividade pelo Nome da unidade curricular
-app.get('/v1/mecanica/atividade/unidadeCurricular/:nome', cors(), async function (request, response) {
+app.get('/v1/mecanica/atividade/unidade-curricular/:nome', cors(), async function (request, response) {
 
     //Recebe 
     let nomeAtividade = request.params.nome;
@@ -472,6 +471,78 @@ app.get('/v1/mecanica/atividade/unidadeCurricular/:nome', cors(), async function
 
 });
 
+/**************************************************** UNIDADE CURRICULAR *****************************************************/
+
+//EndPoint: retorna todas as unidades curriculares
+app.get('/v1/mecanica/unidade-curricular', cors(), async function (request, response){
+    let dadosUnidadesCurriculares = await controllerUnidadeCurricular.getUnidadesCurriculares()
+    console.log(dadosUnidadesCurriculares);
+
+    response.json(dadosUnidadesCurriculares)
+    response.status(dadosUnidadesCurriculares.status)
+})
+
+//EndPoint: retorna uma unidade curricular filtrando pelo ID 
+app.get('/v1/mecanica/unidade-curricular/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let dadosUnidadeCurricular = await controllerUnidadeCurricular.getBuscarUnidadeCurricularID(id)
+
+    response.json(dadosUnidadeCurricular)
+    response.status(dadosUnidadeCurricular.status)
+})
+
+//EndPoint: insere uma nova unidade curricular
+app.post('/v1/mecanica/unidade-curricular', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body
+
+        let resultDadosUnidadeCurricular = await controllerUnidadeCurricular.inserirUnidadeCurricular(dadosBody)
+
+        response.status(resultDadosUnidadeCurricular.status)
+        response.json(resultDadosUnidadeCurricular)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+//EndPoint: atualiza uma unidade curricular, filtrando pelo ID
+app.put('/v1/mecanica/unidade-curricular/:id', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID da unidade curricular pelo parametro
+        let id = request.params.id
+        //Recebe os dados da unidade curricular encaminhados no corpo da requisição
+        let dadosBody = request.body
+        
+        //Encaminha os dados para a controlller
+        let resultDadosUnidadeCurricular = await controllerUnidadeCurricular.atualizarUnidadeCurricular(dadosBody, id)
+
+        response.status(resultDadosUnidadeCurricular.status)
+        response.json(resultDadosUnidadeCurricular)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+
+    }
+})
+
+//EndPoint: apaga uma unidade curricular, filtrando pelo ID
+app.delete('/v1/mecanica/unidade-curricular/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let resultDadosUnidadeCurricular = await controllerUnidadeCurricular.deletarUnidadeCurricular(id)
+
+    response.status(resultDadosUnidadeCurricular.status)
+    response.json(resultDadosUnidadeCurricular)
+})
 
 app.listen(8080, function () {
     console.log('Servidor aguardando requisiçõs na porta 8080')

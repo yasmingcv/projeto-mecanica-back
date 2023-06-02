@@ -84,7 +84,7 @@ const getBuscarUnidadeCurricularID = async function (id) {
         return message.ERROR_INVALID_ID
     } else {
         let dadosUnidadeCurricularJSON = {}
-        let dadosUnidadeCurricular = await unidade_curricular.selectByIdUnidadeCurricular(id)
+        let dadosUnidadeCurricular = await unidade_curricularDAO.selectByIdUnidadeCurricular(id)
 
         if (dadosUnidadeCurricular) {
             //Criando um JSON com o atributo unidade curricular, para encaminhar um array de unidades curriculares

@@ -33,13 +33,9 @@ const insertUnidadeCurricular = async function (dadosUnidadeCurricular) {
 
 
 const updateUnidadeCurricular = async function (dadosUnidadeCurricular) {
-    let sql = `update tbl_unidade_curricular set (
-                                                    nome, 
-                                                    descricao
-                                                ) values (
-                                                    '${dadosUnidadeCurricular.nome}', 
-                                                    '${dadosUnidadeCurricular.descricao}'
-                                                )
+    let sql = `update tbl_unidade_curricular set 
+                                                    nome = '${dadosUnidadeCurricular.nome}', 
+                                                    descricao = '${dadosUnidadeCurricular.descricao}'
                                                 
                                                 where id = ${dadosUnidadeCurricular.id}
                                                 `
