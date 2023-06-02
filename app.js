@@ -38,6 +38,7 @@ var controllerAluno = require('./controller/controller_aluno.js');
 var controllerProfessor = require('./controller/controller_professor.js');
 var controllerAdministrador = require('./controller/controller_administrador.js')
 var controllerTurma = require('./controller/controller_turma.js')
+var controllerAtividade = require('./controller/controller_atividade.js')
 const { process_params } = require('express/lib/router')
 
 
@@ -375,7 +376,8 @@ app.delete('/v1/mecanica/turma/:id', cors(), async function (request, response){
 
 //EndPoint: retorna todas as atividades
 app.get('/v1/mecanica/atividade', cors(), async function (request, response){
-    let dadosAtividades = await controllerAtividade.getAtividades()
+    let dadosAtividades = await controllerAtividade.getAllAtividades()
+    console.log(dadosAtividades);
 
     response.json(dadosAtividades)
     response.status(dadosAtividades.status)
@@ -419,9 +421,10 @@ app.put('/v1/mecanica/atividade/:id', cors(), bodyParserJSON, async function (re
         let id = request.params.id
         //Recebe os dados da atividade encaminhados no corpo da requisição
         let dadosBody = request.body
-
+        
         //Encaminha os dados para a controlller
         let resultDadosAtividade = await controllerAtividade.atualizarAtividade(dadosBody, id)
+        console.log('app -- ' + resultDadosAtividade);
 
         response.status(resultDadosAtividade.status)
         response.json(resultDadosAtividade)
@@ -443,8 +446,31 @@ app.delete('/v1/mecanica/atividade/:id', cors(), async function (request, respon
     response.json(resultDadosAtividade)
 })
 
+//Endpoint: Retorna uma atividade pelo Nome
+app.get('/v1/mecanica/atividade/nome/:nome', cors(), async function (request, response) {
 
+    //Recebe 
+    let nomeAtividade = request.params.nome;
 
+    let dadosAtividadeByName = await controllerAtividade.getBuscarAtividadeNome(nomeAtividade);
+
+    response.status(dadosAtividadeByName.status);
+    response.json(dadosAtividadeByName);
+
+});
+
+//Endpoint: Retorna uma atividade pelo Nome da unidade curricular
+app.get('/v1/mecanica/atividade/unidadeCurricular/:nome', cors(), async function (request, response) {
+
+    //Recebe 
+    let nomeAtividade = request.params.nome;
+
+    let dadosAtividadeByNameUnidadeCurricular = await controllerAtividade.getBuscarAtividadeByNameUnidadeCurricular(nomeAtividade);
+
+    response.status(dadosAtividadeByNameUnidadeCurricular.status);
+    response.json(dadosAtividadeByNameUnidadeCurricular);
+
+});
 
 
 app.listen(8080, function () {
