@@ -20,11 +20,11 @@ const insertAtividade = async (dadosAtividade) => {
                 id_tipo,
                 id_unidade_curricular
                 ) values (
-                        '${dadosAtividade.tempoPrevisto}',
+                        '${dadosAtividade.tempo_previsto}',
                         '${dadosAtividade.foto}',
                         '${dadosAtividade.nome}',
-                        ${dadosAtividade.idTipo},
-                        ${dadosAtividade.idUnidadeCurricular}
+                        ${dadosAtividade.id_tipo},
+                        ${dadosAtividade.id_unidade_curricular}
                         );`
 
                     console.log(sql);
@@ -42,16 +42,17 @@ const insertAtividade = async (dadosAtividade) => {
 const updateAtividade = async (dadosAtividade) => {
 
     const sql = `
-    update tbl_professor set
-                        tempo_previsto = '${dadosAtividade.tempoPrevisto}',
+    update tbl_atividade set
+                        tempo_previsto = '${dadosAtividade.tempo_previsto}',
                         foto = '${dadosAtividade.foto}',
                         nome = '${dadosAtividade.nome}',
-                        id_tipo = '${dadosAtividade.idTipo}',
-                        id_unidade_curricular = ${dadosAtividade.idUnidadeCurricular}
-                where id = ${dadosProfessor.id}
+                        id_tipo = ${dadosAtividade.id_tipo},
+                        id_unidade_curricular = ${dadosAtividade.id_unidade_curricular}
+                where id = ${dadosAtividade.id};
     `
     //Executa o scriptSQL no BD
-    let resultStatus = await prisma.$executeRawUnsafe(sql);
+    console.log(sql);
+    let resultStatus = await prisma.$queryRawUnsafe(sql);
 
     if (resultStatus) {
         return true;
@@ -61,14 +62,15 @@ const updateAtividade = async (dadosAtividade) => {
 
 }
 
-const deleteAtividade = async (dadosAtividade) => {
+const deleteAtividade = async (id) => {
+    const idAtividade = id;
 
-    const sql = `delete from tbl_atividade where id = ${dadosAtividade.id};`
+    const sql = `delete from tbl_atividade where id = ${idAtividade};`
     //Executa o scriptSQL no BD
     let resultStatus = await prisma.$executeRawUnsafe(sql);
 
     if (resultStatus) {
-        return true;
+        return resultStatus;
     } else {
         return false;
     }
@@ -88,10 +90,10 @@ const selectAllAtividades = async () => {
                 on tbl_tipo_atividade.id = tbl_atividade.id_tipo;
     `
     //Executa o scriptSQL no BD
-    let resultStatus = await prisma.$executeRawUnsafe(sql);
+    let resultStatus = await prisma.$queryRawUnsafe(sql);
 
     if (resultStatus) {
-        return true;
+        return resultStatus;
     } else {
         return false;
     }
@@ -116,7 +118,6 @@ select tbl_atividade.*,
     `;
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
-    //$queryRaw('select * from tbl_professor') - Permite interpretar o scriptSQL direto no método
     let rsIdAtividade = await prisma.$queryRawUnsafe(sql)
 
     //Valida se o banco de dados retornou algum registro 
@@ -162,7 +163,7 @@ select tbl_atividade.*,
 const selectByNameUnidadeCurricular = async (name) => {
 
     let nomeUnidadeCurricular = name;
-    console.log(nomeAtividade);
+    console.log(nomeUnidadeCurricular);
 
 
     //ScriptSQL para buscar todos os itens no BD

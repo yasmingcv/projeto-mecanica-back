@@ -5,7 +5,7 @@
  * Versão: 1.0
  *****************************************************************************/
 
-//Import do arquivo para acessar dados do professor
+//Import do arquivo para acessar dados do atividade
 var atividadeDAO = require('../model/DAO/atividadeDAO.js')
 
 //Import do arquivo de configuração das variáveis, constantes e funções globais
@@ -17,8 +17,8 @@ const inserirAtividade = async (dadosAtividade) => {
     //Validação para campos obrigatórios e numero de caracteres
     if (
         dadosAtividade.foto == '' || dadosAtividade.foto == undefined || dadosAtividade.foto.length > 200 ||
-        dadosAtividade.idTipo == '' || dadosAtividade.idTipo == undefined || isNaN(dadosAtividade.idTipo) ||
-        dadosAtividade.idUnidadeCurricular == '' || dadosAtividade.idUnidadeCurricular == undefined || isNaN(dadosAtividade.idUnidadeCurricular)
+        dadosAtividade.id_tipo == '' || dadosAtividade.id_tipo == undefined || isNaN(dadosAtividade.id_tipo) ||
+        dadosAtividade.id_unidade_curricular == '' || dadosAtividade.id_unidade_curricular == undefined || isNaN(dadosAtividade.id_unidade_curricular)
         ) {
         console.log(1);
         return message.ERROR_REQUIRED_FIELDS;
@@ -26,7 +26,6 @@ const inserirAtividade = async (dadosAtividade) => {
 
         let resultadoDadosAtividade = await atividadeDAO.insertAtividade(dadosAtividade)
 
-        console.log(resultadoDadosAtividade);
 
         //Valida pra se o DB inseriu os dados corretamente
         if (resultadoDadosAtividade) {
@@ -50,30 +49,30 @@ const atualizarAtividade = async (dadosAtividade, idAtividade) => {
 
     //Validação para campos obrigatórios e numero de caracteres
     if (
-        dadosAtividade.tempoPrevisto == '' || dadosAtividade.tempoPrevisto == undefined || dadosAtividade.tempoPrevisto.length > 8 || 
+        dadosAtividade.tempo_previsto == '' || dadosAtividade.tempo_previsto == undefined ||  
         dadosAtividade.foto == '' || dadosAtividade.foto == undefined || dadosAtividade.foto.length > 200 ||
-        dadosAtividade.nome == '' || dadosAtividade.nome == undefined || dadosAtividade.nome.length > 200  || !isNaN(dadosAtividade.nome) ||
-        dadosAtividade.idTipo == '' || dadosAtividade.idTipo == undefined || isNaN(dadosAtividade.idTipo) ||
-        dadosAtividade.idUnidadeCurricular == '' || dadosAtividade.idUnidadeCurricular == undefined || isNaN(dadosAtividade.idUnidadeCurricular)
+        dadosAtividade.id_tipo == '' || dadosAtividade.id_tipo == undefined || isNaN(dadosAtividade.id_tipo) ||
+        dadosAtividade.id_unidade_curricular == '' || dadosAtividade.id_unidade_curricular == undefined || isNaN(dadosAtividade.id_unidade_curricular)
     ) {
         return message.ERROR_REQUIRED_FIELDS;
     } else if (idAtividade == '' || idAtividade == undefined || isNaN(idAtividade)) {
         return message.ERROR_INVALID_ID; //status code 400 
     } else {
-        //Adiciona o id do professor no json
+        //Adiciona o id do atividade no json
         dadosAtividade.id = idAtividade;
         let statusID = await atividadeDAO.selectByIdAtividade(idAtividade);
 
 
         if (statusID) {
-            //Encaminha os dados para a model do professor
+            //Encaminha os dados para a model do atividade
+            console.log(atividadeDAO.updateAtividade(dadosAtividade));
             let resultDadosAtividade = await atividadeDAO.updateAtividade(dadosAtividade);
 
             if (resultDadosAtividade) {
                 let dadosAtividadeJSON = {};
 
-                dadosAtividade.status = message.SUCCESS_UPDATED_ITEM.status;
-                dadosAtividade.atividade = dadosAtividade;
+                dadosAtividadeJSON.status = message.SUCCESS_UPDATED_ITEM.status;
+                dadosAtividadeJSON.atividade = dadosAtividade;
 
                 return dadosAtividadeJSON; //status code 201
             } else {
@@ -89,21 +88,30 @@ const atualizarAtividade = async (dadosAtividade, idAtividade) => {
 }
 
 //Deletar uma Atividade existente
-const deletarAtividade = async (idAtividade) => {
+const deletarAtividade = async (id) => {
+    const idAtividade = id;
 
     //validação de ID incorreto ou não informado
     if (idAtividade == '' || idAtividade == undefined || isNaN(idAtividade)) {
         return message.ERROR_INVALID_ID; //status code 400 
     } else {
 
-        //Encaminha os dados para a model do professor
-        let resultDadosAtividade = await atividadeDAO.deleteAtividade(idAtividade)
+        const idAtividade = await atividadeDAO.selectByIdAtividade(id)
 
-        if (resultDadosAtividade) {
-            return message.SUCCESS_DELETED_ITEM; //200
+        if (idAtividade) {
+            
+            //Encaminha os dados para a model da atividade
+            let resultDadosAtividade = await atividadeDAO.deleteAtividade(idAtividade)
+    
+            if (resultDadosAtividade) {
+                return message.SUCCESS_DELETED_ITEM; //200
+            } else {
+                return message.ERROR_INTERNAL_SERVER; //500
+            }
         } else {
-            return message.ERROR_INTERNAL_SERVER; //500
+            return message.ERROR_NOT_FOUND;
         }
+
     }
 
 
@@ -118,12 +126,12 @@ const getAllAtividades = async () => {
     //chama a função do arquivo DAO que irá retornar todos os registros do DB
     let dadosAtividades = await atividadeDAO.selectAllAtividades();
 
-
     if (dadosAtividades) {
         //Criando um JSON com o atrbuto professores, para encaminhar um array de professores
-        dadosAtividades.status = message.SUCCESS_REQUEST.status;
-        dadosAtividades.quantidade = dadosAtividades.length;
-        dadosAtividades.professores = dadosAtividades;
+        dadosAtividadeJSON.status = message.SUCCESS_REQUEST.status;
+        dadosAtividadeJSON.quantidade = dadosAtividades.length;
+        dadosAtividadeJSON.atividades = dadosAtividades;
+        console.log(dadosAtividadeJSON);
         return dadosAtividadeJSON;
     } else {
         return message.ERROR_NOT_FOUND;
@@ -143,7 +151,7 @@ const getBuscarAtividadeNome = async (nome) => {
     if (isNaN(nomeAtividade) && nomeAtividade !== undefined && nomeAtividade !== '') {
 
         //chama a função do arquivo DAO que irá retornar todos os registros do DB
-        let dadosByNomeAtividade = await atividadeDAO.selectAllAtividades(nomeAtividade);
+        let dadosByNomeAtividade = await atividadeDAO.selectByNameAtividade(nomeAtividade);
 
 
         if (dadosByNomeAtividade) {
@@ -154,11 +162,11 @@ const getBuscarAtividadeNome = async (nome) => {
             console.log(dadosByNomeAtividadeJSON);
             return dadosByNomeAtividadeJSON;
         } else {
-            return false;
+            return message.ERROR_NOT_FOUND;
         }
     } else {
 
-        return false;
+        return message.ERROR_INVALID_NAME;
     }
 
 };
@@ -201,7 +209,7 @@ const getBuscarAtividadeByNameUnidadeCurricular = async (name) => {
 
     let dadosByNomeUnidadeCurricularAtividadeJSON = {}
 
-    if (isNaN(nomeAtividade) && nomeAtividade !== undefined && nomeAtividade !== '') {
+    if (isNaN(nameUnidadeCurricular) && nameUnidadeCurricular !== undefined && nameUnidadeCurricular !== '') {
 
         //chama a função do arquivo DAO que irá retornar todos os registros do DB
         let dadosByNameUnidadeCurricular = await atividadeDAO.selectByNameUnidadeCurricular(nameUnidadeCurricular);
@@ -215,11 +223,11 @@ const getBuscarAtividadeByNameUnidadeCurricular = async (name) => {
             console.log(dadosByNomeUnidadeCurricularAtividadeJSON);
             return dadosByNomeUnidadeCurricularAtividadeJSON;
         } else {
-            return false;
+            return message.ERROR_NOT_FOUND;
         }
     } else {
 
-        return false;
+        return message.ERROR_INVALID_NAME;
     }
 
 };
@@ -232,7 +240,8 @@ module.exports = {
     deletarAtividade,
     getAllAtividades,
     getBuscarAtividadeNome,
-    getBuscarAtividadeID
+    getBuscarAtividadeID,
+    getBuscarAtividadeByNameUnidadeCurricular
 
 
 }

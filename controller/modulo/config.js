@@ -11,6 +11,7 @@ const ERROR_INTERNAL_SERVER = {status: 500, message: 'Devido a um erro interno n
 const ERROR_NOT_FOUND = {status: 404, message: 'Nenhum item encontrado na requisição.'}
 const ERROR_INVALID_CONTENT_TYPE = {status: 415, message: 'O tipo de mídia Content-type da solicitação não é compativel com o servidor. Tipo aceito: [applcation/json]'}
 const ERROR_INVALID_ID = {status: 400, message: 'O ID informado na requisição não é válido ou não foi encaminhado.'}
+const ERROR_INVALID_NAME = {status: 400, message: 'O nome informado na requisição não é válido ou não foi encaminhado.'}
 
 /***************************************MENSAGENS DE SUCESSO**************************************/
 const SUCCESS_CREATED_ITEM = {status: 201, message: 'Item criado com sucesso.'}
@@ -29,5 +30,6 @@ module.exports = {
     SUCCESS_UPDATED_ITEM,
     ERROR_INVALID_CONTENT_TYPE,
     SUCCESS_DELETED_ITEM,
-    SUCCESS_REQUEST
+    SUCCESS_REQUEST,
+    ERROR_INVALID_NAME
 }

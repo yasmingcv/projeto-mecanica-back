@@ -387,7 +387,7 @@ app.get('/v1/mecanica/atividade', cors(), async function (request, response){
 app.get('/v1/mecanica/atividade/:id', cors(), async function (request, response){
     let id = request.params.id
 
-    let dadosAtividade = await controllerAtividade.getAllAtividades(id)
+    let dadosAtividade = await controllerAtividade.getBuscarAtividadeID(id)
 
     response.json(dadosAtividade)
     response.status(dadosAtividade.status)
@@ -421,9 +421,10 @@ app.put('/v1/mecanica/atividade/:id', cors(), bodyParserJSON, async function (re
         let id = request.params.id
         //Recebe os dados da atividade encaminhados no corpo da requisição
         let dadosBody = request.body
-
+        
         //Encaminha os dados para a controlller
         let resultDadosAtividade = await controllerAtividade.atualizarAtividade(dadosBody, id)
+        console.log('app -- ' + resultDadosAtividade);
 
         response.status(resultDadosAtividade.status)
         response.json(resultDadosAtividade)
@@ -445,8 +446,31 @@ app.delete('/v1/mecanica/atividade/:id', cors(), async function (request, respon
     response.json(resultDadosAtividade)
 })
 
+//Endpoint: Retorna uma atividade pelo Nome
+app.get('/v1/mecanica/atividade/nome/:nome', cors(), async function (request, response) {
 
+    //Recebe 
+    let nomeAtividade = request.params.nome;
 
+    let dadosAtividadeByName = await controllerAtividade.getBuscarAtividadeNome(nomeAtividade);
+
+    response.status(dadosAtividadeByName.status);
+    response.json(dadosAtividadeByName);
+
+});
+
+//Endpoint: Retorna uma atividade pelo Nome da unidade curricular
+app.get('/v1/mecanica/atividade/unidadeCurricular/:nome', cors(), async function (request, response) {
+
+    //Recebe 
+    let nomeAtividade = request.params.nome;
+
+    let dadosAtividadeByNameUnidadeCurricular = await controllerAtividade.getBuscarAtividadeByNameUnidadeCurricular(nomeAtividade);
+
+    response.status(dadosAtividadeByNameUnidadeCurricular.status);
+    response.json(dadosAtividadeByNameUnidadeCurricular);
+
+});
 
 
 app.listen(8080, function () {
