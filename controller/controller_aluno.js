@@ -16,9 +16,8 @@ const inserirAluno = async function (dadosAluno) {
 
     if (dadosAluno.nome == '' || dadosAluno.nome == undefined || dadosAluno.nome.length > 200 ||
         dadosAluno.email == '' || dadosAluno.email == undefined || dadosAluno.email.length > 255 ||
-        dadosAluno.senha == '' || dadosAluno.senha == undefined || dadosAluno.senha.length > 16 ||
-        dadosAluno.numero_matricula == '' || dadosAluno.numero_matricula == undefined || dadosAluno.numero_matricula.length > 45 ||
-        dadosAluno.id_status_aluno == '' || isNaN(dadosAluno.id_status_aluno) || dadosAluno.id_status_aluno == undefined
+        dadosAluno.senha == '' || dadosAluno.senha == undefined || 
+        dadosAluno.id_matricula_aluno == '' || dadosAluno.id_matricula_aluno == undefined || isNaN(dadosAluno.id_matricula_aluno)
     ) {
         return message.ERROR_REQUIRED_FIELDS //400
 
@@ -47,9 +46,8 @@ const inserirAluno = async function (dadosAluno) {
 const atualizarAluno = async function (dadosAluno, idAluno) {
     if (dadosAluno.nome == '' || dadosAluno.nome == undefined || dadosAluno.nome.length > 200 ||
         dadosAluno.email == '' || dadosAluno.email == undefined || dadosAluno.email.length > 255 ||
-        dadosAluno.senha == '' || dadosAluno.senha == undefined || dadosAluno.senha.length > 16 ||
-        dadosAluno.numero_matricula == '' || dadosAluno.numero_matricula == undefined || dadosAluno.numero_matricula.length > 45 ||
-        dadosAluno.id_status_aluno == '' || isNaN(dadosAluno.id_status_aluno) || dadosAluno.id_status_aluno == undefined
+        dadosAluno.senha == '' || dadosAluno.senha == undefined || 
+        dadosAluno.id_matricula_aluno == '' || dadosAluno.id_matricula_aluno == undefined || isNaN(dadosAluno.id_matricula_aluno)
     ) {
         return message.ERROR_REQUIRED_FIELDS //400
 

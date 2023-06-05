@@ -16,14 +16,12 @@ const insertAluno = async function (dadosAluno) {
                 nome,
                 email,
                 senha,
-                id_status_aluno,
-                numero_matricula
+                id_matricula_aluno
             ) values (
                 '${dadosAluno.nome}',
                 '${dadosAluno.email}',
                 '${dadosAluno.senha}',
-                 ${dadosAluno.id_status_aluno},
-                '${dadosAluno.numero_matricula}'
+                ${dadosAluno.id_matricula_aluno}
             )`
 
     //Executa o scriptSQL do bd
@@ -41,7 +39,7 @@ const updateAluno = async function (dadosAluno) {
                 nome = '${dadosAluno.nome}',
                 email = '${dadosAluno.email}',
                 senha = '${dadosAluno.senha}',
-                id_status_aluno = ${dadosAluno.id_status_aluno}
+                id_matricula_aluno = ${dadosAluno.id_matricula_aluno}
 
                 where id = ${dadosAluno.id}
                 `
@@ -67,7 +65,7 @@ const deleteAluno = async function (id) {
     }
 }
 
-const selectAllAlunos = async function () {
+const selectAllAlunos = async function () { // ******
     let sql = `select tbl_aluno.*, tbl_status_aluno.status
                 from tbl_aluno 
                 inner join tbl_status_aluno on tbl_status_aluno.id = tbl_aluno.id_status_aluno order by tbl_aluno.id`
@@ -81,7 +79,7 @@ const selectAllAlunos = async function () {
     }
 }
 
-const selectByIdAluno = async function (id) {
+const selectByIdAluno = async function (id) { // *******
     let sql = `select tbl_aluno.*, tbl_status_aluno.status
 	           from tbl_aluno 
                inner join tbl_status_aluno on tbl_status_aluno.id = tbl_aluno.id_status_aluno
