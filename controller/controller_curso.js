@@ -75,7 +75,7 @@ const atualizarCurso = async (dadosCurso, idCurso) => {
                 let dadosCursoJSON = {};
 
                 dadosCursoJSON.status = message.SUCCESS_UPDATED_ITEM.status;
-                dadosCursoJSON.professor = dadosCurso;
+                dadosCursoJSON.cursos = dadosCurso;
 
                 return dadosCursoJSON; //status code 201
             } else {
@@ -118,7 +118,7 @@ const getCursos = async () => {
 
 
     //chama a função do arquivo DAO que irá retornar todos os registros do DB
-    let dadosCursos = await professorDAO.selectAllProfessores();
+    let dadosCursos = await cursoDAO.selectAllCursos();
 
 
     if (dadosCursos) {
@@ -133,7 +133,7 @@ const getCursos = async () => {
 
 };
 
-//Retorna um professor pelo nome
+//Retorna um curso pelo nome
 const getBuscarCursosNome = async (nome) => {
 
     let nomeCurso = nome
@@ -179,11 +179,11 @@ const getBuscarCursoByID = async (id) => {
 
     } else {
         //chama a função do arquivo DAO que irá retornar todos os registros do DB
-        let dadosByIdCurso = await professorDAO.selectByIdProfessor(idProfessor);
+        let dadosByIdCurso = await cursoDAO.selectByIdCurso(idCurso);
 
 
         if (dadosByIdCurso) {
-            //Criando um JSON com o atrbuto professores, para encaminhar um array de professores
+            //Criando um JSON com o atrbuto curso, para encaminhar um array de cursos
             dadosByIdCursoJSON.status = message.SUCCESS_REQUEST.status
             dadosByIdCursoJSON.curso = dadosByIdCurso;
 
