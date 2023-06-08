@@ -213,6 +213,7 @@ const getBuscarAtividadeByNameUnidadeCurricular = async (name) => {
 
         //chama a função do arquivo DAO que irá retornar todos os registros do DB
         let dadosByNameUnidadeCurricular = await atividadeDAO.selectByNameUnidadeCurricular(nameUnidadeCurricular);
+        console.log('1-' + dadosByNameUnidadeCurricular);
 
 
         if (dadosByNameUnidadeCurricular) {

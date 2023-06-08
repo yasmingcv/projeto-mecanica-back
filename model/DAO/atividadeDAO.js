@@ -17,13 +17,13 @@ const insertAtividade = async (dadosAtividade) => {
                 tempo_previsto,
                 foto,
                 nome,
-                id_tipo,
+                id_tipo_atividade,
                 id_unidade_curricular
                 ) values (
                         '${dadosAtividade.tempo_previsto}',
                         '${dadosAtividade.foto}',
                         '${dadosAtividade.nome}',
-                        ${dadosAtividade.id_tipo},
+                        ${dadosAtividade.id_tipo_atividade},
                         ${dadosAtividade.id_unidade_curricular}
                         );`
 
@@ -46,7 +46,7 @@ const updateAtividade = async (dadosAtividade) => {
                         tempo_previsto = '${dadosAtividade.tempo_previsto}',
                         foto = '${dadosAtividade.foto}',
                         nome = '${dadosAtividade.nome}',
-                        id_tipo = ${dadosAtividade.id_tipo},
+                        id_tipo_atividade = ${dadosAtividade.id_tipo_atividade},
                         id_unidade_curricular = ${dadosAtividade.id_unidade_curricular}
                 where id = ${dadosAtividade.id};
     `
@@ -87,7 +87,7 @@ const selectAllAtividades = async () => {
             inner join tbl_unidade_curricular 
                 on tbl_unidade_curricular.id = tbl_atividade.id_unidade_curricular
             inner join tbl_tipo_atividade
-                on tbl_tipo_atividade.id = tbl_atividade.id_tipo;
+                on tbl_tipo_atividade.id = tbl_atividade.id_tipo_atividade;
     `
     //Executa o scriptSQL no BD
     let resultStatus = await prisma.$queryRawUnsafe(sql);
@@ -113,7 +113,7 @@ select tbl_atividade.*,
          inner join tbl_unidade_curricular 
 			on tbl_unidade_curricular.id = tbl_atividade.id_unidade_curricular
 		inner join tbl_tipo_atividade
-			on tbl_tipo_atividade.id = tbl_atividade.id_tipo
+			on tbl_tipo_atividade.id = tbl_atividade.id_tipo_atividade
 	where tbl_atividade.id = ${idAtividade};
     `;
 
@@ -142,15 +142,16 @@ select tbl_atividade.*,
 	    tbl_unidade_curricular.nome as nome_unidade_curricular,
         tbl_tipo_atividade.nome as tipo_atividade
     from tbl_atividade 
-         inner join tbl_unidade_curricular 
+        inner join tbl_unidade_curricular 
 			on tbl_unidade_curricular.id = tbl_atividade.id_unidade_curricular
 		inner join tbl_tipo_atividade
-			on tbl_tipo_atividade.id = tbl_atividade.id_tipo
+			on tbl_tipo_atividade.id = tbl_atividade.id_tipo_atividade
 	where tbl_atividade.nome like '%${nomeAtividade}%'; 
     `;
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
     let rsNomeAtividade = await prisma.$queryRawUnsafe(sql)
+    console.log(rsNomeAtividade);
 
     //Valida se o banco de dados retornou algum registro 
     if (rsNomeAtividade.length > 0) {
@@ -163,24 +164,25 @@ select tbl_atividade.*,
 const selectByNameUnidadeCurricular = async (name) => {
 
     let nomeUnidadeCurricular = name;
-    console.log(nomeUnidadeCurricular);
+    console.log('nome- ' + nomeUnidadeCurricular);
 
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `
 select tbl_atividade.*,
-	    tbl_unidade_curricular.nome as nome_unidade_curricular,
-        tbl_tipo_atividade.nome as tipo_atividade
-    from tbl_atividade 
-         inner join tbl_unidade_curricular 
-			on tbl_unidade_curricular.id = tbl_atividade.id_unidade_curricular
-		inner join tbl_tipo_atividade
-			on tbl_tipo_atividade.id = tbl_atividade.id_tipo
-	where tbl_unidade_curricular.nome like '%${nomeUnidadeCurricular}%'; 
+    tbl_unidade_curricular.nome as nome_unidade_curricular,
+    tbl_tipo_atividade.nome as tipo_atividade
+from tbl_atividade 
+     inner join tbl_unidade_curricular 
+        on tbl_unidade_curricular.id = tbl_atividade.id_unidade_curricular
+    inner join tbl_tipo_atividade
+        on tbl_tipo_atividade.id = tbl_atividade.id_unidade_curricular
+where tbl_unidade_curricular.nome like '%${nomeUnidadeCurricular}%';
     `;
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
     let rsNomeAtividade = await prisma.$queryRawUnsafe(sql)
+    console.log('prisma - ' + prisma);
 
     //Valida se o banco de dados retornou algum registro 
     if (rsNomeAtividade.length > 0) {
