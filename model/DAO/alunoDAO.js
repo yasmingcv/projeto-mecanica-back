@@ -16,12 +16,14 @@ const insertAluno = async function (dadosAluno) {
                 nome,
                 email,
                 senha,
-                id_matricula_aluno
+                data_nascimento,
+                cpf
             ) values (
                 '${dadosAluno.nome}',
                 '${dadosAluno.email}',
                 '${dadosAluno.senha}',
-                ${dadosAluno.id_matricula_aluno}
+                ${dadosAluno.data_nascimento},
+                ${dadosAluno.cpf}
             )`
 
     //Executa o scriptSQL do bd
@@ -39,7 +41,8 @@ const updateAluno = async function (dadosAluno) {
                 nome = '${dadosAluno.nome}',
                 email = '${dadosAluno.email}',
                 senha = '${dadosAluno.senha}',
-                id_matricula_aluno = ${dadosAluno.id_matricula_aluno}
+                data_nascimento = ${dadosAluno.data_nascimento},
+                cpf = ${dadosAluno.cpf}
 
                 where id = ${dadosAluno.id}
                 `
@@ -66,9 +69,7 @@ const deleteAluno = async function (id) {
 }
 
 const selectAllAlunos = async function () { // ******
-    let sql = `select tbl_aluno.*, tbl_status_aluno.status
-                from tbl_aluno 
-                inner join tbl_status_aluno on tbl_status_aluno.id = tbl_aluno.id_status_aluno order by tbl_aluno.id`
+    let sql = `select * from tbl_aluno`
 
     let rsAluno = await prisma.$queryRawUnsafe(sql)
 
@@ -80,10 +81,7 @@ const selectAllAlunos = async function () { // ******
 }
 
 const selectByIdAluno = async function (id) { // *******
-    let sql = `select tbl_aluno.*, tbl_status_aluno.status
-	           from tbl_aluno 
-               inner join tbl_status_aluno on tbl_status_aluno.id = tbl_aluno.id_status_aluno
-               where tbl_aluno.id = ${id}`
+    let sql = `select * from tbl_aluno where id = ${id}`
 
     let rsAluno = await prisma.$queryRawUnsafe(sql)
 

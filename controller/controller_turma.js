@@ -50,13 +50,13 @@ const atualizarTurma = async function (dadosTurma, idTurma) {
 
     } else {
         dadosTurma.id = idTurma
-        dadosTurmaJSON = {}
+        let dadosTurmaJSON = {}
 
         let statusId = await turmaDAO.selectByIdTurma(idTurma)
 
         if(statusId) {
             let resultDadosTurma = await turmaDAO.updateTurma(dadosTurma)
-            let turmaId = await turmaDAO.selectLastId()
+            let turmaId = await turmaDAO.selectByIdTurma(idTurma)
 
             if(resultDadosTurma) {
                 dadosTurmaJSON.message = message.SUCCESS_UPDATED_ITEM.message

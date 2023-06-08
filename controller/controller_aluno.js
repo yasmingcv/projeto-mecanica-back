@@ -14,16 +14,36 @@ var alunoDAO = require('../model/DAO/alunoDAO.js')
 //Insere um novo aluno
 const inserirAluno = async function (dadosAluno) {
 
+    //Verificar se a data de nascimento foi inserida, se não foi inserida transforma em 'null'
+    if (dadosAluno.data_nascimento == undefined) {
+        dadosAluno.data_nascimento = null
+
+        //Se foi inserida, adiciona as aspas (pois no DAO o atributo não está entre aspas, 
+        //pois quando é 'null' não é necessário aspas)
+    } else {
+        dadosAluno.data_nascimento = "'" + dadosAluno.data_nascimento + "'"
+    }
+
+    //Verificar se o cpf foi inserida, se não foi inserido transforma em 'null'
+    if (dadosAluno.cpf == undefined) {
+        dadosAluno.cpf = null
+
+        //Se foi inserido, adiciona as aspas (pois no DAO o atributo não está entre aspas, 
+        //pois quando é 'null' não é necessário aspas)
+    } else {
+        dadosAluno.cpf = "'" + dadosAluno.cpf + "'"
+    }
+
+    //Prossegue o processamento
     if (dadosAluno.nome == '' || dadosAluno.nome == undefined || dadosAluno.nome.length > 200 ||
         dadosAluno.email == '' || dadosAluno.email == undefined || dadosAluno.email.length > 255 ||
-        dadosAluno.senha == '' || dadosAluno.senha == undefined || 
-        dadosAluno.id_matricula_aluno == '' || dadosAluno.id_matricula_aluno == undefined || isNaN(dadosAluno.id_matricula_aluno)
+        dadosAluno.senha == '' || dadosAluno.senha == undefined
     ) {
         return message.ERROR_REQUIRED_FIELDS //400
 
     } else {
         let resultDadosAluno = await alunoDAO.insertAluno(dadosAluno)
-        
+
         //Tratamento para ver se o banco inseriu corretamente os dados
         if (resultDadosAluno) {
             let dadosAlunoJSON = {}
@@ -44,10 +64,29 @@ const inserirAluno = async function (dadosAluno) {
 
 // Atualiza um aluno
 const atualizarAluno = async function (dadosAluno, idAluno) {
+    //Verificar se a data de nascimento foi inserida, se não foi inserida transforma em 'null'
+    if (dadosAluno.data_nascimento == undefined) {
+        dadosAluno.data_nascimento = null
+
+        //Se foi inserida, adiciona as aspas (pois no DAO o atributo não está entre aspas, 
+        //pois quando é 'null' não é necessário aspas)
+    } else {
+        dadosAluno.data_nascimento = "'" + dadosAluno.data_nascimento + "'"
+    }
+
+    //Verificar se o cpf foi inserida, se não foi inserido transforma em 'null'
+    if (dadosAluno.cpf == undefined) {
+        dadosAluno.cpf = null
+
+        //Se foi inserido, adiciona as aspas (pois no DAO o atributo não está entre aspas, 
+        //pois quando é 'null' não é necessário aspas)
+    } else {
+        dadosAluno.cpf = "'" + dadosAluno.cpf + "'"
+    }
+
     if (dadosAluno.nome == '' || dadosAluno.nome == undefined || dadosAluno.nome.length > 200 ||
         dadosAluno.email == '' || dadosAluno.email == undefined || dadosAluno.email.length > 255 ||
-        dadosAluno.senha == '' || dadosAluno.senha == undefined || 
-        dadosAluno.id_matricula_aluno == '' || dadosAluno.id_matricula_aluno == undefined || isNaN(dadosAluno.id_matricula_aluno)
+        dadosAluno.senha == '' || dadosAluno.senha == undefined
     ) {
         return message.ERROR_REQUIRED_FIELDS //400
 
@@ -68,15 +107,16 @@ const atualizarAluno = async function (dadosAluno, idAluno) {
 
             if (resultDadosAluno) {
                 dadosAlunoJSON.status = message.SUCCESS_UPDATED_ITEM.status //200
+                dadosAlunoJSON.message = message.SUCCESS_UPDATED_ITEM.message
                 dadosAlunoJSON.aluno = alunoId[0]
-
+                
                 return dadosAlunoJSON
 
             } else {
                 return message.ERROR_INTERNAL_SERVER //500
             }
 
-           
+
         } else {
             return message.ERROR_NOT_FOUND //404
         }
@@ -102,7 +142,7 @@ const getBuscarAlunoID = async function (id) {
             dadosAlunoJSON.aluno = dadosAluno
 
             return dadosAlunoJSON
-            
+
         } else {
             return message.ERROR_NOT_FOUND
         }
