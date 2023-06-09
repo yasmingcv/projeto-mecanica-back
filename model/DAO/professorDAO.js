@@ -85,7 +85,9 @@ const deleteProfessor = async (id) => {
 const selectAllProfessores = async () => {
 
     //ScriptSQL para buscar todos os itens no BD
-    let sql = 'select * from tbl_professor';
+    let sql = `
+    select tbl_professor.nome as nome, tbl_professor.email, tbl_professor.senha from tbl_professor;
+    `;
     console.log(sql);
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
@@ -106,7 +108,9 @@ const selectByIdProfessor = async (id) => {
     let idProfessor = id;
 
     //ScriptSQL para buscar todos os itens no BD
-    let sql = `select * from tbl_professor where id = ${idProfessor}`;
+    let sql = `
+    select tbl_professor.nome as nome, tbl_professor.email, tbl_professor.senha from tbl_professor where id = ${idProfessor}
+    `;
 
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
@@ -130,7 +134,9 @@ const selectByNameProfessor = async (name) => {
 
 
     //ScriptSQL para buscar todos os itens no BD
-    let sql = `select * from tbl_professor where nome like '%${nomeProfessor}%'`;
+    let sql = `
+    select tbl_professor.nome as nome, tbl_professor.email, tbl_professor.senha from tbl_professor where nome like '%${nomeProfessor}%'
+    `;
 
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
@@ -149,7 +155,7 @@ const selectByNameProfessor = async (name) => {
 
 const selectLastId = async () => {
 
-    let sql = 'select * from tbl_professor order by id desc limit 1;'
+    let sql = 'select tbl_professor.nome as nome, tbl_professor.email, tbl_professor.senha from tbl_professor order by id desc limit 1;'
 
     let rsProfessor = await prisma.$queryRawUnsafe(sql);
 

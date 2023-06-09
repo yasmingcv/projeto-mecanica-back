@@ -80,10 +80,10 @@ const deleteAtividade = async (id) => {
 const selectAllAtividades = async () => {
 
     const sql = `
-    select tbl_atividade.*,
-            tbl_unidade_curricular.nome as nome_unidade_curricular,
-            tbl_tipo_atividade.nome as tipo_atividade
-        from tbl_atividade 
+    select tbl_atividade.nome as nome_atividade, tbl_atividade.foto as foto_atividade, tbl_atividade.tempo_previsto, tbl_atividade.id_tipo_atividade, tbl_atividade.id_unidade_curricular, 
+    tbl_unidade_curricular.nome as nome_unidade_curricular,
+    tbl_tipo_atividade.nome as tipo_atividade
+    from tbl_atividade 
             inner join tbl_unidade_curricular 
                 on tbl_unidade_curricular.id = tbl_atividade.id_unidade_curricular
             inner join tbl_tipo_atividade
@@ -106,10 +106,10 @@ const selectByIdAtividade = async (id) => {
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `
-select tbl_atividade.*,
-	    tbl_unidade_curricular.nome as nome_unidade_curricular,
-        tbl_tipo_atividade.nome as tipo_atividade
-    from tbl_atividade 
+    select tbl_atividade.nome as nome_atividade, tbl_atividade.foto as foto_atividade, tbl_atividade.tempo_previsto, tbl_atividade.id_tipo_atividade, tbl_atividade.id_unidade_curricular, 
+    tbl_unidade_curricular.nome as nome_unidade_curricular,
+    tbl_tipo_atividade.nome as tipo_atividade
+from tbl_atividade 
          inner join tbl_unidade_curricular 
 			on tbl_unidade_curricular.id = tbl_atividade.id_unidade_curricular
 		inner join tbl_tipo_atividade
@@ -138,10 +138,10 @@ const selectByNameAtividade = async (name) => {
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `
-select tbl_atividade.*,
-	    tbl_unidade_curricular.nome as nome_unidade_curricular,
-        tbl_tipo_atividade.nome as tipo_atividade
-    from tbl_atividade 
+    select tbl_atividade.nome as nome_atividade, tbl_atividade.foto as foto_atividade, tbl_atividade.tempo_previsto, tbl_atividade.id_tipo_atividade, tbl_atividade.id_unidade_curricular, 
+    tbl_unidade_curricular.nome as nome_unidade_curricular,
+    tbl_tipo_atividade.nome as tipo_atividade
+from tbl_atividade 
         inner join tbl_unidade_curricular 
 			on tbl_unidade_curricular.id = tbl_atividade.id_unidade_curricular
 		inner join tbl_tipo_atividade
@@ -169,7 +169,7 @@ const selectByNameUnidadeCurricular = async (name) => {
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `
-select tbl_atividade.*,
+    select tbl_atividade.nome as nome_atividade, tbl_atividade.foto as foto_atividade, tbl_atividade.tempo_previsto, tbl_atividade.id_tipo_atividade, tbl_atividade.id_unidade_curricular, 
     tbl_unidade_curricular.nome as nome_unidade_curricular,
     tbl_tipo_atividade.nome as tipo_atividade
 from tbl_atividade 
