@@ -11,6 +11,8 @@ var message = require('./modulo/config.js')
 //Import do arquivo DAO para acessar dados do aluno no BD
 var desempenho_matricula_alunoDAO = require('../model/DAO/desempenho_matricula_alunoDAO.js')
 
+var unidade_curricularDAO = require('../model/DAO/unidade_curricularDAO.js')
+
 const inserirDesempenhoMatriculaAluno = async function (dadosDesempenhoMatriculaAluno) {
     if (dadosDesempenhoMatriculaAluno.id_matricula_aluno == '' || dadosDesempenhoMatriculaAluno.id_matricula_aluno == undefined || isNaN(dadosDesempenhoMatriculaAluno.id_matricula_aluno) ||
         dadosDesempenhoMatriculaAluno.id_unidade_curricular == '' || dadosDesempenhoMatriculaAluno.id_unidade_curricular == undefined || isNaN(dadosDesempenhoMatriculaAluno.id_unidade_curricular) ||
@@ -19,19 +21,26 @@ const inserirDesempenhoMatriculaAluno = async function (dadosDesempenhoMatricula
         return message.ERROR_REQUIRED_FIELDS //400
 
     } else {
-        let resultDadosDesempenhoMatriculaAluno = await desempenho_matricula_alunoDAO.insertDesempenhoMatriculaAluno(dadosDesempenhoMatriculaAluno)
+        let rsUnidadeCurricular = await unidade_curricularDAO.selectByIdUnidadeCurricular(dadosDesempenhoMatriculaAluno.id_unidade_curricular)
 
-        if (resultDadosDesempenhoMatriculaAluno) {
-            let resultDadosDesempenhoMatriculaAlunoJSON = {}
-            let novoDesempenhoAluno = await desempenho_matricula_alunoDAO.selectLastId()
+        //Verifica se a unidade curricular existe
+        if (rsUnidadeCurricular) {
+            let resultDadosDesempenhoMatriculaAluno = await desempenho_matricula_alunoDAO.insertDesempenhoMatriculaAluno(dadosDesempenhoMatriculaAluno)
 
-            resultDadosDesempenhoMatriculaAlunoJSON.message = message.SUCCESS_CREATED_ITEM.message
-            resultDadosDesempenhoMatriculaAlunoJSON.status = message.SUCCESS_CREATED_ITEM.status //201
-            resultDadosDesempenhoMatriculaAlunoJSON.desempenho = novoDesempenhoAluno
+            if (resultDadosDesempenhoMatriculaAluno) {
+                let resultDadosDesempenhoMatriculaAlunoJSON = {}
+                let novoDesempenhoAluno = await desempenho_matricula_alunoDAO.selectLastId()
 
-            return resultDadosDesempenhoMatriculaAlunoJSON
+                resultDadosDesempenhoMatriculaAlunoJSON.message = message.SUCCESS_CREATED_ITEM.message
+                resultDadosDesempenhoMatriculaAlunoJSON.status = message.SUCCESS_CREATED_ITEM.status //201
+                resultDadosDesempenhoMatriculaAlunoJSON.desempenho = novoDesempenhoAluno
+
+                return resultDadosDesempenhoMatriculaAlunoJSON
+            } else {
+                return message.ERROR_INTERNAL_SERVER //500
+            }
         } else {
-            return message.ERROR_INTERNAL_SERVER //500
+            return message.ERROR_NOT_FOUND //404
         }
     }
 }
@@ -40,37 +49,43 @@ const updateDesempenhoMatriculaAluno = async function (dadosDesempenhoMatriculaA
     if (dadosDesempenhoMatriculaAluno.id_matricula_aluno == '' || dadosDesempenhoMatriculaAluno.id_matricula_aluno == undefined || isNaN(dadosDesempenhoMatriculaAluno.id_matricula_aluno) ||
         dadosDesempenhoMatriculaAluno.id_unidade_curricular == '' || dadosDesempenhoMatriculaAluno.id_unidade_curricular == undefined || isNaN(dadosDesempenhoMatriculaAluno.id_unidade_curricular) ||
         dadosDesempenhoMatriculaAluno.nota == '' || dadosDesempenhoMatriculaAluno.nota == undefined || isNaN(dadosDesempenhoMatriculaAluno.nota)
-    ){
+    ) {
         return message.ERROR_REQUIRED_FIELDS //400
 
     } else if (idDesempenhoAluno == '' || idDesempenhoAluno == undefined || isNaN(idDesempenhoAluno)) {
         return message.ERROR_INVALID_ID //400
 
     } else {
-        dadosDesempenhoMatriculaAluno.id = idDesempenhoAluno
-        let dadosDesempenhoMatriculaAlunoJSON = {}
+        let rsUnidadeCurricular = await unidade_curricularDAO.selectByIdUnidadeCurricular(dadosDesempenhoMatriculaAluno.id_unidade_curricular)
 
-        let statusId = await desempenho_matricula_alunoDAO.selectByIdAlunoDesempenho(idDesempenhoAluno)
+        //Verifica se a unidade curricular existe
+        if (rsUnidadeCurricular) {
+            dadosDesempenhoMatriculaAluno.id = idDesempenhoAluno
+            let dadosDesempenhoMatriculaAlunoJSON = {}
 
-        if(statusId) {
-            let resultDadosDesempenhoMatriculaAluno = await desempenho_matricula_alunoDAO.updateDesempenhoMatriculaAluno(dadosDesempenhoMatriculaAluno)
-            let desempenhoAlunoId = await desempenho_matricula_alunoDAO.selectByIdDesempenhoMatriculaAluno(idDesempenhoAluno)
+            let statusId = await desempenho_matricula_alunoDAO.selectByIdAlunoDesempenho(idDesempenhoAluno)
 
-            if(resultDadosDesempenhoMatriculaAluno) {
-                dadosDesempenhoMatriculaAlunoJSON.message = message.SUCCESS_UPDATED_ITEM.message
-                dadosDesempenhoMatriculaAlunoJSON.status = message.SUCCESS_UPDATED_ITEM.status // 200
-                dadosDesempenhoMatriculaAlunoJSON.desempenho = desempenhoAlunoId
+            //Verifica se o registro de desempenho existe
+            if (statusId) {
+                let resultDadosDesempenhoMatriculaAluno = await desempenho_matricula_alunoDAO.updateDesempenhoMatriculaAluno(dadosDesempenhoMatriculaAluno)
+                let desempenhoAlunoId = await desempenho_matricula_alunoDAO.selectByIdDesempenhoMatriculaAluno(idDesempenhoAluno)
 
-                return dadosDesempenhoMatriculaAlunoJSON
+                if (resultDadosDesempenhoMatriculaAluno) {
+                    dadosDesempenhoMatriculaAlunoJSON.message = message.SUCCESS_UPDATED_ITEM.message
+                    dadosDesempenhoMatriculaAlunoJSON.status = message.SUCCESS_UPDATED_ITEM.status // 200
+                    dadosDesempenhoMatriculaAlunoJSON.desempenho = desempenhoAlunoId
 
+                    return dadosDesempenhoMatriculaAlunoJSON
+
+                } else {
+                    return message.ERROR_INTERNAL_SERVER //500
+                }
             } else {
-                return message.ERROR_INTERNAL_SERVER //500
+                return message.ERROR_NOT_FOUND //404
             }
         } else {
             return message.ERROR_NOT_FOUND //404
         }
-
-        
 
     }
 }
@@ -84,10 +99,10 @@ const deletarDesempenhoMatriculaAluno = async function (id) {
         let buscarById = await desempenho_matricula_alunoDAO.selectByIdDesempenhoMatriculaAluno(id)
 
         //Verificar se o desempenho selecionado existe
-        if(buscarById){
+        if (buscarById) {
             let resultDadosDesempenhoMatriculaAluno = await desempenho_matricula_alunoDAO.deleteDesempenhoMatriculaAluno(id)
 
-            if(resultDadosDesempenhoMatriculaAluno){
+            if (resultDadosDesempenhoMatriculaAluno) {
                 return message.SUCCESS_DELETED_ITEM //200
             } else {
                 return message.ERROR_INTERNAL_SERVER //500
@@ -107,7 +122,7 @@ const getBuscarDesempenhosPelaMatriculaAluno = async function (idMatricula) {
         let dadosDesempenhoMatriculaAlunoJSON = {}
         let dadosDesempenhoMatriculaAluno = await desempenho_matricula_alunoDAO.selectByIdAlunoDesempenho(idMatricula)
 
-        if(dadosDesempenhoMatriculaAluno) {
+        if (dadosDesempenhoMatriculaAluno) {
             dadosDesempenhoMatriculaAlunoJSON.message = message.SUCCESS_REQUEST.message
             dadosDesempenhoMatriculaAlunoJSON.status = message.SUCCESS_REQUEST.status //200
             dadosDesempenhoMatriculaAlunoJSON.desempenhos = dadosDesempenhoMatriculaAluno
@@ -124,7 +139,7 @@ const getDesempenhosMatriculasAlunos = async function () {
 
     let dadosDesempenhoMatriculaAluno = await desempenho_matricula_alunoDAO.selectAllDesempenhosMatriculasAlunos()
 
-    if(dadosDesempenhoMatriculaAluno) {
+    if (dadosDesempenhoMatriculaAluno) {
         dadosDesempenhoMatriculaAlunoJSON.message = message.SUCCESS_REQUEST.message
         dadosDesempenhoMatriculaAlunoJSON.status = message.SUCCESS_REQUEST.status //200
         dadosDesempenhoMatriculaAlunoJSON.quantidade = dadosDesempenhoMatriculaAluno.length
