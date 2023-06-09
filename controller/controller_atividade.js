@@ -89,10 +89,9 @@ const atualizarAtividade = async (dadosAtividade, idAtividade) => {
 
 //Deletar uma Atividade existente
 const deletarAtividade = async (id) => {
-    const idAtividade = id;
 
     //validação de ID incorreto ou não informado
-    if (idAtividade == '' || idAtividade == undefined || isNaN(idAtividade)) {
+    if (id == '' || id == undefined || isNaN(id)) {
         return message.ERROR_INVALID_ID; //status code 400 
     } else {
 

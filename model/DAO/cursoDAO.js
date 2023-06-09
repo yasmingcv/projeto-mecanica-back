@@ -95,12 +95,12 @@ const selectAllCursos = async () => {
 
 const selectByIdCurso = async (id) => {
 
-    let idAtividade = id;
+    let idCurso = id;
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `
     select tbl_curso.id, tbl_curso.nome, tbl_curso.sigla, tbl_curso.carga_horaria, tbl_curso.descricao from tbl_curso
-    where tbl_curso.id = ${idAtividade};
+    where tbl_curso.id = ${idCurso};
     `;
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
@@ -129,7 +129,6 @@ const selectByNameCurso = async (name) => {
 
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
-    //$queryRaw('select * from tbl_professor') - Permite interpretar o scriptSQL direto no método
     let rsNomeCurso = await prisma.$queryRawUnsafe(sql)
 
     //Valida se o banco de dados retornou algum registro 
@@ -144,7 +143,7 @@ const selectByNameCurso = async (name) => {
 //Retorna o ultimo ID inserido no BD
 const selectLastId = async function (){
     let sql = `
-    select * from tbl_curso order by id desc limit 1;
+    select tbl_curso.id, tbl_curso.nome, tbl_curso.sigla, tbl_curso.carga_horaria, tbl_curso.descricao from tbl_curso order by id desc limit 1;
     `
 
     let rsCurso = await prisma.$queryRawUnsafe(sql)
