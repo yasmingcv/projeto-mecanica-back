@@ -41,6 +41,7 @@ const updateTurma = async function (dadosTurma) {
 
                 where id = ${dadosTurma.id}
                 `
+                console.log(sql);
 
     let resultStatus = await prisma.$executeRawUnsafe(sql)
 

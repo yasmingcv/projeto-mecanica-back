@@ -17,14 +17,14 @@ const inserirAtividade = async (dadosAtividade) => {
     //Validação para campos obrigatórios e numero de caracteres
     if (
         dadosAtividade.foto == '' || dadosAtividade.foto == undefined || dadosAtividade.foto.length > 200 ||
-        dadosAtividade.id_tipo == '' || dadosAtividade.id_tipo == undefined || isNaN(dadosAtividade.id_tipo) ||
+        dadosAtividade.id_tipo_atividade == '' || dadosAtividade.id_tipo_atividade == undefined || isNaN(dadosAtividade.id_tipo_atividade) ||
         dadosAtividade.id_unidade_curricular == '' || dadosAtividade.id_unidade_curricular == undefined || isNaN(dadosAtividade.id_unidade_curricular)
         ) {
-        console.log(1);
         return message.ERROR_REQUIRED_FIELDS;
     } else {
 
         let resultadoDadosAtividade = await atividadeDAO.insertAtividade(dadosAtividade)
+        console.log(resultadoDadosAtividade);
 
 
         //Valida pra se o DB inseriu os dados corretamente
@@ -51,7 +51,7 @@ const atualizarAtividade = async (dadosAtividade, idAtividade) => {
     if (
         dadosAtividade.tempo_previsto == '' || dadosAtividade.tempo_previsto == undefined ||  
         dadosAtividade.foto == '' || dadosAtividade.foto == undefined || dadosAtividade.foto.length > 200 ||
-        dadosAtividade.id_tipo == '' || dadosAtividade.id_tipo == undefined || isNaN(dadosAtividade.id_tipo) ||
+        dadosAtividade.id_tipo_atividade == '' || dadosAtividade.id_tipo_atividade == undefined || isNaN(dadosAtividade.id_tipo_atividade) ||
         dadosAtividade.id_unidade_curricular == '' || dadosAtividade.id_unidade_curricular == undefined || isNaN(dadosAtividade.id_unidade_curricular)
     ) {
         return message.ERROR_REQUIRED_FIELDS;

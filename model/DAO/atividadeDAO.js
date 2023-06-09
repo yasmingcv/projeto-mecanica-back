@@ -51,7 +51,7 @@ const updateAtividade = async (dadosAtividade) => {
                 where id = ${dadosAtividade.id};
     `
     //Executa o scriptSQL no BD
-    console.log(sql);
+    console.log(dadosAtividade.id_tipo);
     let resultStatus = await prisma.$queryRawUnsafe(sql);
 
     if (resultStatus) {
@@ -80,7 +80,7 @@ const deleteAtividade = async (id) => {
 const selectAllAtividades = async () => {
 
     const sql = `
-    select tbl_atividade.nome as nome_atividade, tbl_atividade.foto as foto_atividade, tbl_atividade.tempo_previsto, tbl_atividade.id_tipo_atividade, tbl_atividade.id_unidade_curricular, 
+    select tbl_atividade.id as id_atividade,tbl_atividade.nome as nome_atividade, tbl_atividade.foto as foto_atividade, tbl_atividade.tempo_previsto, tbl_atividade.id_tipo_atividade, tbl_atividade.id_unidade_curricular, 
     tbl_unidade_curricular.nome as nome_unidade_curricular,
     tbl_tipo_atividade.nome as tipo_atividade
     from tbl_atividade 
