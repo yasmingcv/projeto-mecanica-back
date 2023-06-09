@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Objetivo: Responsável pela regra de negócio de referente ao CRUD de Professores
+ * Objetivo: Responsável pela regra de negócio de referente ao CRUD de Atividades
  * Autor: Daniela 
  * Data: 25/05/2023
  * Versão: 1.0
@@ -89,10 +89,9 @@ const atualizarAtividade = async (dadosAtividade, idAtividade) => {
 
 //Deletar uma Atividade existente
 const deletarAtividade = async (id) => {
-    const idAtividade = id;
 
     //validação de ID incorreto ou não informado
-    if (idAtividade == '' || idAtividade == undefined || isNaN(idAtividade)) {
+    if (id == '' || id == undefined || isNaN(id)) {
         return message.ERROR_INVALID_ID; //status code 400 
     } else {
 
@@ -127,7 +126,7 @@ const getAllAtividades = async () => {
     let dadosAtividades = await atividadeDAO.selectAllAtividades();
 
     if (dadosAtividades) {
-        //Criando um JSON com o atrbuto professores, para encaminhar um array de professores
+        //Criando um JSON com o atrbuto atividades, para encaminhar um array de atividades
         dadosAtividadeJSON.status = message.SUCCESS_REQUEST.status;
         dadosAtividadeJSON.quantidade = dadosAtividades.length;
         dadosAtividadeJSON.atividades = dadosAtividades;
@@ -155,7 +154,7 @@ const getBuscarAtividadeNome = async (nome) => {
 
 
         if (dadosByNomeAtividade) {
-            //Criando um JSON com o atrbuto professores, para encaminhar um array de professores
+            //Criando um JSON com o atrbuto atividades, para encaminhar um array de atividades
             dadosByNomeAtividadeJSON.status = message.SUCCESS_REQUEST.status;
             dadosByNomeAtividadeJSON.atividade = dadosByNomeAtividade;
 
@@ -189,7 +188,7 @@ const getBuscarAtividadeID = async (id) => {
 
 
         if (dadosByIdAtividade) {
-            //Criando um JSON com o atrbuto professores, para encaminhar um array de professores
+            //Criando um JSON com o atrbuto atividades, para encaminhar um array de atividades
             dadosByIdAtividadeJSON.status = message.SUCCESS_REQUEST.status
             dadosByIdAtividadeJSON.atividade = dadosByIdAtividade;
 
@@ -217,7 +216,7 @@ const getBuscarAtividadeByNameUnidadeCurricular = async (name) => {
 
 
         if (dadosByNameUnidadeCurricular) {
-            //Criando um JSON com o atrbuto professores, para encaminhar um array de professores
+            //Criando um JSON com o atrbuto atividades, para encaminhar um array de atividades
             dadosByNomeUnidadeCurricularAtividadeJSON.status = message.SUCCESS_REQUEST.status;
             dadosByNomeUnidadeCurricularAtividadeJSON.atividade = dadosByNameUnidadeCurricular;
 
