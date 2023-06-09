@@ -1,6 +1,7 @@
 /**********************************************************************************************************************
- * Objetivo: Arquivo com EndPoints para um website para o curso de mecânica 
- * Data: 22/05/2023
+ * Objetivo: Arquivo com EndPoints para um projeto para os cursos de usinagem do SENAI Jandira 
+ * Data de início: 22/05/2023
+ * Data de término: --/--/----
  * Versão: 1.0
  * Autora: Yasmin Gonçalves
  **********************************************************************************************************************/
@@ -41,11 +42,12 @@ var controllerUnidadeCurricular = require('./controller/controller_unidade_curri
 var controllerDesempenhoMatricula = require('./controller/controller_desempenho_matricula.js');
 var controllerSubTurmas = require('./controller/controller_sub_turma.js');
 var controllerCursos = require('./controller/controller_curso.js');
+var controllerMatricula = require('./controller/controller_matricula.js')
 
 /**************************************************** ALUNOS *****************************************************/
 
 //EndPoint para inserir um novo aluno
-app.post('/v1/mecanica/aluno', cors(), bodyParserJSON, async function (request, response) {
+app.post('/v1/senai/usinagem/aluno', cors(), bodyParserJSON, async function (request, response) {
     let contentType = request.headers['content-type']
 
     if (String(contentType).toLowerCase() == 'application/json') {
@@ -63,7 +65,7 @@ app.post('/v1/mecanica/aluno', cors(), bodyParserJSON, async function (request, 
 })
 
 //EndPoint para atualizar um aluno filtrando pelo ID
-app.put('/v1/mecanica/aluno/:id', cors(), bodyParserJSON, async function (request, response) {
+app.put('/v1/senai/usinagem/aluno/:id', cors(), bodyParserJSON, async function (request, response) {
     let contentType = request.headers['content-type']
 
     //Validação para receber dados apenas no formato JSON
@@ -87,7 +89,7 @@ app.put('/v1/mecanica/aluno/:id', cors(), bodyParserJSON, async function (reques
 })
 
 //EndPoint que retorna um aluno filtrando pelo ID
-app.get('/v1/mecanica/aluno/:id', cors(), async function (request, response) {
+app.get('/v1/senai/usinagem/aluno/:id', cors(), async function (request, response) {
     let idAluno = request.params.id
 
     let dadosAluno = await controllerAluno.getBuscarAlunoID(idAluno)
@@ -97,14 +99,14 @@ app.get('/v1/mecanica/aluno/:id', cors(), async function (request, response) {
 })
 
 //EndPoint que retorna todos os alunos
-app.get('/v1/mecanica/aluno', cors(), async function (request, response) {
+app.get('/v1/senai/usinagem/aluno', cors(), async function (request, response) {
     let dadosAluno = await controllerAluno.getAlunos()
 
     response.json(dadosAluno)
     response.status(dadosAluno.status)
 })
 
-app.delete('/v1/mecanica/aluno/:id', cors(), async function (request, response) {
+app.delete('/v1/senai/usinagem/aluno/:id', cors(), async function (request, response) {
     let idAluno = request.params.id
 
     let resultDadosAluno = await controllerAluno.deletarAluno(idAluno)
@@ -116,7 +118,7 @@ app.delete('/v1/mecanica/aluno/:id', cors(), async function (request, response) 
 /**************************************************** PROFESSOR *****************************************************/
 
 // Endpoint: Retorna todos os professores
-app.get('/v1/mecanica/professor', cors(), async function (request, response) {
+app.get('/v1/senai/usinagem/professor', cors(), async function (request, response) {
 
     let dadosProfessor = await controllerProfessor.getProfessores();
 
@@ -126,7 +128,7 @@ app.get('/v1/mecanica/professor', cors(), async function (request, response) {
 });
 
 //Endpoint: Retorna um professor pelo ID
-app.get('/v1/mecanica/professor/:id', cors(), async function (request, response) {
+app.get('/v1/senai/usinagem/professor/:id', cors(), async function (request, response) {
 
     //Recebe p
     let idProfessor = request.params.id;
@@ -139,7 +141,7 @@ app.get('/v1/mecanica/professor/:id', cors(), async function (request, response)
 });
 
 //Endpoint: Retorna um professor pelo Nome
-app.get('/v1/mecanica/professor/nome/:nome', cors(), async function (request, response) {
+app.get('/v1/senai/usinagem/professor/nome/:nome', cors(), async function (request, response) {
 
     //Recebe 
     let nomeProfessor = request.params.nome;
@@ -152,7 +154,7 @@ app.get('/v1/mecanica/professor/nome/:nome', cors(), async function (request, re
 });
 
 //Endpoint: Insere um professor 
-app.post('/v1/mecanica/professor', cors(), bodyParserJSON, async function (request, response) {
+app.post('/v1/senai/usinagem/professor', cors(), bodyParserJSON, async function (request, response) {
 
     let contentType = request.headers['content-type'];
 
@@ -176,7 +178,7 @@ app.post('/v1/mecanica/professor', cors(), bodyParserJSON, async function (reque
 });
 
 //Endpoint: Atualiza um Professor filtrando pelo id
-app.put('/v1/mecanica/professor/:id', cors(), async function (request, response) {
+app.put('/v1/senai/usinagem/professor/:id', cors(), async function (request, response) {
 
     let contentType = request.headers['content-type'];
 
@@ -205,7 +207,7 @@ app.put('/v1/mecanica/professor/:id', cors(), async function (request, response)
 });
 
 //Endpoint: Deleta um professor existente filtrando pelo id
-app.delete('/v1/mecanica/professor/:id', cors(), async function (request, response) {
+app.delete('/v1/senai/usinagem/professor/:id', cors(), async function (request, response) {
 
     //Recebe o ID do aluno pelo parametro
     let idProfessor = request.params.id;
@@ -232,7 +234,7 @@ app.delete('/v1/mecanica/professor/:id', cors(), async function (request, respon
 /**************************************************** ADMINISTRADOR *****************************************************/
 
 //EndPoint: lista todos os administradores
-app.get('/v1/mecanica/administrador', cors(), async function (request, response){
+app.get('/v1/senai/usinagem/administrador', cors(), async function (request, response){
     let dadosAdministradores = await controllerAdministrador.getAdministradores()
 
     response.json(dadosAdministradores)
@@ -240,7 +242,7 @@ app.get('/v1/mecanica/administrador', cors(), async function (request, response)
 })
 
 //EndPoint: busca o administrador pelo id
-app.get('/v1/mecanica/administrador/:id', cors(), async function (request, response){
+app.get('/v1/senai/usinagem/administrador/:id', cors(), async function (request, response){
     let id = request.params.id
 
     let dadosAdministrador = await controllerAdministrador.getBuscarAdministradorID(id)
@@ -250,7 +252,7 @@ app.get('/v1/mecanica/administrador/:id', cors(), async function (request, respo
 })
 
 //EndPoint: insere um novo administrador
-app.post('/v1/mecanica/administrador', cors(), bodyParserJSON, async function (request, response){
+app.post('/v1/senai/usinagem/administrador', cors(), bodyParserJSON, async function (request, response){
     let contentType = request.headers['content-type']
 
     //Validação para receber dados apenas no formato JSON
@@ -270,7 +272,7 @@ app.post('/v1/mecanica/administrador', cors(), bodyParserJSON, async function (r
 })
 
 //EndPoint: atualiza um administrador
-app.put('/v1/mecanica/administrador/:id', cors(), bodyParserJSON, async function (request, response){
+app.put('/v1/senai/usinagem/administrador/:id', cors(), bodyParserJSON, async function (request, response){
     let contentType = request.headers['content-type']
 
     //Validação para receber dados apenas no formato JSON
@@ -294,7 +296,7 @@ app.put('/v1/mecanica/administrador/:id', cors(), bodyParserJSON, async function
 })
 
 //EndPoint: apaga um administrador
-app.delete('/v1/mecanica/administrador/:id', cors(), async function (request, response){
+app.delete('/v1/senai/usinagem/administrador/:id', cors(), async function (request, response){
     let idAdministrador = request.params.id
 
     let resultDadosAdministrador = await controllerAdministrador.deletarAdministrador(idAdministrador)
@@ -306,7 +308,7 @@ app.delete('/v1/mecanica/administrador/:id', cors(), async function (request, re
 /**************************************************** TURMA *****************************************************/
 
 //EndPoint: insere uma nova turma
-app.post('/v1/mecanica/turma', cors(), bodyParserJSON, async function (request, response) {
+app.post('/v1/senai/usinagem/turma', cors(), bodyParserJSON, async function (request, response) {
     let contentType = request.headers['content-type']
 
     if (String(contentType).toLowerCase() == 'application/json') {
@@ -324,7 +326,7 @@ app.post('/v1/mecanica/turma', cors(), bodyParserJSON, async function (request, 
 })
 
 //EndPoint: atualiza uma turma filtrando pelo ID
-app.put('/v1/mecanica/turma/:id', cors(), bodyParserJSON, async function (request, response) {
+app.put('/v1/senai/usinagem/turma/:id', cors(), bodyParserJSON, async function (request, response) {
     let contentType = request.headers['content-type']
 
     //Validação para receber dados apenas no formato JSON
@@ -348,7 +350,7 @@ app.put('/v1/mecanica/turma/:id', cors(), bodyParserJSON, async function (reques
 })
 
 //EndPoint: retorna todas as turmas 
-app.get('/v1/mecanica/turma', cors(), async function (request, response){
+app.get('/v1/senai/usinagem/turma', cors(), async function (request, response){
     let dadosTurmas = await controllerTurma.getTurmas()
 
     response.json(dadosTurmas)
@@ -356,7 +358,7 @@ app.get('/v1/mecanica/turma', cors(), async function (request, response){
 })
 
 //EndPoint: retorna uma turma filtrando pelo ID
-app.get('/v1/mecanica/turma/:id', cors(), async function (request, response){
+app.get('/v1/senai/usinagem/turma/:id', cors(), async function (request, response){
     let id = request.params.id
 
     let dadosTurma = await controllerTurma.getBuscarTurmaId(id)
@@ -366,7 +368,7 @@ app.get('/v1/mecanica/turma/:id', cors(), async function (request, response){
 })
 
 //EndPoint: apaga uma turma filtrando pelo ID
-app.delete('/v1/mecanica/turma/:id', cors(), async function (request, response){
+app.delete('/v1/senai/usinagem/turma/:id', cors(), async function (request, response){
     let id = request.params.id
 
     let resultDadosTurma = await controllerTurma.deletarTurma(id)
@@ -378,7 +380,7 @@ app.delete('/v1/mecanica/turma/:id', cors(), async function (request, response){
 /**************************************************** ATIVIDADE *****************************************************/
 
 //EndPoint: retorna todas as atividades
-app.get('/v1/mecanica/atividade', cors(), async function (request, response){
+app.get('/v1/senai/usinagem/atividade', cors(), async function (request, response){
     let dadosAtividades = await controllerAtividade.getAllAtividades()
     console.log(dadosAtividades);
 
@@ -387,7 +389,7 @@ app.get('/v1/mecanica/atividade', cors(), async function (request, response){
 })
 
 //EndPoint: retorna uma atividade filtrando pelo ID 
-app.get('/v1/mecanica/atividade/:id', cors(), async function (request, response){
+app.get('/v1/senai/usinagem/atividade/:id', cors(), async function (request, response){
     let id = request.params.id
 
     let dadosAtividade = await controllerAtividade.getBuscarAtividadeID(id)
@@ -397,7 +399,7 @@ app.get('/v1/mecanica/atividade/:id', cors(), async function (request, response)
 })
 
 //EndPoint: insere uma nova atividade
-app.post('/v1/mecanica/atividade', cors(), bodyParserJSON, async function (request, response){
+app.post('/v1/senai/usinagem/atividade', cors(), bodyParserJSON, async function (request, response){
     let contentType = request.headers['content-type']
 
     if (String(contentType).toLowerCase() == 'application/json') {
@@ -415,7 +417,7 @@ app.post('/v1/mecanica/atividade', cors(), bodyParserJSON, async function (reque
 })
 
 //EndPoint: atualiza uma atividade, filtrando pelo ID
-app.put('/v1/mecanica/atividade/:id', cors(), bodyParserJSON, async function (request, response){
+app.put('/v1/senai/usinagem/atividade/:id', cors(), bodyParserJSON, async function (request, response){
     let contentType = request.headers['content-type']
 
     //Validação para receber dados apenas no formato JSON
@@ -439,7 +441,7 @@ app.put('/v1/mecanica/atividade/:id', cors(), bodyParserJSON, async function (re
 })
 
 //EndPoint: apaga uma atividade filtrando pelo ID
-app.delete('/v1/mecanica/atividade/:id', cors(), async function (request, response){
+app.delete('/v1/senai/usinagem/atividade/:id', cors(), async function (request, response){
     let id = request.params.id
 
     let resultDadosAtividade = await controllerAtividade.deletarAtividade(id)
@@ -449,7 +451,7 @@ app.delete('/v1/mecanica/atividade/:id', cors(), async function (request, respon
 })
 
 //Endpoint: Retorna uma atividade pelo Nome
-app.get('/v1/mecanica/atividade/nome/:nome', cors(), async function (request, response) {
+app.get('/v1/senai/usinagem/atividade/nome/:nome', cors(), async function (request, response) {
 
     //Recebe 
     let nomeAtividade = request.params.nome;
@@ -462,7 +464,7 @@ app.get('/v1/mecanica/atividade/nome/:nome', cors(), async function (request, re
 });
 
 //Endpoint: Retorna uma atividade pelo Nome da unidade curricular
-app.get('/v1/mecanica/atividade/unidade-curricular/:nome', cors(), async function (request, response) {
+app.get('/v1/senai/usinagem/atividade/unidade-curricular/:nome', cors(), async function (request, response) {
 
     //Recebe 
     let nomeUnidadeCurricular = request.params.nome;
@@ -477,7 +479,7 @@ app.get('/v1/mecanica/atividade/unidade-curricular/:nome', cors(), async functio
 /**************************************************** UNIDADE CURRICULAR *****************************************************/
 
 //EndPoint: retorna todas as unidades curriculares
-app.get('/v1/mecanica/unidade-curricular', cors(), async function (request, response){
+app.get('/v1/senai/usinagem/unidade-curricular', cors(), async function (request, response){
     let dadosUnidadesCurriculares = await controllerUnidadeCurricular.getUnidadesCurriculares()
     console.log(dadosUnidadesCurriculares);
 
@@ -486,7 +488,7 @@ app.get('/v1/mecanica/unidade-curricular', cors(), async function (request, resp
 })
 
 //EndPoint: retorna uma unidade curricular filtrando pelo ID 
-app.get('/v1/mecanica/unidade-curricular/:id', cors(), async function (request, response){
+app.get('/v1/senai/usinagem/unidade-curricular/:id', cors(), async function (request, response){
     let id = request.params.id
 
     let dadosUnidadeCurricular = await controllerUnidadeCurricular.getBuscarUnidadeCurricularID(id)
@@ -496,7 +498,7 @@ app.get('/v1/mecanica/unidade-curricular/:id', cors(), async function (request, 
 })
 
 //EndPoint: insere uma nova unidade curricular
-app.post('/v1/mecanica/unidade-curricular', cors(), bodyParserJSON, async function (request, response){
+app.post('/v1/senai/usinagem/unidade-curricular', cors(), bodyParserJSON, async function (request, response){
     let contentType = request.headers['content-type']
 
     if (String(contentType).toLowerCase() == 'application/json') {
@@ -514,7 +516,7 @@ app.post('/v1/mecanica/unidade-curricular', cors(), bodyParserJSON, async functi
 })
 
 //EndPoint: atualiza uma unidade curricular, filtrando pelo ID
-app.put('/v1/mecanica/unidade-curricular/:id', cors(), bodyParserJSON, async function (request, response){
+app.put('/v1/senai/usinagem/unidade-curricular/:id', cors(), bodyParserJSON, async function (request, response){
     let contentType = request.headers['content-type']
 
     //Validação para receber dados apenas no formato JSON
@@ -538,7 +540,7 @@ app.put('/v1/mecanica/unidade-curricular/:id', cors(), bodyParserJSON, async fun
 })
 
 //EndPoint: apaga uma unidade curricular, filtrando pelo ID
-app.delete('/v1/mecanica/unidade-curricular/:id', cors(), async function (request, response){
+app.delete('/v1/senai/usinagem/unidade-curricular/:id', cors(), async function (request, response){
     let id = request.params.id
 
     let resultDadosUnidadeCurricular = await controllerUnidadeCurricular.deletarUnidadeCurricular(id)
@@ -550,7 +552,7 @@ app.delete('/v1/mecanica/unidade-curricular/:id', cors(), async function (reques
 /**************************************************** DESEMPENHO MATRICULA *****************************************************/
 
 //Endpoint: retorna todos os desempenhos de todos os alunos
-app.get('/v1/mecanica/desempenho', cors(), async function (request, response){
+app.get('/v1/senai/usinagem/desempenho', cors(), async function (request, response){
     let dadosDesempenhosMatriculas = await controllerDesempenhoMatricula.getDesempenhosMatriculasAlunos()
 
     response.json(dadosDesempenhosMatriculas)
@@ -558,7 +560,7 @@ app.get('/v1/mecanica/desempenho', cors(), async function (request, response){
 })
 
 //Endpoint: retorna desempenhos do aluno filtrando pelo ID do ***aluno***
-app.get('/v1/mecanica/desempenho/aluno/:id', cors(), async function (request, response){
+app.get('/v1/senai/usinagem/desempenho/aluno/:id', cors(), async function (request, response){
     let id = request.params.id
 
     let dadosDesempenhoAluno = await controllerDesempenhoMatricula.getBuscarDesempenhosPelaMatriculaAluno(id)
@@ -568,7 +570,7 @@ app.get('/v1/mecanica/desempenho/aluno/:id', cors(), async function (request, re
 })
 
 //EndPoint: insere um novo desempenho
-app.post('/v1/mecanica/desempenho', cors(), bodyParserJSON, async function (request, response){
+app.post('/v1/senai/usinagem/desempenho', cors(), bodyParserJSON, async function (request, response){
     let contentType = request.headers['content-type']
 
     if (String(contentType).toLowerCase() == 'application/json') {
@@ -586,7 +588,7 @@ app.post('/v1/mecanica/desempenho', cors(), bodyParserJSON, async function (requ
 })
 
 //EndPoint: atualiza um desempenho, filtrando pelo ID
-app.put('/v1/mecanica/desempenho/:id', cors(), bodyParserJSON, async function (request, response){
+app.put('/v1/senai/usinagem/desempenho/:id', cors(), bodyParserJSON, async function (request, response){
     let contentType = request.headers['content-type']
 
     //Validação para receber dados apenas no formato JSON
@@ -610,7 +612,7 @@ app.put('/v1/mecanica/desempenho/:id', cors(), bodyParserJSON, async function (r
 })
 
 //EndPoint: apaga um desempenho, filtrando pelo ID do desempenho
-app.delete('/v1/mecanica/desempenho/:id', cors(), async function (request, response){
+app.delete('/v1/senai/usinagem/desempenho/:id', cors(), async function (request, response){
     let id = request.params.id
 
     let resultDadosDesempenhoAluno = await controllerDesempenhoMatricula.deletarDesempenhoMatriculaAluno(id)
@@ -622,7 +624,7 @@ app.delete('/v1/mecanica/desempenho/:id', cors(), async function (request, respo
 /******************************************************* SUB-TURMAS ***********************************************************/
 
 //EndPoint: retorna todas as sub-turmas
-app.get('/v1/mecanica/sub-turmas', cors(), async function (request, response){
+app.get('/v1/senai/usinagem/sub-turmas', cors(), async function (request, response){
 
     let dadosSubTurmas = await controllerSubTurmas.getAllSubTurmas();
 
@@ -631,7 +633,7 @@ app.get('/v1/mecanica/sub-turmas', cors(), async function (request, response){
 });
 
 //EndPoint: retorna uma sub-turma filtrando pelo ID 
-app.get('/v1/mecanica/sub-turmas/id/:id', cors(), async function (request, response){
+app.get('/v1/senai/usinagem/sub-turmas/id/:id', cors(), async function (request, response){
     let id = request.params.id
 
     let dadosSubTurmas = await controllerSubTurmas.getBuscarSubTurmaID(id)
@@ -641,7 +643,7 @@ app.get('/v1/mecanica/sub-turmas/id/:id', cors(), async function (request, respo
 });
 
 //Endpoint: Retorna uma Sub-Turma pelo Nome
-app.get('/v1/mecanica/sub-turma/nome/:nome', cors(), async function (request, response) {
+app.get('/v1/senai/usinagem/sub-turma/nome/:nome', cors(), async function (request, response) {
 
     //Recebe 
     let nomeSubTurma = request.params.nome;
@@ -654,7 +656,7 @@ app.get('/v1/mecanica/sub-turma/nome/:nome', cors(), async function (request, re
 });
 
 //EndPoint: atualiza uma sub-turma, filtrando pelo ID
-app.put('/v1/mecanica/sub-turma/:id', cors(), bodyParserJSON, async function (request, response){
+app.put('/v1/senai/usinagem/sub-turma/:id', cors(), bodyParserJSON, async function (request, response){
     let contentType = request.headers['content-type']
 
     //Validação para receber dados apenas no formato JSON
@@ -678,7 +680,7 @@ app.put('/v1/mecanica/sub-turma/:id', cors(), bodyParserJSON, async function (re
 });
 
 //EndPoint: insere uma nova sub-turma
-app.post('/v1/mecanica/sub-turma', cors(), bodyParserJSON, async function (request, response){
+app.post('/v1/senai/usinagem/sub-turma', cors(), bodyParserJSON, async function (request, response){
     let contentType = request.headers['content-type']
 
     if (String(contentType).toLowerCase() == 'application/json') {
@@ -697,7 +699,7 @@ app.post('/v1/mecanica/sub-turma', cors(), bodyParserJSON, async function (reque
 });
 
 //EndPoint: apaga uma sub-turma filtrando pelo ID
-app.delete('/v1/mecanica/sub-turma/:id', cors(), async function (request, response){
+app.delete('/v1/senai/usinagem/sub-turma/:id', cors(), async function (request, response){
     let id = request.params.id
 
     let resultDadosSubTurmas = await controllerSubTurmas.deletarSubTurma(id)
@@ -707,7 +709,7 @@ app.delete('/v1/mecanica/sub-turma/:id', cors(), async function (request, respon
 });
 
 //Endpoint: Retorna sub-turmas pelo Nome da turma
-app.get('/v1/mecanica/sub-turma/turma/:nome', cors(), async function (request, response) {
+app.get('/v1/senai/usinagem/sub-turma/turma/:nome', cors(), async function (request, response) {
 
     //Recebe 
     let nomeTurma = request.params.nome;
@@ -722,7 +724,7 @@ app.get('/v1/mecanica/sub-turma/turma/:nome', cors(), async function (request, r
 /******************************************************* CURSOS ***********************************************************/
 
 //EndPoint: retorna todas as Cursos
-app.get('/v1/mecanica/cursos', cors(), async function (request, response){
+app.get('/v1/senai/usinagem/cursos', cors(), async function (request, response){
 
     let dadosCursos = await controllerCursos.getAllCursos();
 
@@ -731,7 +733,7 @@ app.get('/v1/mecanica/cursos', cors(), async function (request, response){
 });
 
 //EndPoint: retorna um curso filtrando pelo ID 
-app.get('/v1/mecanica/curso/id/:id', cors(), async function (request, response){
+app.get('/v1/senai/usinagem/curso/id/:id', cors(), async function (request, response){
     let id = request.params.id
 
     let dadosCurso = await controllerCursos.getBuscarCursoByID(id)
@@ -741,7 +743,7 @@ app.get('/v1/mecanica/curso/id/:id', cors(), async function (request, response){
 });
 
 //Endpoint: Retorna um curso filtrando pelo Nome
-app.get('/v1/mecanica/curso/nome/:nome', cors(), async function (request, response) {
+app.get('/v1/senai/usinagem/curso/nome/:nome', cors(), async function (request, response) {
 
     //Recebe 
     let nomeCurso = request.params.nome;
@@ -754,7 +756,7 @@ app.get('/v1/mecanica/curso/nome/:nome', cors(), async function (request, respon
 });
 
 //EndPoint: atualiza um curso, filtrando pelo ID
-app.put('/v1/mecanica/cursos/:id', cors(), bodyParserJSON, async function (request, response){
+app.put('/v1/senai/usinagem/cursos/:id', cors(), bodyParserJSON, async function (request, response){
     let contentType = request.headers['content-type']
 
     //Validação para receber dados apenas no formato JSON
@@ -778,7 +780,7 @@ app.put('/v1/mecanica/cursos/:id', cors(), bodyParserJSON, async function (reque
 });
 
 //EndPoint: insere uma nova sub-turma
-app.post('/v1/mecanica/curso', cors(), bodyParserJSON, async function (request, response){
+app.post('/v1/senai/usinagem/curso', cors(), bodyParserJSON, async function (request, response){
     let contentType = request.headers['content-type']
 
     if (String(contentType).toLowerCase() == 'application/json') {
@@ -797,7 +799,7 @@ app.post('/v1/mecanica/curso', cors(), bodyParserJSON, async function (request, 
 });
 
 //EndPoint: atualiza um curso, filtrando pelo ID
-app.put('/v1/mecanica/curso/:id', cors(), bodyParserJSON, async function (request, response){
+app.put('/v1/senai/usinagem/curso/:id', cors(), bodyParserJSON, async function (request, response){
     let contentType = request.headers['content-type']
 
     //Validação para receber dados apenas no formato JSON
@@ -821,7 +823,7 @@ app.put('/v1/mecanica/curso/:id', cors(), bodyParserJSON, async function (reques
 });
 
 //EndPoint: apaga uma sub-turma filtrando pelo ID
-app.delete('/v1/mecanica/curso/:id', cors(), async function (request, response){
+app.delete('/v1/senai/usinagem/curso/:id', cors(), async function (request, response){
     let id = request.params.id
 
     let resultDadosCurso = await controllerCursos.deletarCurso(id)
@@ -829,6 +831,84 @@ app.delete('/v1/mecanica/curso/:id', cors(), async function (request, response){
     response.status(resultDadosCurso.status)
     response.json(resultDadosCurso)
 });
+
+/******************************************************* MATRICULA ***********************************************************/
+//EndPoint: retorna todas as matriculas
+app.get('/v1/senai/usinagem/matricula', cors(), async function (request, response){
+
+    let dadosMatriculas = await controllerMatricula.getMatriculas();
+
+    response.json(dadosMatriculas)
+    response.status(dadosMatriculas.status)
+})
+
+//EndPoint: retorna uma matricula filtrando pelo ID 
+app.get('/v1/senai/usinagem/matricula/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let dadosMatricula = await controllerMatricula.getBuscarMatriculaID(id)
+
+    response.json(dadosMatricula)
+    response.status(dadosMatricula.status)
+})
+
+//EndPoint: atualiza uma matricula, filtrando pelo ID
+app.put('/v1/senai/usinagem/matricula/:id', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID da matricula pelo parametro
+        let id = request.params.id
+        //Recebe os dados da matricula encaminhados no corpo da requisição
+        let dadosBody = request.body
+        
+        //Encaminha os dados para a controlller
+        let resultDadosMatricula = await controllerMatricula.atualizarMatricula(dadosBody, id)
+
+        response.status(resultDadosMatricula.status)
+        response.json(resultDadosMatricula)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+
+    }
+})
+
+//EndPoint: insere uma matricula
+app.post('/v1/senai/usinagem/matricula', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body
+
+        let resultDadosMatricula = await controllerMatricula.inserirMatricula(dadosBody)
+
+        response.status(resultDadosMatricula.status)
+        response.json(resultDadosMatricula)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+//EndPoint: apaga uma matricula filtrando pelo ID
+app.delete('/v1/senai/usinagem/matricula/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let resultDadosMatricula = await controllerMatricula.deletarMatricula(id)
+
+    response.status(resultDadosMatricula.status)
+    response.json(resultDadosMatricula)
+})
+
+
+
+
+
+
 
 
 app.listen(8080, function () {

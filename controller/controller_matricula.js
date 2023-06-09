@@ -13,9 +13,9 @@ var matriculaDAO = require('../model/DAO/matriculaDAO.js')
 var alunoDAO = require('../model/DAO/alunoDAO.js')
 
 const inserirMatricula = async function (dadosMatricula){  //******************** */
-    if(dadosMatricula.numero_matricula == undefined || dadosMatricula.numero_matricula == '' || dadosMatricula.numero_matricula > 50 ||
-        dadosMatricula.id_aluno == undefined || dadosMatricula.id_aluno == '' || isNaN(dadosMatricula.id_aluno) ||
-        dadosMatricula.id_status_matricula == undefined || dadosMatricula.id_status_matricula == '' || isNaN(dadosMatricula.id_status_matricula)
+    if(dadosMatricula.numero_matricula == undefined || dadosMatricula.numero_matricula == '' || dadosMatricula.numero_matricula.length > 50 || dadosMatricula.numero_matricula == null ||
+        dadosMatricula.id_aluno == undefined || dadosMatricula.id_aluno == '' || isNaN(dadosMatricula.id_aluno) || dadosMatricula.id_aluno == null ||
+        dadosMatricula.id_status_matricula == undefined || dadosMatricula.id_status_matricula == '' || isNaN(dadosMatricula.id_status_matricula) ||  dadosMatricula.id_status_matricula == null
     ){
         return message.ERROR_REQUIRED_FIELDS //400
 
@@ -29,11 +29,12 @@ const inserirMatricula = async function (dadosMatricula){  //*******************
             //Verifica se o banco inseriu corretamente
             if(resultDadosMatricula) {
                 let dadosMatriculaJSON = {}
-                let novaMatricula = matriculaDAO.selectLastId()
+                let novaMatricula = await matriculaDAO.selectLastId()
+
 
                 dadosMatriculaJSON.status = message.SUCCESS_CREATED_ITEM.status //201
                 dadosMatriculaJSON.message = message.SUCCESS_CREATED_ITEM.message
-                dadosMatriculaJSON.matricula = novaMatricula
+                dadosMatriculaJSON.matricula = novaMatricula[0]
 
                 return dadosMatriculaJSON
             } else {
@@ -46,9 +47,9 @@ const inserirMatricula = async function (dadosMatricula){  //*******************
 }
 
 const atualizarMatricula = async function (dadosMatricula, id) {
-    if(dadosMatricula.numero_matricula == undefined || dadosMatricula.numero_matricula == '' || dadosMatricula.numero_matricula > 50 ||
-        dadosMatricula.id_aluno == undefined || dadosMatricula.id_aluno == '' || isNaN(dadosMatricula.id_aluno) ||
-        dadosMatricula.id_status_matricula == undefined || dadosMatricula.id_status_matricula == '' || isNaN(dadosMatricula.id_status_matricula)
+    if(dadosMatricula.numero_matricula == undefined || dadosMatricula.numero_matricula == '' || dadosMatricula.numero_matricula.length > 50 || dadosMatricula.numero_matricula == null ||
+        dadosMatricula.id_aluno == undefined || dadosMatricula.id_aluno == '' || isNaN(dadosMatricula.id_aluno) || dadosMatricula.id_aluno == null ||
+        dadosMatricula.id_status_matricula == undefined || dadosMatricula.id_status_matricula == '' || isNaN(dadosMatricula.id_status_matricula) ||  dadosMatricula.id_status_matricula == null
     ) {
         return message.ERROR_REQUIRED_FIELDS //400
 
@@ -116,7 +117,7 @@ const getMatriculas = async function () {
     //Chama a função do arquivo DAO que irá retornar todos os registros do BD
     let dadosMatricula = await matriculaDAO.selectAllMatriculas()
 
-    if (dadosAluno) {
+    if (dadosMatricula) {
         dadosMatriculasJSON.status = message.SUCCESS_REQUEST.status
         dadosMatriculasJSON.message = message.SUCCESS_REQUEST.message
         dadosMatriculasJSON.quantidade = dadosMatricula.length
