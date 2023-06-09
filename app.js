@@ -31,8 +31,6 @@ app.use((request, response, next) => {
     next()
 })
 
-/**************************************************** ALUNOS *****************************************************/
-
 //Import do arquivo da controller que irá solicitar a model os dados do BD
 var controllerAluno = require('./controller/controller_aluno.js');
 var controllerProfessor = require('./controller/controller_professor.js');
@@ -40,7 +38,9 @@ var controllerAdministrador = require('./controller/controller_administrador.js'
 var controllerTurma = require('./controller/controller_turma.js')
 var controllerAtividade = require('./controller/controller_atividade.js')
 var controllerUnidadeCurricular = require('./controller/controller_unidade_curricular.js')
+var controllerDesempenhoMatricula = require('./controller/controller_desempenho_matricula.js')
 
+/**************************************************** ALUNOS *****************************************************/
 
 //EndPoint para inserir um novo aluno
 app.post('/v1/mecanica/aluno', cors(), bodyParserJSON, async function (request, response) {
@@ -543,6 +543,79 @@ app.delete('/v1/mecanica/unidade-curricular/:id', cors(), async function (reques
     response.status(resultDadosUnidadeCurricular.status)
     response.json(resultDadosUnidadeCurricular)
 })
+
+/**************************************************** DESEMPENHO MATRICULA *****************************************************/
+
+//Endpoint: retorna todos os desempenhos de todos os alunos
+app.get('/v1/mecanica/desempenho', cors(), async function (request, response){
+    let dadosDesempenhosMatriculas = await controllerDesempenhoMatricula.getDesempenhosMatriculasAlunos()
+
+    response.json(dadosDesempenhosMatriculas)
+    response.status(dadosDesempenhosMatriculas.status)
+})
+
+//Endpoint: retorna desempenhos do aluno filtrando pelo ID do ***aluno***
+app.get('/v1/mecanica/desempenho/aluno/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let dadosDesempenhoAluno = await controllerDesempenhoMatricula.getBuscarDesempenhosPelaMatriculaAluno(id)
+
+    response.json(dadosDesempenhoAluno)
+    response.status(dadosDesempenhoAluno.status)
+})
+
+//EndPoint: insere um novo desempenho
+app.post('/v1/mecanica/desempenho', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body
+
+        let resultDadosDesempenhoAluno = await controllerDesempenhoMatricula.inserirDesempenhoMatriculaAluno(dadosBody)
+
+        response.status(resultDadosDesempenhoAluno.status)
+        response.json(resultDadosDesempenhoAluno)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+//EndPoint: atualiza um desempenho, filtrando pelo ID
+app.put('/v1/mecanica/desempenho/:id', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID pelo parametro
+        let id = request.params.id
+        //Recebe os dados da unidade curricular encaminhados no corpo da requisição
+        let dadosBody = request.body
+        
+        //Encaminha os dados para a controlller
+        let resultDadosDesempenhoAluno = await controllerDesempenhoMatricula.updateDesempenhoMatriculaAluno(dadosBody, id)
+
+        response.status(resultDadosDesempenhoAluno.status)
+        response.json(resultDadosDesempenhoAluno)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+
+    }
+})
+
+//EndPoint: apaga um desempenho, filtrando pelo ID do desempenho
+app.delete('/v1/mecanica/desempenho/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let resultDadosDesempenhoAluno = await controllerDesempenhoMatricula.deletarDesempenhoMatriculaAluno(id)
+
+    response.status(resultDadosDesempenhoAluno.status)
+    response.json(resultDadosDesempenhoAluno)
+})
+
 
 app.listen(8080, function () {
     console.log('Servidor aguardando requisiçõs na porta 8080')

@@ -12,8 +12,9 @@ var message = require('./modulo/config.js')
 var desempenho_matricula_alunoDAO = require('../model/DAO/desempenho_matricula_alunoDAO.js')
 
 const inserirDesempenhoMatriculaAluno = async function (dadosDesempenhoMatriculaAluno) {
-    if (dadosDesempenhoMatriculaAluno.id_aluno == '' || dadosDesempenhoMatriculaAluno.id_aluno == undefined || isNaN(dadosDesempenhoMatriculaAluno.id_aluno) ||
-    dadosDesempenhoMatriculaAluno.id_unidade_curricular == '' || dadosDesempenhoMatriculaAluno.id_unidade_curricular == undefined || isNaN(dadosDesempenhoMatriculaAluno.id_unidade_curricular)
+    if (dadosDesempenhoMatriculaAluno.id_matricula_aluno == '' || dadosDesempenhoMatriculaAluno.id_matricula_aluno == undefined || isNaN(dadosDesempenhoMatriculaAluno.id_matricula_aluno) ||
+        dadosDesempenhoMatriculaAluno.id_unidade_curricular == '' || dadosDesempenhoMatriculaAluno.id_unidade_curricular == undefined || isNaN(dadosDesempenhoMatriculaAluno.id_unidade_curricular) ||
+        dadosDesempenhoMatriculaAluno.nota == '' || dadosDesempenhoMatriculaAluno.nota == undefined || isNaN(dadosDesempenhoMatriculaAluno.nota)
     ) {
         return message.ERROR_REQUIRED_FIELDS //400
 
@@ -36,9 +37,10 @@ const inserirDesempenhoMatriculaAluno = async function (dadosDesempenhoMatricula
 }
 
 const updateDesempenhoMatriculaAluno = async function (dadosDesempenhoMatriculaAluno, idDesempenhoAluno) {
-    if (dadosDesempenhoMatriculaAluno.id_aluno == '' || dadosDesempenhoMatriculaAluno.id_aluno == undefined || isNaN(dadosDesempenhoMatriculaAluno.id_aluno) ||
-    dadosDesempenhoMatriculaAluno.id_unidade_curricular == '' || dadosDesempenhoMatriculaAluno.id_unidade_curricular == undefined || isNaN(dadosDesempenhoMatriculaAluno.id_unidade_curricular)
-    ) {
+    if (dadosDesempenhoMatriculaAluno.id_matricula_aluno == '' || dadosDesempenhoMatriculaAluno.id_matricula_aluno == undefined || isNaN(dadosDesempenhoMatriculaAluno.id_matricula_aluno) ||
+        dadosDesempenhoMatriculaAluno.id_unidade_curricular == '' || dadosDesempenhoMatriculaAluno.id_unidade_curricular == undefined || isNaN(dadosDesempenhoMatriculaAluno.id_unidade_curricular) ||
+        dadosDesempenhoMatriculaAluno.nota == '' || dadosDesempenhoMatriculaAluno.nota == undefined || isNaN(dadosDesempenhoMatriculaAluno.nota)
+    ){
         return message.ERROR_REQUIRED_FIELDS //400
 
     } else if (idDesempenhoAluno == '' || idDesempenhoAluno == undefined || isNaN(idDesempenhoAluno)) {
@@ -52,7 +54,7 @@ const updateDesempenhoMatriculaAluno = async function (dadosDesempenhoMatriculaA
 
         if(statusId) {
             let resultDadosDesempenhoMatriculaAluno = await desempenho_matricula_alunoDAO.updateDesempenhoMatriculaAluno(dadosDesempenhoMatriculaAluno)
-            let desempenhoAlunoId = await desempenho_matricula_alunoDAO.selectLastId() //************************************************************** */
+            let desempenhoAlunoId = await desempenho_matricula_alunoDAO.selectByIdDesempenhoMatriculaAluno(idDesempenhoAluno)
 
             if(resultDadosDesempenhoMatriculaAluno) {
                 dadosDesempenhoMatriculaAlunoJSON.message = message.SUCCESS_UPDATED_ITEM.message
@@ -125,7 +127,7 @@ const getDesempenhosMatriculasAlunos = async function () {
     if(dadosDesempenhoMatriculaAluno) {
         dadosDesempenhoMatriculaAlunoJSON.message = message.SUCCESS_REQUEST.message
         dadosDesempenhoMatriculaAlunoJSON.status = message.SUCCESS_REQUEST.status //200
-        dadosDesempenhoMatriculaAlunoJSON.quantidade = dadosTurma.length
+        dadosDesempenhoMatriculaAlunoJSON.quantidade = dadosDesempenhoMatriculaAluno.length
         dadosDesempenhoMatriculaAlunoJSON.desempenhos = dadosDesempenhoMatriculaAluno
 
         return dadosDesempenhoMatriculaAlunoJSON
