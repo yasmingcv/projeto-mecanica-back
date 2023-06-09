@@ -114,7 +114,7 @@ const selectByIdSubTurma = async (id) => {
 from tbl_subturma
      inner join tbl_turma 
         on tbl_turma.id = tbl_subturma.id_turma
-                             where id = ${idSubTurma}`;
+                             where tbl_subturma.id = ${idSubTurma}`;
 
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
@@ -133,7 +133,6 @@ from tbl_subturma
 const selectByNameSubTurma = async (name) => {
 
     let nomeSubTurma = name;
-    console.log(nomeSubTurma);
 
 
     //ScriptSQL para buscar todos os itens no BD
@@ -143,7 +142,7 @@ const selectByNameSubTurma = async (name) => {
 from tbl_subturma
      inner join tbl_turma 
         on tbl_turma.id = tbl_subturma.id_turma
-                     where nome like '%${nomeSubTurma}%'`;
+                     where tbl_subturma.nome like '%${nomeSubTurma}%'`;
 
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
@@ -160,7 +159,7 @@ from tbl_subturma
 
 const selectByNameTurma = async (name) => {
 
-    let nomeNameTurma = name;
+    let nameTurma = name;
 
 
     //ScriptSQL para buscar todos os itens no BD
@@ -170,7 +169,7 @@ const selectByNameTurma = async (name) => {
 from tbl_subturma
      inner join tbl_turma 
         on tbl_turma.id = tbl_subturma.id_turma
-				where tbl_turma.nome like '%${nomeUnidadeCurricular}%';
+				where tbl_turma.nome like '%${nameTurma}%';
     `;
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
@@ -193,7 +192,7 @@ const selectLastId = async () => {
 from tbl_subturma
      inner join tbl_turma 
         on tbl_turma.id = tbl_subturma.id_turma
-                    order by id desc limit 1`;
+                    order by tbl_turma.id desc limit 1`;
 
     let rsSubTurma = await prisma.$queryRawUnsafe(sql);
 

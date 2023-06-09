@@ -140,9 +140,7 @@ const getBuscarSubTurmaNome = async (nome) => {
 
     let nomeSubTurma = nome
 
-
     let dadosByNomeSubTurmaJSON = {}
-
 
     if (isNaN(nomeSubTurma) && nomeSubTurma !== undefined && nomeSubTurma !== '') {
 
@@ -155,7 +153,6 @@ const getBuscarSubTurmaNome = async (nome) => {
             dadosByNomeSubTurmaJSON.status = message.SUCCESS_REQUEST.status;
             dadosByNomeSubTurmaJSON.sub_turma = dadosByNomeSubTurma;
 
-            console.log(dadosByNomeSubTurmaJSON);
             return dadosByNomeSubTurmaJSON;
         } else {
             return message.ERROR_NOT_FOUND;
@@ -213,7 +210,7 @@ const getBuscarSubTurmaByNameTurma = async (name) => {
 
         if (dadosByNameTurma) {
             dadosByTurmaSubTurmaJSON.status = message.SUCCESS_REQUEST.status;
-            dadosByTurmaSubTurmaJSON.sub_turmas = dadosByNameUnidadeCurricular;
+            dadosByTurmaSubTurmaJSON.sub_turmas = dadosByNameTurma;
 
             console.log(dadosByTurmaSubTurmaJSON);
             return dadosByTurmaSubTurmaJSON;

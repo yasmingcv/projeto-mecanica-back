@@ -34,11 +34,12 @@ app.use((request, response, next) => {
 //Import do arquivo da controller que irá solicitar a model os dados do BD
 var controllerAluno = require('./controller/controller_aluno.js');
 var controllerProfessor = require('./controller/controller_professor.js');
-var controllerAdministrador = require('./controller/controller_administrador.js')
-var controllerTurma = require('./controller/controller_turma.js')
-var controllerAtividade = require('./controller/controller_atividade.js')
-var controllerUnidadeCurricular = require('./controller/controller_unidade_curricular.js')
-var controllerDesempenhoMatricula = require('./controller/controller_desempenho_matricula.js')
+var controllerAdministrador = require('./controller/controller_administrador.js');
+var controllerTurma = require('./controller/controller_turma.js');
+var controllerAtividade = require('./controller/controller_atividade.js');
+var controllerUnidadeCurricular = require('./controller/controller_unidade_curricular.js');
+var controllerDesempenhoMatricula = require('./controller/controller_desempenho_matricula.js');
+var controllerSubTurmas = require('./controller/controller_sub_turma.js');
 
 /**************************************************** ALUNOS *****************************************************/
 
@@ -462,9 +463,9 @@ app.get('/v1/mecanica/atividade/nome/:nome', cors(), async function (request, re
 app.get('/v1/mecanica/atividade/unidade-curricular/:nome', cors(), async function (request, response) {
 
     //Recebe 
-    let nomeAtividade = request.params.nome;
+    let nomeUnidadeCurricular = request.params.nome;
 
-    let dadosAtividadeByNameUnidadeCurricular = await controllerAtividade.getBuscarAtividadeByNameUnidadeCurricular(nomeAtividade);
+    let dadosAtividadeByNameUnidadeCurricular = await controllerAtividade.getBuscarAtividadeByNameUnidadeCurricular(nomeUnidadeCurricular);
 
     response.status(dadosAtividadeByNameUnidadeCurricular.status);
     response.json(dadosAtividadeByNameUnidadeCurricular);
@@ -615,6 +616,107 @@ app.delete('/v1/mecanica/desempenho/:id', cors(), async function (request, respo
     response.status(resultDadosDesempenhoAluno.status)
     response.json(resultDadosDesempenhoAluno)
 })
+
+/******************************************************* SUB-TURMAS ***********************************************************/
+
+//EndPoint: retorna todas as subTurmas
+app.get('/v1/mecanica/sub-turmas', cors(), async function (request, response){
+
+    let dadosSubTurmas = await controllerSubTurmas.getAllSubTurmas();
+
+    response.json(dadosSubTurmas)
+    response.status(dadosSubTurmas.status)
+});
+
+//EndPoint: retorna uma sub-turma filtrando pelo ID 
+app.get('/v1/mecanica/sub-turmas/id/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let dadosSubTurmas = await controllerSubTurmas.getBuscarSubTurmaID(id)
+
+    response.json(dadosSubTurmas)
+    response.status(dadosSubTurmas.status)
+});
+
+//Endpoint: Retorna uma Sub-Turma pelo Nome
+app.get('/v1/mecanica/sub-turma/nome/:nome', cors(), async function (request, response) {
+
+    //Recebe 
+    let nomeSubTurma = request.params.nome;
+
+    let dadosSubTurmaByName = await controllerSubTurmas.getBuscarSubTurmaNome(nomeSubTurma);
+
+    response.status(dadosSubTurmaByName.status);
+    response.json(dadosSubTurmaByName);
+
+});
+
+//EndPoint: atualiza uma sub-turma, filtrando pelo ID
+app.put('/v1/mecanica/sub-turma/:id', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID da atividade pelo parametro
+        let id = request.params.id
+        //Recebe os dados da atividade encaminhados no corpo da requisição
+        let dadosBody = request.body
+        
+        //Encaminha os dados para a controlller
+        let resultDadosSubTurma = await controllerSubTurmas.atualizarSubTurma(dadosBody, id)
+
+        response.status(resultDadosSubTurma.status)
+        response.json(resultDadosSubTurma)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+
+    }
+});
+
+//EndPoint: insere uma nova sub-turma
+app.post('/v1/mecanica/sub-turma', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body
+        console.log(dadosBody);
+
+        let resultDadosSubTurma = await controllerSubTurmas.inserirSubTurma(dadosBody)
+
+        response.status(resultDadosSubTurma.status)
+        response.json(resultDadosSubTurma)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+});
+
+
+//EndPoint: apaga uma atividade filtrando pelo ID
+app.delete('/v1/mecanica/sub-turma/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let resultDadosSubTurmas = await controllerSubTurmas.deletarSubTurma(id)
+
+    response.status(resultDadosSubTurmas.status)
+    response.json(resultDadosSubTurmas)
+});
+
+//Endpoint: Retorna uma atividade pelo Nome da unidade curricular
+app.get('/v1/mecanica/sub-turma/turma/:nome', cors(), async function (request, response) {
+
+    //Recebe 
+    let nomeTurma = request.params.nome;
+
+    let dadosAtividadeByNameTurma = await controllerSubTurmas.getBuscarSubTurmaByNameTurma(nomeTurma);
+
+    response.status(dadosAtividadeByNameTurma.status);
+    response.json(dadosAtividadeByNameTurma);
+
+});
 
 
 app.listen(8080, function () {
