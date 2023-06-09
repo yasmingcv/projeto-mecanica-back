@@ -13,7 +13,7 @@ var message = require('./modulo/config.js');
 
 //Inserir um novo Professor
 const inserirProfessor = async (dadosProfessor) => {
-    console.log(dadosProfessor);
+    console.log(await dadosProfessor);
 
     //Validação para campos obrigatórios e numero de caracteres
     if (

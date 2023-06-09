@@ -86,7 +86,7 @@ const selectAllProfessores = async () => {
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `
-    select tbl_professor.nome as nome, tbl_professor.email, tbl_professor.senha from tbl_professor;
+    select select tbl_professor.id, tbl_professor.nome, tbl_professor.email, tbl_professor.senha from tbl_professor order by id desc limit 1;tbl_professor.nome, tbl_professor.email, tbl_professor.senha from tbl_professor;
     `;
     console.log(sql);
 
@@ -109,7 +109,7 @@ const selectByIdProfessor = async (id) => {
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `
-    select tbl_professor.nome as nome, tbl_professor.email, tbl_professor.senha from tbl_professor where id = ${idProfessor}
+    select tbl_professor.id, tbl_professor.nome, tbl_professor.email, tbl_professor.senha from tbl_professor where id = ${idProfessor}
     `;
 
 
@@ -135,7 +135,7 @@ const selectByNameProfessor = async (name) => {
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `
-    select tbl_professor.nome as nome, tbl_professor.email, tbl_professor.senha from tbl_professor where nome like '%${nomeProfessor}%'
+    select tbl_professor.id, tbl_professor.nome, tbl_professor.email, tbl_professor.senha from tbl_professor where nome like '%${nomeProfessor}%'
     `;
 
 
@@ -155,7 +155,7 @@ const selectByNameProfessor = async (name) => {
 
 const selectLastId = async () => {
 
-    let sql = 'select tbl_professor.nome as nome, tbl_professor.email, tbl_professor.senha from tbl_professor order by id desc limit 1;'
+    let sql = 'select tbl_professor.id, tbl_professor.nome, tbl_professor.email, tbl_professor.senha from tbl_professor order by id desc limit 1;'
 
     let rsProfessor = await prisma.$queryRawUnsafe(sql);
 

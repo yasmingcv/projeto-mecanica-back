@@ -16,7 +16,7 @@ const inserirCurso = async (dadosCurso) => {
 
     //Validação para campos obrigatórios e numero de caracteres
     if (
-        dadosCurso.nome == '' || dadosCurso.nome == undefined || dadosCurso.nome.length > 100 || 
+        dadosCurso.nome == '' || dadosCurso.nome == undefined || dadosCurso.nome.length > 100 ||
         dadosCurso.carga_horaria == '' || dadosCurso.carga_horaria == undefined || dadosCurso.carga_horaria.length > 20 ||
         dadosCurso.descricao == '' || dadosCurso.descricao == undefined ||
         dadosCurso.sigla == '' || dadosCurso.sigla == undefined || dadosCurso.sigla.length > 4
@@ -97,22 +97,31 @@ const deletarCurso = async (idCurso) => {
     if (idCurso == '' || idCurso == undefined || isNaN(idCurso)) {
         return message.ERROR_INVALID_ID; //status code 400 
     } else {
+        
+        let statusID = await cursoDAO.selectByIdCurso(idCurso);
 
-        //Encaminha os dados para a model do curso
-        let resultDadosCurso = await cursoDAO.deleteCurso(idCurso)
 
-        if (resultDadosCurso) {
-            return message.SUCCESS_DELETED_ITEM; //200
-        } else {
-            return message.ERROR_INTERNAL_SERVER; //500
+        if (statusID) {
+            //Encaminha os dados para a model do curso
+            let resultDadosCurso = await cursoDAO.deleteCurso(idCurso)
+
+            if (resultDadosCurso) {
+                return message.SUCCESS_DELETED_ITEM; //200
+            } else {
+                return message.ERROR_INTERNAL_SERVER; //500
+            }
+
+        }else {
+            return message.ERROR_NOT_FOUND; //404
         }
+
     }
 
 
 }
 
 //Retorna a lista de todos os cursos
-const getCursos = async () => {
+const getAllCursos = async () => {
 
     let dadosCursosJSON = {}
 
@@ -142,7 +151,7 @@ const getBuscarCursosNome = async (nome) => {
     let dadosByNomeCursoJSON = {}
 
 
-    if (isNaN(nomeCurso) && nomeCurso !== undefined && nomeCurso !== '') {
+    if (isNaN(nomeCurso) || nomeCurso !== undefined || nomeCurso !== '') {
 
         //chama a função do arquivo DAO que irá retornar todos os registros do DB
         let dadosByNomeCurso = await cursoDAO.selectByNameCurso(nomeCurso);
@@ -151,6 +160,7 @@ const getBuscarCursosNome = async (nome) => {
         if (dadosByNomeCurso) {
             //Criando um JSON com o atrbuto cursos, para encaminhar um array de cursos
             dadosByNomeCursoJSON.status = message.SUCCESS_REQUEST.status;
+            dadosByNomeCursoJSON.quantidade = dadosByNomeCurso.length;
             dadosByNomeCursoJSON.Cursos = dadosByNomeCurso;
 
             console.log(dadosByNomeCursoJSON);
@@ -173,8 +183,7 @@ const getBuscarCursoByID = async (id) => {
     let dadosByIdCursoJSON = {}
 
 
-    if (isNaN(idCurso) && idCurso == undefined && idCurso == '') {
-
+    if (isNaN(idCurso) || idCurso == undefined || idCurso == '') {
         return message.ERROR_INVALID_ID;
 
     } else {
@@ -200,7 +209,7 @@ module.exports = {
     inserirCurso,
     atualizarCurso,
     deletarCurso,
-    getCursos,
+    getAllCursos,
     getBuscarCursosNome,
     getBuscarCursoByID
 }

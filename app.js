@@ -40,6 +40,7 @@ var controllerAtividade = require('./controller/controller_atividade.js');
 var controllerUnidadeCurricular = require('./controller/controller_unidade_curricular.js');
 var controllerDesempenhoMatricula = require('./controller/controller_desempenho_matricula.js');
 var controllerSubTurmas = require('./controller/controller_sub_turma.js');
+var controllerCursos = require('./controller/controller_curso.js');
 
 /**************************************************** ALUNOS *****************************************************/
 
@@ -150,8 +151,8 @@ app.get('/v1/mecanica/professor/nome/:nome', cors(), async function (request, re
 
 });
 
-//Endpoint: Atualiza um Professor filtrando pelo id
-app.post('/v1/mecanica/professor', cors(), async function (request, response) {
+//Endpoint: Insere um professor 
+app.post('/v1/mecanica/professor', cors(), bodyParserJSON, async function (request, response) {
 
     let contentType = request.headers['content-type'];
 
@@ -159,8 +160,9 @@ app.post('/v1/mecanica/professor', cors(), async function (request, response) {
     if (String(contentType).toLocaleLowerCase() == 'application/json') {
         //Recebe os dados encaminhados na requisição 
         let dadosBody = request.body;
-
+        console.log(dadosBody);
         let resultDadosProfessor = await controllerProfessor.inserirProfessor(dadosBody);
+
 
         response.status(resultDadosProfessor.status);
         response.json(resultDadosProfessor);
@@ -619,7 +621,7 @@ app.delete('/v1/mecanica/desempenho/:id', cors(), async function (request, respo
 
 /******************************************************* SUB-TURMAS ***********************************************************/
 
-//EndPoint: retorna todas as subTurmas
+//EndPoint: retorna todas as sub-turmas
 app.get('/v1/mecanica/sub-turmas', cors(), async function (request, response){
 
     let dadosSubTurmas = await controllerSubTurmas.getAllSubTurmas();
@@ -694,8 +696,7 @@ app.post('/v1/mecanica/sub-turma', cors(), bodyParserJSON, async function (reque
     }
 });
 
-
-//EndPoint: apaga uma atividade filtrando pelo ID
+//EndPoint: apaga uma sub-turma filtrando pelo ID
 app.delete('/v1/mecanica/sub-turma/:id', cors(), async function (request, response){
     let id = request.params.id
 
@@ -705,7 +706,7 @@ app.delete('/v1/mecanica/sub-turma/:id', cors(), async function (request, respon
     response.json(resultDadosSubTurmas)
 });
 
-//Endpoint: Retorna uma atividade pelo Nome da unidade curricular
+//Endpoint: Retorna sub-turmas pelo Nome da turma
 app.get('/v1/mecanica/sub-turma/turma/:nome', cors(), async function (request, response) {
 
     //Recebe 
@@ -716,6 +717,117 @@ app.get('/v1/mecanica/sub-turma/turma/:nome', cors(), async function (request, r
     response.status(dadosAtividadeByNameTurma.status);
     response.json(dadosAtividadeByNameTurma);
 
+});
+
+/******************************************************* CURSOS ***********************************************************/
+
+//EndPoint: retorna todas as Cursos
+app.get('/v1/mecanica/cursos', cors(), async function (request, response){
+
+    let dadosCursos = await controllerCursos.getAllCursos();
+
+    response.json(dadosCursos)
+    response.status(dadosCursos.status)
+});
+
+//EndPoint: retorna um curso filtrando pelo ID 
+app.get('/v1/mecanica/curso/id/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let dadosCurso = await controllerCursos.getBuscarCursoByID(id)
+
+    response.json(dadosCurso)
+    response.status(dadosCurso.status)
+});
+
+//Endpoint: Retorna um curso filtrando pelo Nome
+app.get('/v1/mecanica/curso/nome/:nome', cors(), async function (request, response) {
+
+    //Recebe 
+    let nomeCurso = request.params.nome;
+
+    let dadosCursoByName = await controllerCursos.getBuscarCursosNome(nomeCurso);
+
+    response.status(dadosCursoByName.status);
+    response.json(dadosCursoByName);
+
+});
+
+//EndPoint: atualiza um curso, filtrando pelo ID
+app.put('/v1/mecanica/cursos/:id', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID da atividade pelo parametro
+        let id = request.params.id
+        //Recebe os dados da atividade encaminhados no corpo da requisição
+        let dadosBody = request.body
+        
+        //Encaminha os dados para a controlller
+        let resultDadosCursos = await controllerCursos.atualizarCurso(dadosBody, id)
+
+        response.status(resultDadosCursos.status)
+        response.json(resultDadosCursos)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+
+    }
+});
+
+//EndPoint: insere uma nova sub-turma
+app.post('/v1/mecanica/curso', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body
+        console.log(dadosBody);
+
+        let resultDadosCursos = await controllerCursos.inserirCurso(dadosBody)
+
+        response.status(resultDadosCursos.status)
+        response.json(resultDadosCursos)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+});
+
+//EndPoint: atualiza um curso, filtrando pelo ID
+app.put('/v1/mecanica/curso/:id', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID da atividade pelo parametro
+        let id = request.params.id
+        //Recebe os dados da atividade encaminhados no corpo da requisição
+        let dadosBody = request.body
+        
+        //Encaminha os dados para a controlller
+        let resultDadosCurso = await controllerCursos.atualizarCurso(dadosBody, id)
+
+        response.status(resultDadosCurso.status)
+        response.json(resultDadosCurso)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+
+    }
+});
+
+//EndPoint: apaga uma sub-turma filtrando pelo ID
+app.delete('/v1/mecanica/curso/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let resultDadosCurso = await controllerCursos.deletarCurso(id)
+
+    response.status(resultDadosCurso.status)
+    response.json(resultDadosCurso)
 });
 
 
