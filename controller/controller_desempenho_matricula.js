@@ -12,6 +12,8 @@ var message = require('./modulo/config.js')
 var desempenho_matricula_alunoDAO = require('../model/DAO/desempenho_matricula_alunoDAO.js')
 
 var unidade_curricularDAO = require('../model/DAO/unidade_curricularDAO.js')
+var matriculaDAO = require('../model/DAO/matriculaDAO.js')
+
 
 const inserirDesempenhoMatriculaAluno = async function (dadosDesempenhoMatriculaAluno) {
     if (dadosDesempenhoMatriculaAluno.id_matricula_aluno == '' || dadosDesempenhoMatriculaAluno.id_matricula_aluno == undefined || isNaN(dadosDesempenhoMatriculaAluno.id_matricula_aluno) ||
@@ -22,9 +24,13 @@ const inserirDesempenhoMatriculaAluno = async function (dadosDesempenhoMatricula
 
     } else {
         let rsUnidadeCurricular = await unidade_curricularDAO.selectByIdUnidadeCurricular(dadosDesempenhoMatriculaAluno.id_unidade_curricular)
+        let rsMatricula = await matriculaDAO.selectByIdMatricula(dadosDesempenhoMatriculaAluno.id_matricula_aluno)
 
-        //Verifica se a unidade curricular existe
-        if (rsUnidadeCurricular) {
+        //Verifica se a unidade curricular e a matricula existem
+        if (!rsUnidadeCurricular || !rsMatricula) {
+            return message.ERROR_NOT_FOUND //404
+
+        } else {
             let resultDadosDesempenhoMatriculaAluno = await desempenho_matricula_alunoDAO.insertDesempenhoMatriculaAluno(dadosDesempenhoMatriculaAluno)
 
             if (resultDadosDesempenhoMatriculaAluno) {
@@ -39,8 +45,6 @@ const inserirDesempenhoMatriculaAluno = async function (dadosDesempenhoMatricula
             } else {
                 return message.ERROR_INTERNAL_SERVER //500
             }
-        } else {
-            return message.ERROR_NOT_FOUND //404
         }
     }
 }
@@ -57,9 +61,13 @@ const updateDesempenhoMatriculaAluno = async function (dadosDesempenhoMatriculaA
 
     } else {
         let rsUnidadeCurricular = await unidade_curricularDAO.selectByIdUnidadeCurricular(dadosDesempenhoMatriculaAluno.id_unidade_curricular)
+        let rsMatricula = await matriculaDAO.selectByIdMatricula(dadosDesempenhoMatriculaAluno.id_matricula_aluno)
 
-        //Verifica se a unidade curricular existe
-        if (rsUnidadeCurricular) {
+        //Verifica se a unidade curricular e o desempenho existem
+        if (!rsUnidadeCurricular || !rsMatricula) {
+            return message.ERROR_NOT_FOUND //404
+            
+        } else {
             dadosDesempenhoMatriculaAluno.id = idDesempenhoAluno
             let dadosDesempenhoMatriculaAlunoJSON = {}
 
@@ -83,8 +91,6 @@ const updateDesempenhoMatriculaAluno = async function (dadosDesempenhoMatriculaA
             } else {
                 return message.ERROR_NOT_FOUND //404
             }
-        } else {
-            return message.ERROR_NOT_FOUND //404
         }
 
     }
