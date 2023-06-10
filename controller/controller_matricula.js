@@ -154,10 +154,35 @@ const deletarMatricula = async function (id) {
     }
 }
 
+const getBuscarMatriculaPeloNumero = async function (numeroMatricula) {
+    //Verifica se o usuário digitou corretamente
+    if (numeroMatricula == '' || numeroMatricula == undefined || numeroMatricula == null) {
+        return message.ERROR_REQUIRED_FIELDS //400
+        
+    } else {
+        let dadosMatriculaJSON = {}
+        let dadosMatricula = await matriculaDAO.selectMatriculaByNumero(numeroMatricula)
+
+        if (dadosMatricula) {
+            //Criando um JSON com o atributo matriculas, para encaminhar um array de matriculas
+            dadosMatriculaJSON.status = message.SUCCESS_REQUEST.status
+            dadosMatriculaJSON.message = message.SUCCESS_REQUEST.message
+
+            dadosMatriculaJSON.matricula = dadosMatricula
+
+            return dadosMatriculaJSON
+
+        } else {
+            return message.ERROR_NOT_FOUND
+        }
+    }
+}
+
 module.exports = {
     inserirMatricula,
     atualizarMatricula,
     getBuscarMatriculaID,
     deletarMatricula,
-    getMatriculas
+    getMatriculas,
+    getBuscarMatriculaPeloNumero
 }

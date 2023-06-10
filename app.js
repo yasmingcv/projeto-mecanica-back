@@ -904,11 +904,15 @@ app.delete('/v1/senai/usinagem/matricula/:id', cors(), async function (request, 
     response.json(resultDadosMatricula)
 })
 
+//EndPoint: buscar uma matricula pelo numero
+app.get('/v1/senai/usinagem/matricula/numero/:numeromatricula', cors(), async function (request, response){
+    let numeroMatricula = request.params.numeromatricula
 
+    let dadosMatricula = await controllerMatricula.getBuscarMatriculaPeloNumero(numeroMatricula)
 
-
-
-
+    response.json(dadosMatricula)
+    response.status(dadosMatricula.status)
+})
 
 
 app.listen(8080, function () {

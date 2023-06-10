@@ -54,7 +54,7 @@ const updateMatricula = async function (dadosMatricula) {
 
 const selectByIdMatricula = async function (id) {
     let sql = `select tbl_matricula_aluno.id, tbl_matricula_aluno.numero_matricula,
-                    tbl_aluno.nome, tbl_aluno.email,
+                    tbl_aluno.id as id_aluno, tbl_aluno.nome, tbl_aluno.email,
                     tbl_status_matricula.status
 
                 from tbl_matricula_aluno
@@ -87,7 +87,7 @@ const deleteMatricula = async function (id) {
 
 const selectAllMatriculas = async function () {
     let sql = `select tbl_matricula_aluno.id, tbl_matricula_aluno.numero_matricula,
-                    tbl_aluno.nome, tbl_aluno.email,
+                    tbl_aluno.id as id_aluno, tbl_aluno.nome, tbl_aluno.email,
                     tbl_status_matricula.status
 
                 from tbl_matricula_aluno
@@ -100,6 +100,27 @@ const selectAllMatriculas = async function () {
 
     if (rsMatricula.length > 0) {
         return rsMatricula
+    } else {
+        return false
+    }
+}
+
+const selectMatriculaByNumero = async function (numeroMatricula) {
+    let sql = `select tbl_matricula_aluno.id, tbl_matricula_aluno.numero_matricula,
+                    tbl_aluno.nome, tbl_aluno.email,
+                    tbl_status_matricula.status
+
+                from tbl_matricula_aluno
+                inner join tbl_aluno
+                    on tbl_aluno.id = tbl_matricula_aluno.id_aluno
+                inner join tbl_status_matricula
+                    on tbl_status_matricula.id = tbl_matricula_aluno.id_status_matricula
+                where tbl_matricula_aluno.numero_matricula = "${numeroMatricula}"`
+
+    let resultDadosMatricula = await prisma.$queryRawUnsafe(sql)
+
+    if (resultDadosMatricula.length > 0) {
+        return resultDadosMatricula
     } else {
         return false
     }
@@ -126,5 +147,6 @@ module.exports = {
     updateMatricula,
     selectByIdMatricula,
     deleteMatricula,
-    selectAllMatriculas
+    selectAllMatriculas,
+    selectMatriculaByNumero
 }
