@@ -1,7 +1,7 @@
 /*****************************************************************************************
  * Objetivo: Arquivo responsável pelas mensagens de respostas das requisições na controller
  * Data: 22/05/2023
- * Autora: Yasmin Gonçalves
+ * Autores: Yasmin Gonçalves e Daniela
  * Versão: 1.0
  ****************************************************************************************/
 
@@ -12,6 +12,7 @@ const ERROR_NOT_FOUND = {status: 404, message: 'Nenhum item encontrado na requis
 const ERROR_INVALID_CONTENT_TYPE = {status: 415, message: 'O tipo de mídia Content-type da solicitação não é compativel com o servidor. Tipo aceito: [applcation/json]'}
 const ERROR_INVALID_ID = {status: 400, message: 'O ID informado na requisição não é válido ou não foi encaminhado.'}
 const ERROR_INVALID_NAME = {status: 400, message: 'O nome informado na requisição não é válido ou não foi encaminhado.'}
+const ERROR_DATA_CONFLICT = {status: 409, message: 'Os dados informados não podem ser inseridos pois já existe um registro com esse(s) dado(s).'}
 
 /***************************************MENSAGENS DE SUCESSO**************************************/
 const SUCCESS_CREATED_ITEM = {status: 201, message: 'Item criado com sucesso.'}
@@ -31,5 +32,6 @@ module.exports = {
     ERROR_INVALID_CONTENT_TYPE,
     SUCCESS_DELETED_ITEM,
     SUCCESS_REQUEST,
-    ERROR_INVALID_NAME
+    ERROR_INVALID_NAME,
+    ERROR_DATA_CONFLICT
 }
