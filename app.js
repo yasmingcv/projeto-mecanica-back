@@ -43,6 +43,7 @@ var controllerDesempenhoMatricula = require('./controller/controller_desempenho_
 var controllerSubTurmas = require('./controller/controller_sub_turma.js');
 var controllerCursos = require('./controller/controller_curso.js');
 var controllerMatricula = require('./controller/controller_matricula.js')
+var controllerCriterio = require('./controller/controller_criterio.js')
 
 /**************************************************** ALUNOS *****************************************************/
 
@@ -833,6 +834,7 @@ app.delete('/v1/senai/usinagem/curso/:id', cors(), async function (request, resp
 });
 
 /******************************************************* MATRICULA ***********************************************************/
+
 //EndPoint: retorna todas as matriculas
 app.get('/v1/senai/usinagem/matricula', cors(), async function (request, response){
 
@@ -914,6 +916,79 @@ app.get('/v1/senai/usinagem/matricula/numero/:numeromatricula', cors(), async fu
     response.status(dadosMatricula.status)
 })
 
+/******************************************************* CRITERIO ***********************************************************/
+//EndPoint: retorna todos os criterios
+app.get('/v1/senai/usinagem/criterio', cors(), async function (request, response){
+
+    let dadosCriterios = await controllerCriterio.getCriterios();
+
+    response.json(dadosCriterios)
+    response.status(dadosCriterios.status)
+})
+
+//EndPoint: retorna um criterio filtrando pelo ID 
+app.get('/v1/senai/usinagem/criterio/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let dadosCriterio = await controllerCriterio.getBuscarCriterioID(id)
+
+    response.json(dadosCriterio)
+    response.status(dadosCriterio.status)
+})
+
+//EndPoint: atualiza um criterio, filtrando pelo ID
+app.put('/v1/senai/usinagem/criterio/:id', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID do criterio pelo parametro
+        let id = request.params.id
+        //Recebe os dados do criterio encaminhados no corpo da requisição
+        let dadosBody = request.body
+        
+        //Encaminha os dados para a controlller
+        let resultDadosCriterio = await controllerCriterio.atualizarCriterio(dadosBody, id)
+
+        response.status(resultDadosCriterio.status)
+        response.json(resultDadosCriterio)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+
+    }
+})
+
+//EndPoint: insere um criterio
+app.post('/v1/senai/usinagem/criterio', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body
+
+        let resultDadosCriterio = await controllerCriterio.inserirCriterio(dadosBody)
+
+        response.status(resultDadosCriterio.status)
+        response.json(resultDadosCriterio)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+//EndPoint: apaga um criterio filtrando pelo ID
+app.delete('/v1/senai/usinagem/criterio/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let resultDadosCriterio = await controllerCriterio.deletarCriterio(id)
+
+    response.status(resultDadosCriterio.status)
+    response.json(resultDadosCriterio)
+})
+
+//------------------------------------------------------------------------------------------------------------------------//
 
 app.listen(8080, function () {
     console.log('Servidor aguardando requisiçõs na porta 8080')
