@@ -41,7 +41,6 @@ const updateTurma = async function (dadosTurma) {
 
                 where id = ${dadosTurma.id}
                 `
-                console.log(sql);
 
     let resultStatus = await prisma.$executeRawUnsafe(sql)
 
@@ -84,7 +83,14 @@ const selectAllTurmas = async function () {
 }
 
 const selectByIdTurma = async function (id) {
-    let sql = 'select * from tbl_turma where id = ' + id
+    let sql = `select tbl_turma.id as id_turma, tbl_turma.nome as turma, tbl_turma.ano, tbl_turma.id_curso,
+                    tbl_curso.nome as curso, tbl_curso.carga_horaria, tbl_curso.sigla as sigla_curso
+
+                    from tbl_turma
+                        inner join tbl_curso
+                            on tbl_curso.id = tbl_turma.id_curso 
+                        
+                        where tbl_turma.id = ${id}`
 
     let rsTurma = await prisma.$queryRawUnsafe(sql)
 
