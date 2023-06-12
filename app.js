@@ -49,6 +49,7 @@ var controllerTipoAtividade = require('./controller/controller_tipo_atividade.js
 var controllerStatusAtividade = require('./controller/controller_status_atividade.js')
 var controllerStatusMatricula = require('./controller/controller_status_matricula.js')
 var controllerResultadoDesejado = require('./controller/controller_resultado_desejado.js')
+var controllerResultadoDesejadoCriterio = require('./controller/controller_resultado_desejado_criterio.js')
 
 /**************************************************** ALUNOS *****************************************************/
 
@@ -1293,7 +1294,6 @@ app.get('/v1/senai/usinagem/resultado-desejado', cors(), async function (request
     response.status(dadosResultadosDesejados.status)
 })
 
-
 //EndPoint: retorna um resultado desejado filtrando pelo ID 
 app.get('/v1/senai/usinagem/resultado-desejado/:id', cors(), async function (request, response){
     let id = request.params.id
@@ -1353,6 +1353,78 @@ app.delete('/v1/senai/usinagem/resultado-desejado/:id', cors(), async function (
     response.status(resultDadosResultadoDesejado.status)
     response.json(resultDadosResultadoDesejado)
 })
+
+/******************************************************* RESULTADO DESJADO CRITÉRIO***********************************************************/
+
+//EndPoint: retorna todos os registros de resultados desejados e critérios
+app.get('/v1/senai/usinagem/resultado-desejado-criterio', cors(), async function (request, response){
+
+    let dadosResultadosDesejadosCriterios = await controllerResultadoDesejadoCriterio.getBuscarResultadosDesejadosCriterios()
+
+    response.json(dadosResultadosDesejadosCriterios)
+    response.status(dadosResultadosDesejadosCriterios.status)
+})
+
+//EndPoint: retorna um registro de resultado desejado e criterio filtrando pelo ID do REGISTRO 
+app.get('/v1/senai/usinagem/resultado-desejado-criterio/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let dadosResultadoDesejadoCriterio = await controllerResultadoDesejadoCriterio.getBuscarResultadoDesejadoCriterioID(id)
+
+    response.json(dadosResultadoDesejadoCriterio)
+    response.status(dadosResultadoDesejadoCriterio.status)
+})
+
+//EndPoint: atualiza um registro de resultado desejado e criterio, filtrando pelo ID do REGISTRO
+app.put('/v1/senai/usinagem/resultado-desejado-criterio/:id', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        let id = request.params.id
+        let dadosBody = request.body
+        
+        //Encaminha os dados para a controlller
+        let resultDadosResultadoDesejadoCriterio = await controllerResultadoDesejadoCriterio.atualizarResultadoDesejadoCriterio(dadosBody, id)
+
+        response.status(resultDadosResultadoDesejadoCriterio.status)
+        response.json(resultDadosResultadoDesejadoCriterio)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+
+    }
+})
+
+//EndPoint: insere um registro de resultado desejado e critério
+app.post('/v1/senai/usinagem/resultado-desejado-criterio', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body
+
+        let resultDadosResultadoDesejadoCriterio = await controllerResultadoDesejadoCriterio.inserirResultadoDesejadoCriterio(dadosBody)
+
+        response.status(resultDadosResultadoDesejadoCriterio.status)
+        response.json(resultDadosResultadoDesejadoCriterio)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+//EndPoint: apaga um registro de resultado desejado e critério filtrando pelo ID do REGISTRO
+app.delete('/v1/senai/usinagem/resultado-desejado-criterio/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let resultDadosResultadoDesejadoCriterio = await controllerResultadoDesejadoCriterio.deletarResultadoDesejadoCriterio(id)
+
+    response.status(resultDadosResultadoDesejadoCriterio.status)
+    response.json(resultDadosResultadoDesejadoCriterio)
+})
+
 
 //------------------------------------------------------------------------------------------------------------------------//
 
