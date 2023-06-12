@@ -1,5 +1,5 @@
 /***********************************************************************************************************
- * Objetivo: Arquivo responsável pela regra de negócios referente ao CRUD de status referente às matriculas
+ * Objetivo: Arquivo responsável pela regra de negócios referente ao CRUD de status referente às atividades
  * Data: 11/06/2023
  * Autora: Yasmin Gonçalves
  * Versão: 1.0
@@ -8,26 +8,26 @@
 //Import do arquivo de configurações das variáveis, constantes e funções globais
 var message = require('./modulo/config.js')
 
-//Import do arquivo DAO para acessar dados do status das matriculas no BD
-var statusMatriculaDAO = require('../model/DAO/status_matriculaDAO.js')
+//Import do arquivo DAO para acessar dados do status das atividades no BD
+var statusAtividadeDAO = require('../model/DAO/status_atividadeDAO.js')
 
 //Insere um novo status
-const inserirStatusMatricula = async function (dadosStatus) {
-    if (dadosStatus.status == '' || dadosStatus.status == undefined || dadosStatus.status.length > 100 || dadosStatus.status == null
+const inserirStatusAtividade = async function (dadosStatus) {
+    if (dadosStatus.nome == '' || dadosStatus.nome == undefined || dadosStatus.nome.length > 100 || dadosStatus.nome == null
     ) {
         return message.ERROR_REQUIRED_FIELDS //400
 
     } else {
-        let resultDadosStatus = await statusMatriculaDAO.insertStatusMatricula(dadosStatus)
+        let resultDadosStatus = await statusAtividadeDAO.insertStatusAtividade(dadosStatus)
 
         //Tratamento para ver se o banco inseriu corretamente os dados
         if (resultDadosStatus) {
             let dadosStatusJSON = {}
-            let novoStatusMatricula = await statusMatriculaDAO.selectLastId()
+            let novoStatusAtividade = await statusAtividadeDAO.selectLastId()
 
             dadosStatusJSON.status = message.SUCCESS_CREATED_ITEM.status //201
             dadosStatusJSON.message = message.SUCCESS_CREATED_ITEM.message
-            dadosStatusJSON.status = novoStatusMatricula[0]
+            dadosStatusJSON.status = novoStatusAtividade[0]
 
             return dadosStatusJSON
 
@@ -39,8 +39,8 @@ const inserirStatusMatricula = async function (dadosStatus) {
 }
 
 // Atualiza um status
-const atualizarStatusMatricula = async function (dadosStatus, idStatus) {
-    if (dadosStatus.status == '' || dadosStatus.status == undefined || dadosStatus.status.length > 100 || dadosStatus.status == null
+const atualizarStatusAtividade = async function (dadosStatus, idStatus) {
+    if (dadosStatus.nome == '' || dadosStatus.nome == undefined || dadosStatus.nome.length > 100 || dadosStatus.nome == null
     ) {
         return message.ERROR_REQUIRED_FIELDS //400
 
@@ -51,18 +51,19 @@ const atualizarStatusMatricula = async function (dadosStatus, idStatus) {
         dadosStatus.id = idStatus
         let dadosStatusJSON = {}
 
-        let statusId = await statusMatriculaDAO.selectByIdStatusMatricula(idStatus)
+        let statusId = await statusAtividadeDAO.selectByIdStatusAtividade(idStatus)
 
+        //Verificar se o status existe
         if (statusId) {
 
-            let resultDadosStatus = await statusMatriculaDAO.updateStatusMatricula(dadosStatus)
+            let resultDadosStatus = await statusAtividadeDAO.updateStatusAtividade(dadosStatus)
 
-            let statusId = await statusMatriculaDAO.selectByIdStatusMatricula(idStatus)
+            let novoStatusId = await statusAtividadeDAO.selectByIdStatusAtividade(idStatus)
 
             if (resultDadosStatus) {
                 dadosStatusJSON.status = message.SUCCESS_UPDATED_ITEM.status //200
                 dadosStatusJSON.message = message.SUCCESS_UPDATED_ITEM.message
-                dadosStatusJSON.status = statusId[0]
+                dadosStatusJSON.status = novoStatusId[0]
                 
                 return dadosStatusJSON
 
@@ -79,14 +80,14 @@ const atualizarStatusMatricula = async function (dadosStatus, idStatus) {
 }
 
 //Retorna um status filtrando pelo ID
-const getBuscarStatusMatriculaID = async function (id) {
+const getBuscarStatusAtividadeID = async function (id) {
 
     //Verifica se o usuário digitou corretamente
     if (id == '' || isNaN(id) || id == undefined) {
         return message.ERROR_INVALID_ID
     } else {
         let dadosStatusJSON = {}
-        let dadosStatus = await statusMatriculaDAO.selectByIdStatusMatricula(id)
+        let dadosStatus = await statusAtividadeDAO.selectByIdStatusAtividade(id)
 
         if (dadosStatus) {
             //Criando um JSON com o atributo status, para encaminhar um array de status
@@ -103,12 +104,12 @@ const getBuscarStatusMatriculaID = async function (id) {
     }
 }
 
-//Retorna a lista de todos os status matricula
-const getTodosStatusMatricula = async function () {
+//Retorna a lista de todos os status atividade
+const getTodosStatusAtividades = async function () {
     let dadosStatusJSON = {}
 
     //Chama a função do arquivo DAO que irá retornar todos os registros do BD
-    let dadosStatus = await statusMatriculaDAO.selectAllStatusMatriculas()
+    let dadosStatus = await statusAtividadeDAO.selectAllStatusAtividades()
 
     if (dadosStatus) {
         dadosStatusJSON.status = message.SUCCESS_REQUEST.status
@@ -123,20 +124,20 @@ const getTodosStatusMatricula = async function () {
 
 }
 
-const deletarStatusMatricula = async function (id) {
+const deletarStatusAtividade = async function (id) {
     if (id == ' ' || id == undefined || isNaN(id) || id == null) {
         return message.ERROR_INVALID_ID //400
 
     } else {
-        let buscarById = await getBuscarStatusMatriculaID(id)
+        let buscarById = await getBuscarStatusAtividadeID(id)
 
-        //Verifica se o status existe, se não existir, envia o retorno da função (getBuscarStatusMatriculaID)
+        //Verifica se o status existe, se não existir, envia o retorno da função (getBuscarStatusAtividadeID)
         if (buscarById.status == 404) {
             return buscarById
 
         //Se o status existir, prossegue e deleta o status
         } else {
-            let resultDadosStatus = await statusMatriculaDAO.deleteStatusMatricula(id)
+            let resultDadosStatus = await statusAtividadeDAO.deleteStatusAtividade(id)
 
             if (resultDadosStatus) {
                 return message.SUCCESS_DELETED_ITEM //200
@@ -148,9 +149,9 @@ const deletarStatusMatricula = async function (id) {
 }
 
 module.exports = {
-    inserirStatusMatricula,
-    atualizarStatusMatricula,
-    getBuscarStatusMatriculaID,
-    getTodosStatusMatricula,
-    deletarStatusMatricula
+    inserirStatusAtividade,
+    atualizarStatusAtividade,
+    getBuscarStatusAtividadeID,
+    getTodosStatusAtividades,
+    deletarStatusAtividade
 }
