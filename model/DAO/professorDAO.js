@@ -11,7 +11,6 @@ let { PrismaClient } = require('@prisma/client');
 //Instancia da classe PrismaClient
 var prisma = new PrismaClient();
 
-
 const insertProfessor = async (dadosProfessor) => {
 
     let sql = `insert into tbl_professor (
@@ -26,7 +25,6 @@ const insertProfessor = async (dadosProfessor) => {
 
     )`;
 
-
     //Executa o scriptSQL no BD
     let resultStatus = await prisma.$executeRawUnsafe(sql);
 
@@ -35,8 +33,6 @@ const insertProfessor = async (dadosProfessor) => {
     } else {
         return false;
     }
-
-
 };
 
 const updateProfessor = async (dadosProfessor) => {
