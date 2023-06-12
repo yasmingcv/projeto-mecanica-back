@@ -48,6 +48,7 @@ var controllerTipoCriterio = require('./controller/controller_tipo_criterio.js')
 var controllerTipoAtividade = require('./controller/controller_tipo_atividade.js')
 var controllerStatusAtividade = require('./controller/controller_status_atividade.js')
 var controllerStatusMatricula = require('./controller/controller_status_matricula.js')
+var controllerResultadoDesejado = require('./controller/controller_resultado_desejado.js')
 
 /**************************************************** ALUNOS *****************************************************/
 
@@ -1281,6 +1282,77 @@ app.delete('/v1/senai/usinagem/status-matricula/:id', cors(), async function (re
     response.json(resultDadosStatusMatricula)
 })
 
+/******************************************************* RESULTADO DESJADO ***********************************************************/
+
+//EndPoint: retorna todos os resultados desejados
+app.get('/v1/senai/usinagem/resultado-desejado', cors(), async function (request, response){
+
+    let dadosResultadosDesejados = await controllerResultadoDesejado.getTodosResultadosDesejados()
+
+    response.json(dadosResultadosDesejados)
+    response.status(dadosResultadosDesejados.status)
+})
+
+
+//EndPoint: retorna um resultado desejado filtrando pelo ID 
+app.get('/v1/senai/usinagem/resultado-desejado/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let dadosResultadoDesejado = await controllerResultadoDesejado.getBuscarResultadoDesejadoID(id)
+
+    response.json(dadosResultadoDesejado)
+    response.status(dadosResultadoDesejado.status)
+})
+
+//EndPoint: atualiza um resultado desejado, filtrando pelo ID
+app.put('/v1/senai/usinagem/resultado-desejado/:id', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        let id = request.params.id
+        let dadosBody = request.body
+        
+        //Encaminha os dados para a controlller
+        let resultDadosResultadoDesejado = await controllerResultadoDesejado.atualizarResultadoDesejado(dadosBody, id)
+
+        response.status(resultDadosResultadoDesejado.status)
+        response.json(resultDadosResultadoDesejado)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+
+    }
+})
+
+//EndPoint: insere um resultado desejado
+app.post('/v1/senai/usinagem/resultado-desejado', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body
+
+        let resultDadosResultadoDesejado = await controllerResultadoDesejado.inserirResultadoDesejado(dadosBody)
+
+        response.status(resultDadosResultadoDesejado.status)
+        response.json(resultDadosResultadoDesejado)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+//EndPoint: apaga um resultado desejado filtrando pelo ID
+app.delete('/v1/senai/usinagem/resultado-desejado/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let resultDadosResultadoDesejado = await controllerResultadoDesejado.deletarResultadoDesejado(id)
+
+    response.status(resultDadosResultadoDesejado.status)
+    response.json(resultDadosResultadoDesejado)
+})
 
 //------------------------------------------------------------------------------------------------------------------------//
 

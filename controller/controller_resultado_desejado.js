@@ -79,23 +79,22 @@ const atualizarResultadoDesejado = async function (dadosResultado, idResultado) 
 }
 
 //Retorna um resultado desejado filtrando pelo ID
-const getBuscarResultadoDesejadoID = async function (id) { // parei aqui
+const getBuscarResultadoDesejadoID = async function (id) {
 
     //Verifica se o usuário digitou corretamente
     if (id == '' || isNaN(id) || id == undefined) {
         return message.ERROR_INVALID_ID
     } else {
-        let dadosStatusJSON = {}
-        let dadosStatus = await statusMatriculaDAO.selectByIdStatusMatricula(id)
+        let dadosResultadoDesejadoJSON = {}
+        let dadosResultadoDesejado = await resultadoDesejadoDAO.selectByIdResultadoDesejado(id)
 
-        if (dadosStatus) {
-            //Criando um JSON com o atributo status, para encaminhar um array de status
-            dadosStatusJSON.status = message.SUCCESS_REQUEST.status
-            dadosStatusJSON.message = message.SUCCESS_REQUEST.message
+        if (dadosResultadoDesejado) {
+            dadosResultadoDesejadoJSON.status = message.SUCCESS_REQUEST.status
+            dadosResultadoDesejadoJSON.message = message.SUCCESS_REQUEST.message
 
-            dadosStatusJSON.status_matricula = dadosStatus
+            dadosResultadoDesejadoJSON.resultado_desejado = dadosResultadoDesejado
 
-            return dadosStatusJSON
+            return dadosResultadoDesejadoJSON
 
         } else {
             return message.ERROR_NOT_FOUND
@@ -103,19 +102,19 @@ const getBuscarResultadoDesejadoID = async function (id) { // parei aqui
     }
 }
 
-//Retorna a lista de todos os status matricula
-const getTodosStatusMatricula = async function () {
-    let dadosStatusJSON = {}
+//Retorna a lista de todos os resultados desejados
+const getTodosResultadosDesejados = async function () {
+    let dadosResultadoDesejadoJSON = {}
 
     //Chama a função do arquivo DAO que irá retornar todos os registros do BD
-    let dadosStatus = await statusMatriculaDAO.selectAllStatusMatriculas()
+    let dadosResultado = await resultadoDesejadoDAO.selectAllResultadosDesejados()
 
-    if (dadosStatus) {
-        dadosStatusJSON.status = message.SUCCESS_REQUEST.status
-        dadosStatusJSON.message = message.SUCCESS_REQUEST.message
-        dadosStatusJSON.quantidade = dadosStatus.length
-        dadosStatusJSON.status_matricula = dadosStatus
-        return dadosStatusJSON
+    if (dadosResultado) {
+        dadosResultadoDesejadoJSON.status = message.SUCCESS_REQUEST.status
+        dadosResultadoDesejadoJSON.message = message.SUCCESS_REQUEST.message
+        dadosResultadoDesejadoJSON.quantidade = dadosResultado.length
+        dadosResultadoDesejadoJSON.resultados_desejados = dadosResultado
+        return dadosResultadoDesejadoJSON
 
     } else {
         return message.ERROR_NOT_FOUND //404
@@ -123,22 +122,22 @@ const getTodosStatusMatricula = async function () {
 
 }
 
-const deletarStatusMatricula = async function (id) {
+const deletarResultadoDesejado = async function (id) {
     if (id == ' ' || id == undefined || isNaN(id) || id == null) {
         return message.ERROR_INVALID_ID //400
 
     } else {
-        let buscarById = await getBuscarStatusMatriculaID(id)
+        let buscarById = await getBuscarResultadoDesejadoID(id)
 
-        //Verifica se o status existe, se não existir, envia o retorno da função (getBuscarStatusMatriculaID)
+        //Verifica se o resultado desejado existe, se não existir, envia o retorno da função (getBuscarResultadoDesejadoID)
         if (buscarById.status == 404) {
             return buscarById
 
-        //Se o status existir, prossegue e deleta o status
+        //Se o resultado existir, prossegue e deleta o resultado
         } else {
-            let resultDadosStatus = await statusMatriculaDAO.deleteStatusMatricula(id)
+            let resultDadosResultadoDesejado = await resultadoDesejadoDAO.deleteResultadoDesejado(id)
 
-            if (resultDadosStatus) {
+            if (resultDadosResultadoDesejado) {
                 return message.SUCCESS_DELETED_ITEM //200
             } else {
                 return message.ERROR_INTERNAL_SERVER //500
@@ -148,5 +147,9 @@ const deletarStatusMatricula = async function (id) {
 }
 
 module.exports = {
-    inserirResultadoDesejado
+    inserirResultadoDesejado,
+    getBuscarResultadoDesejadoID,
+    atualizarResultadoDesejado,
+    getTodosResultadosDesejados,
+    deletarResultadoDesejado
 }
