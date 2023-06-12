@@ -93,7 +93,7 @@ const getBuscarTipoCriterioID = async function (id) {
             dadosTipoJSON.status = message.SUCCESS_REQUEST.status
             dadosTipoJSON.message = message.SUCCESS_REQUEST.message
 
-            dadosTipoJSON.tipo = dadosTipo
+            dadosTipoJSON.tipo = dadosTipo[0]
 
             return dadosTipoJSON
 
@@ -113,7 +113,7 @@ const getTodosTiposCriterios = async function () {
     if (dadosTipo) {
         dadosTipoJSON.status = message.SUCCESS_REQUEST.status
         dadosTipoJSON.message = message.SUCCESS_REQUEST.message
-        dadosTipoJSON.quantidade = dadosStatus.length
+        dadosTipoJSON.quantidade = dadosTipo.length
         dadosTipoJSON.tipo = dadosTipo
         return dadosTipoJSON
 
