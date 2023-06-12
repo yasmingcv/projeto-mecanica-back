@@ -27,7 +27,7 @@ const inserirStatusMatricula = async function (dadosStatus) {
 
             dadosStatusJSON.status = message.SUCCESS_CREATED_ITEM.status //201
             dadosStatusJSON.message = message.SUCCESS_CREATED_ITEM.message
-            dadosStatusJSON.status = novoStatusMatricula[0]
+            dadosStatusJSON.status_matricula = novoStatusMatricula
 
             return dadosStatusJSON
 
