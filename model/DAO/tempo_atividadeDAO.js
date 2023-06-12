@@ -17,14 +17,16 @@ const insertTempoAtividade = async (dadosTempo) => {
     insert into tbl_tempo(
         inicio,
         termino,
-        tempo_liquido,
         desconto,
-        observacao 
+        total_geral,
+        tempo_liquido,
+        observacao
                 )values(
     '${dadosTempo.inicio}',
     '${dadosTempo.termino}',
-    '${dadosTempo.tempo_liquido}',
-    '${dadosTempo.desconto}',
+    ${dadosTempo.desconto},
+    TIMEDIFF(termino, inicio),
+    DATE_SUB(total_geral, INTERVAL desconto MINUTE),
     '${dadosTempo.observacao}'
 ,;
 
@@ -47,8 +49,9 @@ const updateTempoAtividade = async (dadosTime) => {
                 update tbl_tempo set
                         inicio = '${dadosTime.inicio}',
                         termino = '${dadosTime.termino}',
-                        tempo_liquido = '${dadosTime.tempo_liquido}',
-                        desconto = '${dadosTime.desconto}',
+                        desconto = ${dadosTempo.desconto},
+                        total_geral = TIMEDIFF(termino, inicio),
+                        tempo_liquido = DATE_SUB(total_geral, INTERVAL desconto MINUTE),
                         observacao = '${dadosTime.observacao}'
                 where id = ${dadosTime.id}
                 `;
@@ -62,7 +65,6 @@ const updateTempoAtividade = async (dadosTime) => {
     } else {
         return false;
     }
-
 
 
 };
@@ -91,7 +93,7 @@ const selectAllTempoAtividade = async () => {
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `
-    select tbl_tempo.id, tbl_tempo.inicio, tbl_tempo.termino, tbl_tempo.tempo_liquido, tbl_tempo.desconto, tbl_tempo.observacao from tbl_tempo;
+    select tbl_tempo.id, tbl_tempo.inicio, tbl_tempo.termino, tbl_tempo.desconto, tbl_tempo.total_geral, tbl_tempo.tempo_liquido, tbl_tempo.observacao from tbl_tempo;
     `;
     console.log(sql);
 
@@ -109,11 +111,10 @@ const selectAllTempoAtividade = async () => {
 
 const selectByIdTempoAtividade = async (id) => {
 
-    let idTempo = id;
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `
-    select tbl_tempo.id, tbl_tempo.inicio, tbl_tempo.termino, tbl_tempo.tempo_liquido, tbl_tempo.desconto, tbl_tempo.observacao from tbl_tempo where id = ${idProfessor}
+    select tbl_tempo.id, tbl_tempo.inicio, tbl_tempo.termino, tbl_tempo.desconto, tbl_tempo.total_geral, tbl_tempo.tempo_liquido, tbl_tempo.observacao from tbl_tempo where id = ${idProfessor};
     `;
 
 
@@ -138,7 +139,7 @@ const selectByInicioAtividade = async (inicio) => {
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `
-    select tbl_tempo.id, tbl_tempo.inicio, tbl_tempo.termino, tbl_tempo.tempo_liquido, tbl_tempo.desconto, tbl_tempo.observacao from tbl_tempo where tbl_tempo.inicio like '%${inicioTempo}%'
+    select tbl_tempo.id, tbl_tempo.inicio, tbl_tempo.termino, tbl_tempo.desconto, tbl_tempo.total_geral, tbl_tempo.tempo_liquido, tbl_tempo.observacao from tbl_tempo where tbl_tempo.inicio like '%${inicioTempo}%'
     `;
 
 
@@ -162,7 +163,7 @@ const selectByTerminoAtividade = async (termino) => {
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `
-    select tbl_tempo.id, tbl_tempo.inicio, tbl_tempo.termino, tbl_tempo.tempo_liquido, tbl_tempo.desconto, tbl_tempo.observacao from tbl_tempo where tbl_tempo.termino like '%${terminoTempo}%'
+    select tbl_tempo.id, tbl_tempo.inicio, tbl_tempo.termino, tbl_tempo.desconto, tbl_tempo.total_geral, tbl_tempo.tempo_liquido, tbl_tempo.observacao from tbl_tempo where tbl_tempo.termino like '%${terminoTempo}%'
     `;
 
 
@@ -180,7 +181,7 @@ const selectByTerminoAtividade = async (termino) => {
 
 const selectLastId = async () => {
 
-    let sql = '    select tbl_tempo.id, tbl_tempo.inicio, tbl_tempo.termino, tbl_tempo.tempo_liquido, tbl_tempo.desconto, tbl_tempo.observacao from tbl_tempo order by id desc limit 1;'
+    let sql = '     select tbl_tempo.id, tbl_tempo.inicio, tbl_tempo.termino, tbl_tempo.desconto, tbl_tempo.total_geral, tbl_tempo.tempo_liquido, tbl_tempo.observacao from tbl_tempo order by id desc limit 1;'
 
     let rsProfessor = await prisma.$queryRawUnsafe(sql);
 
