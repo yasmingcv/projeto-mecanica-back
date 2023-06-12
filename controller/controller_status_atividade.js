@@ -27,7 +27,7 @@ const inserirStatusAtividade = async function (dadosStatus) {
 
             dadosStatusJSON.status = message.SUCCESS_CREATED_ITEM.status //201
             dadosStatusJSON.message = message.SUCCESS_CREATED_ITEM.message
-            dadosStatusJSON.status = novoStatusAtividade[0]
+            dadosStatusJSON.status_atividade = novoStatusAtividade[0]
 
             return dadosStatusJSON
 
@@ -63,7 +63,7 @@ const atualizarStatusAtividade = async function (dadosStatus, idStatus) {
             if (resultDadosStatus) {
                 dadosStatusJSON.status = message.SUCCESS_UPDATED_ITEM.status //200
                 dadosStatusJSON.message = message.SUCCESS_UPDATED_ITEM.message
-                dadosStatusJSON.status = novoStatusId[0]
+                dadosStatusJSON.status_atividade = novoStatusId[0]
                 
                 return dadosStatusJSON
 
@@ -94,7 +94,7 @@ const getBuscarStatusAtividadeID = async function (id) {
             dadosStatusJSON.status = message.SUCCESS_REQUEST.status
             dadosStatusJSON.message = message.SUCCESS_REQUEST.message
 
-            dadosStatusJSON.status = dadosStatus
+            dadosStatusJSON.status_atividade = dadosStatus
 
             return dadosStatusJSON
 
@@ -115,7 +115,7 @@ const getTodosStatusAtividades = async function () {
         dadosStatusJSON.status = message.SUCCESS_REQUEST.status
         dadosStatusJSON.message = message.SUCCESS_REQUEST.message
         dadosStatusJSON.quantidade = dadosStatus.length
-        dadosStatusJSON.status = dadosStatus
+        dadosStatusJSON.status_atividade = dadosStatus
         return dadosStatusJSON
 
     } else {

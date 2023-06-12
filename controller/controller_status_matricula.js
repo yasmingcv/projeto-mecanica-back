@@ -62,7 +62,7 @@ const atualizarStatusMatricula = async function (dadosStatus, idStatus) {
             if (resultDadosStatus) {
                 dadosStatusJSON.status = message.SUCCESS_UPDATED_ITEM.status //200
                 dadosStatusJSON.message = message.SUCCESS_UPDATED_ITEM.message
-                dadosStatusJSON.status = statusId[0]
+                dadosStatusJSON.status_matricula = statusId[0]
                 
                 return dadosStatusJSON
 
@@ -93,7 +93,7 @@ const getBuscarStatusMatriculaID = async function (id) {
             dadosStatusJSON.status = message.SUCCESS_REQUEST.status
             dadosStatusJSON.message = message.SUCCESS_REQUEST.message
 
-            dadosStatusJSON.status = dadosStatus
+            dadosStatusJSON.status_matricula = dadosStatus
 
             return dadosStatusJSON
 
@@ -114,7 +114,7 @@ const getTodosStatusMatricula = async function () {
         dadosStatusJSON.status = message.SUCCESS_REQUEST.status
         dadosStatusJSON.message = message.SUCCESS_REQUEST.message
         dadosStatusJSON.quantidade = dadosStatus.length
-        dadosStatusJSON.status = dadosStatus
+        dadosStatusJSON.status_matricula = dadosStatus
         return dadosStatusJSON
 
     } else {
