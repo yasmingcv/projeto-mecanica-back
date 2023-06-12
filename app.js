@@ -32,7 +32,7 @@ app.use((request, response, next) => {
     next()
 })
 
-//Import do arquivo da controller que irá solicitar a model os dados do BD
+//Import das controllers
 var controllerAluno = require('./controller/controller_aluno.js');
 var controllerProfessor = require('./controller/controller_professor.js');
 var controllerAdministrador = require('./controller/controller_administrador.js');
@@ -45,6 +45,7 @@ var controllerCursos = require('./controller/controller_curso.js');
 var controllerMatricula = require('./controller/controller_matricula.js')
 var controllerCriterio = require('./controller/controller_criterio.js')
 var controllerTipoCriterio = require('./controller/controller_tipo_criterio.js')
+var controllerTipoAtividade = require('./controller/controller_tipo_atividade.js')
 
 /**************************************************** ALUNOS *****************************************************/
 
@@ -994,10 +995,10 @@ app.delete('/v1/senai/usinagem/criterio/:id', cors(), async function (request, r
 //EndPoint: retorna todos os tipos de critérios
 app.get('/v1/senai/usinagem/tipo-criterio', cors(), async function (request, response){
 
-    let dadosCriterios = await controllerTipoCriterio.getTodosTiposCriterios();
+    let dadosTiposCriterios = await controllerTipoCriterio.getTodosTiposCriterios();
 
-    response.json(dadosCriterios)
-    response.status(dadosCriterios.status)
+    response.json(dadosTiposCriterios)
+    response.status(dadosTiposCriterios.status)
 })
 
 //EndPoint: retorna um tipo de criterio filtrando pelo ID 
@@ -1061,6 +1062,79 @@ app.delete('/v1/senai/usinagem/tipo-criterio/:id', cors(), async function (reque
     response.status(resultDadosTipoCriterio.status)
     response.json(resultDadosTipoCriterio)
 })
+
+/******************************************************* TIPO DE ATIVIDADE ***********************************************************/
+//EndPoint: retorna todos os tipos de atividades
+app.get('/v1/senai/usinagem/tipo-atividade', cors(), async function (request, response){
+
+    let dadosTiposAtividades = await controllerTipoAtividade.getTodosTiposAtividades();
+
+    response.json(dadosTiposAtividades)
+    response.status(dadosTiposAtividades.status)
+})
+
+//EndPoint: retorna um tipo de atividade filtrando pelo ID 
+app.get('/v1/senai/usinagem/tipo-atividade/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let dadosTipoAtividade = await controllerTipoAtividade.getBuscarTipoAtividadeID(id)
+
+    response.json(dadosTipoAtividade)
+    response.status(dadosTipoAtividade.status)
+})
+
+//EndPoint: atualiza um tipo de atividade, filtrando pelo ID
+app.put('/v1/senai/usinagem/tipo-atividade/:id', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID do tipo de atividade pelo parametro
+        let id = request.params.id
+        //Recebe os dados do tipo de atividade encaminhados no corpo da requisição
+        let dadosBody = request.body
+        
+        //Encaminha os dados para a controlller
+        let resultDadosTipoAtividade = await controllerTipoAtividade.atualizarTipoAtividade(dadosBody, id)
+
+        response.status(resultDadosTipoAtividade.status)
+        response.json(resultDadosTipoAtividade)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+
+    }
+})
+
+//EndPoint: insere um tipo de atividade
+app.post('/v1/senai/usinagem/tipo-atividade', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body
+
+        let resultDadosTipoAtividade = await controllerTipoAtividade.inserirTipoAtividade(dadosBody)
+
+        response.status(resultDadosTipoAtividade.status)
+        response.json(resultDadosTipoAtividade)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+//EndPoint: apaga um tipo de atividade filtrando pelo ID
+app.delete('/v1/senai/usinagem/tipo-atividade/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let resultDadosTipoAtividade = await controllerTipoAtividade.deletarTipoAtividade(id)
+
+    response.status(resultDadosTipoAtividade.status)
+    response.json(resultDadosTipoAtividade)
+})
+
 
 //------------------------------------------------------------------------------------------------------------------------//
 
