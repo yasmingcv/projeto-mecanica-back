@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Objetivo: Responsável pela manipulação de dados das SUB-TURMAS no Banco de Dados
+ * Objetivo: Responsável pela manipulação de dados do Tempo das atividades no Banco de Dados
  * Autor: Daniela
  * Data: 08/06/2023
  * Versão: 1.0

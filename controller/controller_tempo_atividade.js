@@ -4,7 +4,7 @@
  * Data: 09/06/2023
  * Versão: 1.0
  *****************************************************************************/
-//Import do arquivo para acessar dados da SubTurmas
+//Import do arquivo para acessar dados do Tempo das atividades
 var tempoAtividadeDAO = require('../model/DAO/tempo_atividadeDAO.js')
 
 //Import do arquivo de configuração das variáveis, constantes e funções globais
@@ -14,9 +14,8 @@ const inserirTempoAtividade = async function (dadosTempo) {
     
     if(dadosTempo.inicio == '' || dadosTempo.inicio == undefined || dadosTempo.inicio > 100 ||
        dadosTempo.termino == '' || dadosTempo.termino == undefined || dadosTempo.termino > 100 ||
-       dadosTempo.tempo_liquido == '' || dadosTempo.tempo_liquido == undefined || dadosTempo.tempo_liquido > 100 ||
        dadosTempo.desconto == '' || dadosTempo.desconto == undefined || isNaN(dadosTempo.desconto) ||
-       dadosTempo.observacao == '' || dadosTempo.observacao == undefined || isNaN(dadosTempo.observacao) 
+       dadosTempo.observacao == '' || dadosTempo.observacao == undefined 
     ) {
         return message.ERROR_REQUIRED_FIELDS // 400
     } else {
@@ -25,11 +24,11 @@ const inserirTempoAtividade = async function (dadosTempo) {
         //Verificar se o banco inseriu corretamente
         if(resultDadosTempoAtividade) {
             let dadosTempoAtividadeJSON = {};
-            let novaTurma = await turmaDAO.selectLastId();
+            let novoTempo = await tempoAtividadeDAO.selectLastId();
 
             dadosTempoAtividadeJSON.status = message.SUCCESS_CREATED_ITEM.status; //201
             dadosTempoAtividadeJSON.mensagem = message.SUCCESS_CREATED_ITEM.message;
-            dadosTempoAtividadeJSON.tempo_atividade = novaTurma;
+            dadosTempoAtividadeJSON.tempo_atividade = novoTempo;
 
             return dadosTempoAtividadeJSON;
 
@@ -45,9 +44,8 @@ const atualizarTempoAtividade = async function (dadosTempo, idTempo) {
     if(
         dadosTempo.inicio == '' || dadosTempo.inicio == undefined || dadosTempo.inicio > 100 ||
         dadosTempo.termino == '' || dadosTempo.termino == undefined || dadosTempo.termino > 100 ||
-        dadosTempo.tempo_liquido == '' || dadosTempo.tempo_liquido == undefined || dadosTempo.tempo_liquido > 100 ||
         dadosTempo.desconto == '' || dadosTempo.desconto == undefined || isNaN(dadosTempo.desconto) ||
-        dadosTempo.observacao == '' || dadosTempo.observacao == undefined || isNaN(dadosTempo.observacao) 
+        dadosTempo.observacao == '' || dadosTempo.observacao == undefined  
     ) {
         return message.ERROR_REQUIRED_FIELDS // 400
 
@@ -61,14 +59,14 @@ const atualizarTempoAtividade = async function (dadosTempo, idTempo) {
         let statusId = await tempoDAO.selectByIdTempo(idTempo)
 
         if(statusId) {
-            let resultDadosTempo = await turmaDAO.updateTurma(dadosTurma)
+            let resultDadosTempo = await tempoAtividadeDAO.updateTempoAtividade(dadosTempo)
 
             if(resultDadosTempo) {
                 dadosTempoAtividadeJSON.message = message.SUCCESS_UPDATED_ITEM.message;
                 dadosTempoAtividadeJSON.status = message.SUCCESS_UPDATED_ITEM.status; // 200
                 dadosTempoAtividadeJSON.tempo_atividade = dadosTempo;
 
-                return dadosTurmaJSON;
+                return dadosTempoAtividadeJSON;
 
             } else {
                 return message.ERROR_INTERNAL_SERVER; //500
@@ -86,7 +84,7 @@ const deletarTempoAtividade= async function (id) {
     } else {
         let statusId = await tempoAtividadeDAO.selectByIdTempoAtividade(id)
 
-        //Verificar se a turma selecionado existe
+        //Verificar se o tempo selecionado existe
         if(statusId){
             let resultDadosTempoAtividade = await tempoAtividadeDAO.deleteTempoAtividade(id)
 
@@ -106,15 +104,15 @@ const getBuscarTempoAtividade = async function (id) {
         return message.ERROR_INVALID_ID
 
     } else {
-        let dadosTurmaJSON = {}
-        let dadosTurma = await turmaDAO.selectByIdTurma(id)
+        let dadosTempoJSON = {}
+        let dadosTempo = await tempoAtividadeDAO.selectByIdTempoAtividade(id)
 
-        if(dadosTurma) {
-            dadosTurmaJSON.message = message.SUCCESS_REQUEST.message
-            dadosTurmaJSON.status = message.SUCCESS_REQUEST.status //200
-            dadosTurmaJSON.turma = dadosTurma
+        if(dadosTempo) {
+            dadosTempoJSON.message = message.SUCCESS_REQUEST.message
+            dadosTempoJSON.status = message.SUCCESS_REQUEST.status //200
+            dadosTempoJSON.tempo_atividade = dadosTempo
 
-            return dadosTurmaJSON
+            return dadosTempoJSON
         } else {
             return message.ERROR_NOT_FOUND //404
         }
@@ -126,11 +124,11 @@ const getTempoAtividade = async function () {
 
     let dadosTempoAtividade = await tempoAtividadeDAO.selectAllTempoAtividade()
 
-    if(dadosTurma) {
+    if(dadosTempoAtividade) {
         dadosTempoAtividadeJSON.message = message.SUCCESS_REQUEST.message
         dadosTempoAtividadeJSON.status = message.SUCCESS_REQUEST.status //200
         dadosTempoAtividadeJSON.quantidade = dadosTempoAtividade.length
-        dadosTempoAtividadeJSON.turmas = dadosTempoAtividade
+        dadosTempoAtividadeJSON.tempo_atividade = dadosTempoAtividade
 
         return dadosTempoAtividadeJSON;
     } else {
