@@ -11,6 +11,8 @@ var unidadeCurricularProfessorDAO = require('../model/DAO/unidade_curricular_pro
 var message = require('./modulo/config.js');
 
 const inserirUnidadeCurricularProfessor = async function (dadosUnidadeCurricularProfessor) {
+
+    console.log(dadosUnidadeCurricularProfessor);
     
     if(dadosUnidadeCurricularProfessor.id_unidade_curricular == '' || dadosUnidadeCurricularProfessor.id_unidade_curricular == undefined ||  isNaN(dadosUnidadeCurricularProfessor.id_unidade_curricular)  ||
        dadosUnidadeCurricularProfessor.id_professor == '' || dadosUnidadeCurricularProfessor.id_professor == undefined || isNaN(dadosUnidadeCurricularProfessor.id_professor) 
@@ -18,7 +20,7 @@ const inserirUnidadeCurricularProfessor = async function (dadosUnidadeCurricular
         return message.ERROR_REQUIRED_FIELDS // 400
     } else {
         let resultDadosUnidadeCurricularProfessor = await unidadeCurricularProfessorDAO.insertUnidadeCurricularProfessor(dadosUnidadeCurricularProfessor)
-        console.log(resultDadosUnidadeCurricularProfessor);
+        console.log('controller - ' + resultDadosUnidadeCurricularProfessor);
         
 
         //Verificar se o banco inseriu corretamente
@@ -57,6 +59,7 @@ const atualizarUnidadeCurricularProfessor = async function (dadosUnidadeCurricul
         let dadosUnidadeCurricularProfessorJSON = {}
 
         let statusId = await unidadeCurricularProfessorDAO.selectUnidadeCurricularProfessorbyID(idUnidadeCurricularProfessor)
+        console.log(statusId)
 
         if(statusId) {
             let resultDadosUnidadeCurricularProfessor = await unidadeCurricularProfessorDAO.updateUnidadeCurricularProfessor(dadosUnidadeCurricularProfessor)
@@ -123,6 +126,7 @@ const getAllUnidadeCurricularProfessor = async function () {
     let dadosUnidadeCurricularProfessorJSON = {}
 
     let dadosUnidadeCurricularProfessor = await unidadeCurricularProfessorDAO.selectAllUnidadeCurricularProfessor()
+    console.log(dadosUnidadeCurricularProfessor);
 
     if(dadosUnidadeCurricularProfessor) {
         dadosUnidadeCurricularProfessorJSON.message = message.SUCCESS_REQUEST.message

@@ -26,6 +26,7 @@ const insertUnidadeCurricularProfessor = async (dadosUnidadeCurricularProfessor)
 
     //Executa o scriptSQL no BD
     let resultStatus = await prisma.$executeRawUnsafe(sql);
+    console.log(resultStatus);
 
     if (resultStatus) {
         return true;
@@ -94,6 +95,7 @@ from tbl_unidade_curricular_professor
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
     let rsTempo = await prisma.$queryRawUnsafe(sql)
+    console.log('DAO - ' + rsTempo);
 
     //Valida se o banco de dados retornou algum registro 
     if (rsTempo.length > 0) {

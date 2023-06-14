@@ -1723,10 +1723,10 @@ app.post('/v1/senai/usinagem/unidade-curricular-professor', cors(), bodyParserJS
     if (String(contentType).toLowerCase() == 'application/json') {
         //Recebe os dados encaminhados na requisição
         let dadosBody = request.body
-        console.log(dadosBody);
-
+        
         let resultDadosUnidadeCurricularProfessor = await controllerUnidadeCurricularProfessor.inserirUnidadeCurricularProfessor(dadosBody)
-
+        
+        console.log(dadosBody);
         response.status(resultDadosUnidadeCurricularProfessor.status)
         response.json(resultDadosUnidadeCurricularProfessor)
     } else {
