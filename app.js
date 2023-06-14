@@ -51,6 +51,7 @@ var controllerStatusMatricula = require('./controller/controller_status_matricul
 var controllerResultadoDesejado = require('./controller/controller_resultado_desejado.js')
 var controllerResultadoDesejadoCriterio = require('./controller/controller_resultado_desejado_criterio.js')
 var controllerMatriculaAtividade = require('./controller/controller_matricula_atividade.js')
+var controllerMatriculaTurmaSubturma = require('./controller/controller_matricula_turma_subturma.js')
 
 /**************************************************** ALUNOS *****************************************************/
 
@@ -1495,6 +1496,75 @@ app.delete('/v1/senai/usinagem/matricula-atividade/:id', cors(), async function 
     response.status(resultDadosMatriculaAtividade.status)
     response.json(resultDadosMatriculaAtividade)
 })
+
+/******************************************************* MATRICULA TURMA SUBTURMA ***********************************************************/
+
+// EndPoint: retorna todos os registros de matricula_turma_subturma
+app.get('/v1/senai/usinagem/matricula-turma-subturma', cors(), async function (request, response) {
+    let dadosMatriculasTurmaSubturma = await controllerMatriculaTurmaSubturma.getMatriculasTurmasSubturmas()
+  
+    response.status(dadosMatriculasTurmaSubturma.status)
+    response.json(dadosMatriculasTurmaSubturma)
+  })
+  
+  // EndPoint: retorna um registro de matricula_turma_subturma filtrando pelo ID do registro
+  app.get('/v1/senai/usinagem/matricula-turma-subturma/:id', cors(), async function (request, response) {
+    let id = request.params.id
+  
+    let dadosMatriculaTurmaSubturma = await controllerMatriculaTurmaSubturma.getBuscarMatriculaTurmaSubturmaID(id)
+  
+    response.status(dadosMatriculaTurmaSubturma.status)
+    response.json(dadosMatriculaTurmaSubturma)
+  })
+  
+  // EndPoint: atualiza um registro de matricula_turma_subturma filtrando pelo ID do registro
+  app.put('/v1/senai/usinagem/matricula-turma-subturma/:id', cors(), bodyParserJSON, async function (request, response) {
+    let contentType = request.headers['content-type']
+  
+    // Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+      let id = request.params.id
+      let dadosBody = request.body
+  
+      // Encaminha os dados para a controller
+      let resultDadosMatriculaTurmaSubturma = await controllerMatriculaTurmaSubturma.atualizarMatriculaTurmaSubturma(dadosBody, id)
+  
+      response.status(resultDadosMatriculaTurmaSubturma.status)
+      response.json(resultDadosMatriculaTurmaSubturma)
+    } else {
+      response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+      response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+  })
+  
+  // EndPoint: insere um registro de matricula_turma_subturma
+  app.post('/v1/senai/usinagem/matricula-turma-subturma', cors(), bodyParserJSON, async function (request, response) {
+    let contentType = request.headers['content-type']
+  
+    if (String(contentType).toLowerCase() == 'application/json') {
+      // Recebe os dados encaminhados na requisição
+      let dadosBody = request.body
+  
+      let resultDadosMatriculaTurmaSubturma = await controllerMatriculaTurmaSubturma.inserirMatriculaTurmaSubturma(dadosBody)
+  
+      response.status(resultDadosMatriculaTurmaSubturma.status)
+      response.json(resultDadosMatriculaTurmaSubturma)
+    } else {
+      response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+      response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+  })
+  
+  // EndPoint: apaga um registro de matricula_turma_subturma filtrando pelo ID do registro
+  app.delete('/v1/senai/usinagem/matricula-turma-subturma/:id', cors(), async function (request, response) {
+    let id = request.params.id
+  
+    let resultDadosMatriculaTurmaSubturma = await controllerMatriculaTurmaSubturma.deletarMatriculaTurmaSubturma(id)
+  
+    response.status(resultDadosMatriculaTurmaSubturma.status)
+    response.json(resultDadosMatriculaTurmaSubturma)
+  })
+  
 
 
 //------------------------------------------------------------------------------------------------------------------------//
