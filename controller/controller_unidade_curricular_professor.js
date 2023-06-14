@@ -17,16 +17,20 @@ const inserirUnidadeCurricularProfessor = async function (dadosUnidadeCurricular
     ) {
         return message.ERROR_REQUIRED_FIELDS // 400
     } else {
-        let resultDadosUnidadeCurricularProfessor = await unidadeCurricularProfessorDAO.selectLastId(dadosUnidadeCurricularProfessor)
+        let resultDadosUnidadeCurricularProfessor = await unidadeCurricularProfessorDAO.insertUnidadeCurricularProfessor(dadosUnidadeCurricularProfessor)
+        console.log(resultDadosUnidadeCurricularProfessor);
+        
 
         //Verificar se o banco inseriu corretamente
         if(resultDadosUnidadeCurricularProfessor) {
             let dadosUnidadeCurricularProfessorJSON = {};
             let novaUnidadeCurricularProfessor = await unidadeCurricularProfessorDAO.selectLastId();
 
-            dadosUnidadeCurricularProfessor.status = message.SUCCESS_CREATED_ITEM.status; //201
-            dadosUnidadeCurricularProfessor.mensagem = message.SUCCESS_CREATED_ITEM.message;
-            dadosUnidadeCurricularProfessor.unidade_curricular_professor = novaUnidadeCurricularProfessor;
+            dadosUnidadeCurricularProfessorJSON.status = message.SUCCESS_CREATED_ITEM.status; //201
+            dadosUnidadeCurricularProfessorJSON.mensagem = message.SUCCESS_CREATED_ITEM.message;
+            dadosUnidadeCurricularProfessorJSON.unidade_curricular_professor = novaUnidadeCurricularProfessor;
+            console.log(novaUnidadeCurricularProfessor);
+            
 
             return dadosUnidadeCurricularProfessorJSON;
 

@@ -82,7 +82,7 @@ const selectAllProfessores = async () => {
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `
-    select select tbl_professor.id, tbl_professor.nome, tbl_professor.email, tbl_professor.senha from tbl_professor order by id desc limit 1;tbl_professor.nome, tbl_professor.email, tbl_professor.senha from tbl_professor;
+    select tbl_professor.id, tbl_professor.nome, tbl_professor.email, tbl_professor.senha from tbl_professor;
     `;
     console.log(sql);
 

@@ -19,8 +19,10 @@ const insertUnidadeCurricularProfessor = async (dadosUnidadeCurricularProfessor)
         id_professor
         )values(
     ${dadosUnidadeCurricularProfessor.id_unidade_curricular},
-    ${dadosUnidadeCurricularProfessor.id_professor}
+    ${dadosUnidadeCurricularProfessor.id_professor})
     `;
+    console.log(sql);
+    
 
     //Executa o scriptSQL no BD
     let resultStatus = await prisma.$executeRawUnsafe(sql);
@@ -58,7 +60,7 @@ const updateUnidadeCurricularProfessor = async (dadosUnidadeCurricularProfessor)
 const deleteUnidadeCurricularProfessor = async (id) => {
 
     let idUnidadeCurricularProfessor = id;
-    console.log(idTempo);
+    console.log(idUnidadeCurricularProfessor);
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `delete from tbl_unidade_curricular_professor where id = ${idUnidadeCurricularProfessor}`;
@@ -79,7 +81,7 @@ const selectAllUnidadeCurricularProfessor = async () => {
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `
-    select tbl_unidade_curricular_professor.id_unidade_curricular, tbl_unidade_curricular_professor.id_professor,
+    select tbl_unidade_curricular_professor.id as id_unidade_curricular_professor, tbl_unidade_curricular_professor.id_unidade_curricular, tbl_unidade_curricular_professor.id_professor,
     tbl_unidade_curricular.nome as nome_unidade_curricular,
     tbl_professor.nome as nome_professor
 from tbl_unidade_curricular_professor 
