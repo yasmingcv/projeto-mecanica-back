@@ -1572,5 +1572,5 @@ app.get('/v1/senai/usinagem/matricula-turma-subturma', cors(), async function (r
 const porta = process.env.port || 8080
 
 app.listen(porta, function () {
-    console.log('Servidor aguardando requisiçõs na porta 8080')
+    console.log(`Servidor aguardando requisiçõs na porta ${porta}`)
 })
