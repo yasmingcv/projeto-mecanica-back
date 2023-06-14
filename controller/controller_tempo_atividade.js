@@ -119,6 +119,64 @@ const getBuscarTempoAtividade = async function (id) {
     }
 }
 
+//Retorna um tempo de atividade pelo inicio
+const getBuscarTempoByInicio = async (inicio) => {
+
+    let inicioTempo = inicio
+
+    let dadosByInicioTempoJSON = {}
+
+    if (!isNaN(inicioTempo) || inicioTempo !== undefined || inicioTempo !== '') {
+
+        //chama a função do arquivo DAO que irá retornar todos os registros do DB
+        let dadosByInicioTempo = await tempoAtividadeDAO.selectByInicioAtividade(inicioTempo);
+
+        if (dadosByInicioTempo) {
+            //Criando um JSON com o atrbuto tempo_atividade, para encaminhar um array de tempo
+            dadosByInicioTempoJSON.status = message.SUCCESS_REQUEST.status;
+            dadosByInicioTempoJSON.quantidade = dadosByNomeCurso.length;
+            dadosByInicioTempoJSON.tempo_atividade = dadosByInicioTempo;
+
+            return dadosByInicioTempoJSON;
+        } else {
+            return false;
+        }
+    } else {
+
+        return false;
+    }
+
+};
+
+//Retorna um tempo de atividade pelo termino
+const getBuscarTempoByTermino = async (termino) => {
+
+    let terminoTempo = termino
+
+    let dadosByTerminoTempoJSON = {}
+
+    if (!isNaN(terminoTempo) || terminoTempo !== undefined || terminoTempo !== '') {
+
+        //chama a função do arquivo DAO que irá retornar todos os registros do DB
+        let dadosByTerminoTempo = await tempoAtividadeDAO.selectByInicioAtividade(inicioTempo);
+
+        if (dadosByTerminoTempo) {
+            //Criando um JSON com o atrbuto tempo_atividade, para encaminhar um array de tempo
+            dadosByTerminoTempoJSON.status = message.SUCCESS_REQUEST.status;
+            dadosByTerminoTempoJSON.quantidade = dadosByNomeCurso.length;
+            dadosByTerminoTempoJSON.tempo_atividade = dadosByTerminoTempo;
+
+            return dadosByTerminoTempoJSON;
+        } else {
+            return false;
+        }
+    } else {
+
+        return false;
+    }
+
+};
+
 const getTempoAtividade = async function () {
     let dadosTempoAtividadeJSON = {}
 
@@ -142,7 +200,8 @@ module.exports = {
     atualizarTempoAtividade,
     deletarTempoAtividade,
     getBuscarTempoAtividade,
-    getTempoAtividade
+    getTempoAtividade,
+    getBuscarTempoByInicio
 }
 
 
