@@ -50,6 +50,7 @@ var controllerStatusAtividade = require('./controller/controller_status_atividad
 var controllerStatusMatricula = require('./controller/controller_status_matricula.js')
 var controllerResultadoDesejado = require('./controller/controller_resultado_desejado.js')
 var controllerResultadoDesejadoCriterio = require('./controller/controller_resultado_desejado_criterio.js')
+var controllerMatriculaAtividade = require('./controller/controller_matricula_atividade.js')
 
 /**************************************************** ALUNOS *****************************************************/
 
@@ -1354,7 +1355,7 @@ app.delete('/v1/senai/usinagem/resultado-desejado/:id', cors(), async function (
     response.json(resultDadosResultadoDesejado)
 })
 
-/******************************************************* RESULTADO DESJADO CRITÉRIO***********************************************************/
+/******************************************************* RESULTADO DESJADO CRITÉRIO ***********************************************************/
 
 //EndPoint: retorna todos os registros de resultados desejados e critérios
 app.get('/v1/senai/usinagem/resultado-desejado-criterio', cors(), async function (request, response){
@@ -1423,6 +1424,76 @@ app.delete('/v1/senai/usinagem/resultado-desejado-criterio/:id', cors(), async f
 
     response.status(resultDadosResultadoDesejadoCriterio.status)
     response.json(resultDadosResultadoDesejadoCriterio)
+})
+
+/******************************************************* MATRICULA ATIVIDADE ***********************************************************/
+
+// EndPoint: retorna todos os registros de matricula_atividade
+app.get('/v1/senai/usinagem/matricula-atividade', cors(), async function (request, response) {
+    let dadosMatriculasAtividades = await controllerMatriculaAtividade.getMatriculasAtividades()
+
+    response.json(dadosMatriculasAtividades)
+    response.status(dadosMatriculasAtividades.status)
+})
+
+// EndPoint: retorna um registro de matricula_atividade filtrando pelo ID do registro
+app.get('/v1/senai/usinagem/matricula-atividade/:id', cors(), async function (request, response) {
+    let id = request.params.id
+
+    let dadosMatriculaAtividade = await controllerMatriculaAtividade.getBuscarMatriculaAtividadeID(id)
+
+    response.json(dadosMatriculaAtividade)
+    response.status(dadosMatriculaAtividade.status)
+})
+
+// EndPoint: atualiza um registro de matricula_atividade filtrando pelo ID do registro
+app.put('/v1/senai/usinagem/matricula-atividade/:id', cors(), bodyParserJSON, async function (request, response) {
+    let contentType = request.headers['content-type']
+
+    // Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        let id = request.params.id
+        let dadosBody = request.body
+        
+        // Encaminha os dados para a controller
+        let resultDadosMatriculaAtividade = await controllerMatriculaAtividade.atualizarMatriculaAtividade(dadosBody, id)
+
+        response.status(resultDadosMatriculaAtividade.status)
+        response.json(resultDadosMatriculaAtividade)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+
+    }
+})
+
+// EndPoint: insere um registro de matricula_atividade
+app.post('/v1/senai/usinagem/matricula-atividade', cors(), bodyParserJSON, async function (request, response) {
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        // Recebe os dados encaminhados na requisição
+        let dadosBody = request.body
+
+        let resultDadosMatriculaAtividade = await controllerMatriculaAtividade.inserirMatriculaAtividade(dadosBody)
+
+        response.status(resultDadosMatriculaAtividade.status)
+        response.json(resultDadosMatriculaAtividade)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+// EndPoint: apaga um registro de matricula_atividade filtrando pelo ID do registro
+app.delete('/v1/senai/usinagem/matricula-atividade/:id', cors(), async function (request, response) {
+    let id = request.params.id
+
+    let resultDadosMatriculaAtividade = await controllerMatriculaAtividade.deletarMatriculaAtividade(id)
+
+    response.status(resultDadosMatriculaAtividade.status)
+    response.json(resultDadosMatriculaAtividade)
 })
 
 

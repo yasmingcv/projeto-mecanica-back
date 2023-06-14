@@ -13,11 +13,11 @@ var prisma = new PrismaClient()
 
 const insertMatriculaAtividade = async function (dadosMatriculaAtividade) {
     let sql = `insert into tbl_matricula_atividade (
-                id_matricula,
+                id_atividade,
                 id_status_atividade,
                 id_matricula_aluno
             ) values (
-                ${dadosMatriculaAtividade.id_matricula},
+                ${dadosMatriculaAtividade.id_atividade},
                 ${dadosMatriculaAtividade.id_status_atividade},
                 ${dadosMatriculaAtividade.id_matricula_aluno}
             )`
@@ -34,7 +34,7 @@ const insertMatriculaAtividade = async function (dadosMatriculaAtividade) {
 
 const updateMatriculaAtividade = async function (dadosMatriculaAtividade) {
     let sql = `update tbl_matricula_atividade set 
-        id_matricula = ${dadosMatriculaAtividade.id_matricula},
+        id_atividade = ${dadosMatriculaAtividade.id_atividade},
         id_status_atividade = ${dadosMatriculaAtividade.id_status_atividade},
         id_matricula_aluno = ${dadosMatriculaAtividade.id_matricula_aluno}
    
@@ -62,17 +62,23 @@ const deleteMatriculaAtividade = async function (id) {
     }
 }
 
-const selectAllResultadosDesejadosCriterios = async function () { //parei aqui
-    let sql = `select tbl_resultado_desejado_criterio.id, 
-                        tbl_resultado_desejado_criterio.id_resultado_desejado, tbl_resultado_desejado.resultado_desejado,
-                        tbl_resultado_desejado_criterio.id_criterio, tbl_criterio.criterio
-                        
-                    from tbl_resultado_desejado_criterio
-
-                    inner join tbl_resultado_desejado
-                        on tbl_resultado_desejado.id = tbl_resultado_desejado_criterio.id_resultado_desejado
-                    inner join tbl_criterio
-                        on tbl_criterio.id = tbl_resultado_desejado_criterio.id_criterio`
+const selectAllMatriculasAtividades = async function () { 
+    let sql = `select tbl_matricula_atividade.id,
+                    tbl_matricula_atividade.id_atividade, tbl_atividade.nome as nome_atividade, tbl_atividade.tempo_previsto,
+                    tbl_matricula_atividade.id_status_atividade, tbl_status_atividade.nome as status,
+                    tbl_matricula_atividade.id_matricula_aluno, tbl_matricula_aluno.numero_matricula,
+                    tbl_aluno.nome as nome_aluno
+                    
+                from tbl_matricula_atividade
+                inner join tbl_atividade
+                    on tbl_atividade.id = tbl_matricula_atividade.id_atividade
+                inner join tbl_status_atividade
+                    on tbl_status_atividade.id = tbl_matricula_atividade.id_status_atividade
+                inner join tbl_matricula_aluno
+                    on tbl_matricula_aluno.id = tbl_matricula_atividade.id_matricula_aluno
+                inner join tbl_aluno
+                    on tbl_aluno.id = tbl_matricula_aluno.id_aluno
+                    `
 
     let resultStatus = await prisma.$queryRawUnsafe(sql)
 
@@ -83,19 +89,25 @@ const selectAllResultadosDesejadosCriterios = async function () { //parei aqui
     }
 }
 
-const selectByIdResultadoDesejadoCriterio = async function (id) {
-    let sql = `select tbl_resultado_desejado_criterio.id, 
-                        tbl_resultado_desejado_criterio.id_resultado_desejado, tbl_resultado_desejado.resultado_desejado,
-                        tbl_resultado_desejado_criterio.id_criterio, tbl_criterio.criterio
-                        
-                    from tbl_resultado_desejado_criterio
+const selectByIdMatriculaAtividade = async function (id) {
+    let sql = `select tbl_matricula_atividade.id,
+                    tbl_matricula_atividade.id_atividade, tbl_atividade.nome as nome_atividade, tbl_atividade.tempo_previsto,
+                    tbl_matricula_atividade.id_status_atividade, tbl_status_atividade.nome as status,
+                    tbl_matricula_atividade.id_matricula_aluno, tbl_matricula_aluno.numero_matricula,
+                    tbl_aluno.nome as nome_aluno
+                    
+                from tbl_matricula_atividade
+                inner join tbl_atividade
+                    on tbl_atividade.id = tbl_matricula_atividade.id_atividade
+                inner join tbl_status_atividade
+                    on tbl_status_atividade.id = tbl_matricula_atividade.id_status_atividade
+                inner join tbl_matricula_aluno
+                    on tbl_matricula_aluno.id = tbl_matricula_atividade.id_matricula_aluno
+                inner join tbl_aluno
+                    on tbl_aluno.id = tbl_matricula_aluno.id_aluno
 
-                    inner join tbl_resultado_desejado
-                        on tbl_resultado_desejado.id = tbl_resultado_desejado_criterio.id_resultado_desejado
-                    inner join tbl_criterio
-                        on tbl_criterio.id = tbl_resultado_desejado_criterio.id_criterio
-                        
-                    where tbl_resultado_desejado_criterio.id = ${id}`
+                where tbl_matricula_atividade.id = ${id}
+                    `
 
     let resultStatus = await prisma.$queryRawUnsafe(sql)
 
@@ -108,7 +120,7 @@ const selectByIdResultadoDesejadoCriterio = async function (id) {
 
 //Retorna o ultimo ID inserido no BD
 const selectLastId = async function (){
-    let sql = 'select * from tbl_resultado_desejado_criterio order by id desc limit 1;'
+    let sql = 'select * from tbl_matricula_atividade order by id desc limit 1;'
 
     let resultStatus = await prisma.$queryRawUnsafe(sql)
 
@@ -123,5 +135,8 @@ const selectLastId = async function (){
 module.exports = {
     insertMatriculaAtividade,
     updateMatriculaAtividade,
-    deleteMatriculaAtividade
+    deleteMatriculaAtividade,
+    selectAllMatriculasAtividades,
+    selectByIdMatriculaAtividade,
+    selectLastId
 }
