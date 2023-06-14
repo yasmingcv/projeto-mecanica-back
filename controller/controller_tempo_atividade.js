@@ -19,7 +19,7 @@ const inserirTempoAtividade = async function (dadosTempo) {
     ) {
         return message.ERROR_REQUIRED_FIELDS // 400
     } else {
-        let resultDadosTempoAtividade = await tempoAtividadeDAO.insertTempo(dadosTempo)
+        let resultDadosTempoAtividade = await tempoAtividadeDAO.insertTempoAtividade(dadosTempo)
 
         //Verificar se o banco inseriu corretamente
         if(resultDadosTempoAtividade) {
@@ -56,7 +56,7 @@ const atualizarTempoAtividade = async function (dadosTempo, idTempo) {
         dadosTempo.id = idTempo
         let dadosTempoAtividadeJSON = {}
 
-        let statusId = await tempoDAO.selectByIdTempo(idTempo)
+        let statusId = await tempoAtividadeDAO.selectByIdTempoAtividade(idTempo)
 
         if(statusId) {
             let resultDadosTempo = await tempoAtividadeDAO.updateTempoAtividade(dadosTempo)
@@ -99,7 +99,7 @@ const deletarTempoAtividade= async function (id) {
     }
 }
 
-const getBuscarTempoAtividade = async function (id) {
+const getBuscarTempoAtividadeById = async function (id) {
     if (id == '' || isNaN(id) || id == undefined) {
         return message.ERROR_INVALID_ID
 
@@ -118,64 +118,6 @@ const getBuscarTempoAtividade = async function (id) {
         }
     }
 }
-
-//Retorna um tempo de atividade pelo inicio
-const getBuscarTempoByInicio = async (inicio) => {
-
-    let inicioTempo = inicio
-
-    let dadosByInicioTempoJSON = {}
-
-    if (!isNaN(inicioTempo) || inicioTempo !== undefined || inicioTempo !== '') {
-
-        //chama a função do arquivo DAO que irá retornar todos os registros do DB
-        let dadosByInicioTempo = await tempoAtividadeDAO.selectByInicioAtividade(inicioTempo);
-
-        if (dadosByInicioTempo) {
-            //Criando um JSON com o atrbuto tempo_atividade, para encaminhar um array de tempo
-            dadosByInicioTempoJSON.status = message.SUCCESS_REQUEST.status;
-            dadosByInicioTempoJSON.quantidade = dadosByNomeCurso.length;
-            dadosByInicioTempoJSON.tempo_atividade = dadosByInicioTempo;
-
-            return dadosByInicioTempoJSON;
-        } else {
-            return false;
-        }
-    } else {
-
-        return false;
-    }
-
-};
-
-//Retorna um tempo de atividade pelo termino
-const getBuscarTempoByTermino = async (termino) => {
-
-    let terminoTempo = termino
-
-    let dadosByTerminoTempoJSON = {}
-
-    if (!isNaN(terminoTempo) || terminoTempo !== undefined || terminoTempo !== '') {
-
-        //chama a função do arquivo DAO que irá retornar todos os registros do DB
-        let dadosByTerminoTempo = await tempoAtividadeDAO.selectByInicioAtividade(inicioTempo);
-
-        if (dadosByTerminoTempo) {
-            //Criando um JSON com o atrbuto tempo_atividade, para encaminhar um array de tempo
-            dadosByTerminoTempoJSON.status = message.SUCCESS_REQUEST.status;
-            dadosByTerminoTempoJSON.quantidade = dadosByNomeCurso.length;
-            dadosByTerminoTempoJSON.tempo_atividade = dadosByTerminoTempo;
-
-            return dadosByTerminoTempoJSON;
-        } else {
-            return false;
-        }
-    } else {
-
-        return false;
-    }
-
-};
 
 const getTempoAtividade = async function () {
     let dadosTempoAtividadeJSON = {}
@@ -199,9 +141,8 @@ module.exports = {
     inserirTempoAtividade,
     atualizarTempoAtividade,
     deletarTempoAtividade,
-    getBuscarTempoAtividade,
-    getTempoAtividade,
-    getBuscarTempoByInicio
+    getBuscarTempoAtividadeById,
+    getTempoAtividade
 }
 
 
