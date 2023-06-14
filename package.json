@@ -1,7 +1,4 @@
 {
-  "scripts": {
-    "postinstall": "prisma generate"
-  },
   "dependencies": {
     "@prisma/client": "^4.15.0",
     "body-parser": "^1.20.2",
