@@ -79,7 +79,7 @@ const verifyJWT = async function (request, response, next) {
 }
 
 //Autenticar aluno com email e senha
-app.get('/v1/senai/usinagem/aluno/autenticar', cors(), bodyParserJSON, async function (request, response){
+app.post('/v1/senai/usinagem/aluno/autenticar', cors(), bodyParserJSON, async function (request, response){
     let dadosBody = request.body
 
     let resultDadosAluno = await controllerAluno.autenticarAluno(dadosBody.email, dadosBody.senha)
