@@ -52,6 +52,8 @@ var controllerResultadoDesejado = require('./controller/controller_resultado_des
 var controllerResultadoDesejadoCriterio = require('./controller/controller_resultado_desejado_criterio.js')
 var controllerMatriculaAtividade = require('./controller/controller_matricula_atividade.js')
 var controllerMatriculaTurmaSubturma = require('./controller/controller_matricula_turma_subturma.js')
+var controllerTempoAtividade = require('./controller/controller_tempo_atividade.js')
+var controllerUnidadeCurricularProfessor  = require('./controller/controller_unidade_curricular_professor.js')
 
 /**************************************************** ALUNOS *****************************************************/
 
@@ -807,29 +809,7 @@ app.post('/v1/senai/usinagem/curso', cors(), bodyParserJSON, async function (req
     }
 });
 
-//EndPoint: atualiza um curso, filtrando pelo ID
-app.put('/v1/senai/usinagem/curso/:id', cors(), bodyParserJSON, async function (request, response){
-    let contentType = request.headers['content-type']
 
-    //Validação para receber dados apenas no formato JSON
-    if (String(contentType).toLowerCase() == 'application/json') {
-        //Recebe o ID da atividade pelo parametro
-        let id = request.params.id
-        //Recebe os dados da atividade encaminhados no corpo da requisição
-        let dadosBody = request.body
-        
-        //Encaminha os dados para a controlller
-        let resultDadosCurso = await controllerCursos.atualizarCurso(dadosBody, id)
-
-        response.status(resultDadosCurso.status)
-        response.json(resultDadosCurso)
-
-    } else {
-        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
-        response.json(message.ERROR_INVALID_CONTENT_TYPE)
-
-    }
-});
 
 //EndPoint: apaga uma sub-turma filtrando pelo ID
 app.delete('/v1/senai/usinagem/curso/:id', cors(), async function (request, response){
@@ -1565,6 +1545,208 @@ app.get('/v1/senai/usinagem/matricula-turma-subturma', cors(), async function (r
     response.json(resultDadosMatriculaTurmaSubturma)
   })
   
+
+
+
+/******************************************************* TEMPO ATIVIDADE ***********************************************************/  
+
+//EndPoint: retorna todas os tempos de Atividades
+app.get('/v1/senai/usinagem/tempo-atividade', cors(), async function (request, response){
+
+    let dadosTempo = await controllerTempoAtividade.getTempoAtividade();
+
+    response.json(dadosTempo)
+    response.status(dadosTempo.status)
+});
+
+//EndPoint: retorna um tempo de atividade filtrando pelo ID 
+app.get('/v1/senai/usinagem/tempo-atividade/id/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let dadosTempo = await controllerTempoAtividade.getBuscarTempoAtividadeById(id)
+
+    response.json(dadosTempo)
+    response.status(dadosTempo.status)
+});
+
+//Endpoint: Retorna um tempo de atividade filtrando pelo inicio
+app.get('/v1/senai/usinagem/tempo-atividade/inicio/:inicio', cors(), async function (request, response) {
+
+    //Recebe 
+    let inicioTempo = request.params.inicio;
+
+    let dadosTempoByinicio = await controllerTempoAtividade.getBuscarTempoByInicio(inicioTempo);
+
+    response.status(dadosTempoByinicio.status);
+    response.json(dadosTempoByinicio);
+
+});
+
+//EndPoint: atualiza um tempo de atividade, filtrando pelo ID
+app.put('/v1/senai/usinagem/tempo-atividade/:id', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID da atividade pelo parametro
+        let id = request.params.id
+        //Recebe os dados da atividade encaminhados no corpo da requisição
+        let dadosBody = request.body
+        
+        //Encaminha os dados para a controlller
+        let resultDadosTempoAtividade = await controllerTempoAtividade.atualizarTempoAtividade(dadosBody, id)
+
+        response.status(resultDadosTempoAtividade.status)
+        response.json(resultDadosTempoAtividade)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+
+    }
+});
+
+//EndPoint: insere um novo tempo de atividade
+app.post('/v1/senai/usinagem/tempo-atividade', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body
+
+        let resultDadosTempoAtividade = await controllerTempoAtividade.inserirTempoAtividade(dadosBody)
+
+        response.status(resultDadosTempoAtividade.status)
+        response.json(resultDadosTempoAtividade)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+});
+
+//EndPoint: atualiza um tempo de atividade, filtrando pelo ID
+app.put('/v1/senai/usinagem/tempo-atividade/:id', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID da atividade pelo parametro
+        let id = request.params.id
+        //Recebe os dados da atividade encaminhados no corpo da requisição
+        let dadosBody = request.body
+        
+        //Encaminha os dados para a controlller
+        let resultDadosTempoAtividade = await controllerTempoAtividade.atualizarTempoAtividade(dadosBody, id)
+
+        response.status(resultDadosTempoAtividade.status)
+        response.json(resultDadosTempoAtividade)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+
+    }
+});
+
+//EndPoint: apaga um tempo de atividade filtrando pelo ID
+app.delete('/v1/senai/usinagem/tempo-atividade/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let resultDadosTempoAtividade = await controllerTempoAtividade.deletarTempoAtividade(id)
+
+    response.status(resultDadosTempoAtividade.status)
+    response.json(resultDadosTempoAtividade)
+});
+
+/****************************************************** UNIDADE CURRICULAR PROFESSOR ******************************************************************************/
+
+//EndPoint: retorna todas as UNIDADES CURRICULARES existentes e seus PROFESSORES
+app.get('/v1/senai/usinagem/unidade-curricular-professor', cors(), async function (request, response){
+
+    let dadosUnidadeCurricularProfessor = await controllerUnidadeCurricularProfessor.getAllUnidadeCurricularProfessor();
+
+    response.json(dadosUnidadeCurricularProfessor)
+    response.status(dadosUnidadeCurricularProfessor.status)
+});
+
+//EndPoint: retorna uma coluna de unidade curricular e professor filtrando pelo ID 
+app.get('/v1/senai/usinagem/unidade-curricular-professor/id/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let dadosUnidadeCurricularProfessor = await controllerUnidadeCurricularProfessor.getBuscarUnidadeCurricularProfessorById(id)
+
+    response.json(dadosUnidadeCurricularProfessor)
+    response.status(dadosUnidadeCurricularProfessor.status)
+});
+
+// //Endpoint: Retorna um curso filtrando pelo Nome
+// app.get('/v1/senai/usinagem/unidade-curricular-professor/nome/:nome', cors(), async function (request, response) {
+
+//     //Recebe 
+//     let nomeUnidadeCurricularProfessor = request.params.nome;
+
+//     let dadosUnidadeCurricularProfessorByName = await controllerUnidadeCurricularProfessor.getBuscarCursosNome(nomeCurso);
+
+//     response.status(dadosUnidadeCurricularProfessorByName.status);
+//     response.json(dadosUnidadeCurricularProfessorByName);
+
+// });
+
+//EndPoint: atualiza uma coluna de unidade curricular professor, filtrando pelo ID
+app.put('/v1/senai/usinagem/unidade-curricular-professor/:id', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID da atividade pelo parametro
+        let id = request.params.id
+        //Recebe os dados da atividade encaminhados no corpo da requisição
+        let dadosBody = request.body
+        
+        //Encaminha os dados para a controlller
+        let resultDadosUnidadeCurricularProfessor = await controllerUnidadeCurricularProfessor.atualizarUnidadeCurricularProfessor(dadosBody, id)
+
+        response.status(resultDadosUnidadeCurricularProfessor.status)
+        response.json(resultDadosUnidadeCurricularProfessor)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+
+    }
+});
+
+//EndPoint: insere uma nova sub-turma
+app.post('/v1/senai/usinagem/unidade-curricular-professor', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body
+        
+        let resultDadosUnidadeCurricularProfessor = await controllerUnidadeCurricularProfessor.inserirUnidadeCurricularProfessor(dadosBody)
+        
+        console.log(dadosBody);
+        response.status(resultDadosUnidadeCurricularProfessor.status)
+        response.json(resultDadosUnidadeCurricularProfessor)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+});
+
+
+//EndPoint: apaga uma sub-turma filtrando pelo ID
+app.delete('/v1/senai/usinagem/unidade-curricular-professor/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let resultDadosUnidadeCurricularProfessor = await controllerUnidadeCurricularProfessor.deletarUnidadeCurricularProfessor(id)
+
+    response.status(resultDadosUnidadeCurricularProfessor.status)
+    response.json(resultDadosUnidadeCurricularProfessor)
+});
+
+
 
 
 //------------------------------------------------------------------------------------------------------------------------//

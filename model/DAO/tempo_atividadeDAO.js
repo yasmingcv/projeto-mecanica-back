@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Objetivo: Responsável pela manipulação de dados das SUB-TURMAS no Banco de Dados
+ * Objetivo: Responsável pela manipulação de dados do Tempo das atividades no Banco de Dados
  * Autor: Daniela
  * Data: 08/06/2023
  * Versão: 1.0
@@ -17,18 +17,17 @@ const insertTempoAtividade = async (dadosTempo) => {
     insert into tbl_tempo(
         inicio,
         termino,
-        tempo_liquido,
         desconto,
-        observacao 
-                )values(
+        total_geral,
+        tempo_liquido,
+        observacao)values(
     '${dadosTempo.inicio}',
     '${dadosTempo.termino}',
-    '${dadosTempo.tempo_liquido}',
-    '${dadosTempo.desconto}',
-    '${dadosTempo.observacao}'
-,;
-
-    )`;
+    ${dadosTempo.desconto},
+    TIMEDIFF(termino, inicio),
+    DATE_SUB(total_geral, INTERVAL desconto MINUTE),
+    '${dadosTempo.observacao}')
+    `;
 
     //Executa o scriptSQL no BD
     let resultStatus = await prisma.$executeRawUnsafe(sql);
@@ -47,8 +46,9 @@ const updateTempoAtividade = async (dadosTime) => {
                 update tbl_tempo set
                         inicio = '${dadosTime.inicio}',
                         termino = '${dadosTime.termino}',
-                        tempo_liquido = '${dadosTime.tempo_liquido}',
-                        desconto = '${dadosTime.desconto}',
+                        desconto = ${dadosTime.desconto},
+                        total_geral = TIMEDIFF(termino, inicio),
+                        tempo_liquido = DATE_SUB(total_geral, INTERVAL desconto MINUTE),
                         observacao = '${dadosTime.observacao}'
                 where id = ${dadosTime.id}
                 `;
@@ -62,7 +62,6 @@ const updateTempoAtividade = async (dadosTime) => {
     } else {
         return false;
     }
-
 
 
 };
@@ -91,7 +90,7 @@ const selectAllTempoAtividade = async () => {
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `
-    select tbl_tempo.id, tbl_tempo.inicio, tbl_tempo.termino, tbl_tempo.tempo_liquido, tbl_tempo.desconto, tbl_tempo.observacao from tbl_tempo;
+    select tbl_tempo.id, date_format( tbl_tempo.inicio,'%d/%m/%Y') as data_inicio, time_format(tbl_tempo.inicio, '%H:%i:%s') as hora_inicio,date_format(  tbl_tempo.termino,'%d/%m/%Y') as data_termino, time_format( tbl_tempo.termino, '%H:%i:%s') as hora_termino, tbl_tempo.desconto, time_format(tbl_tempo.total_geral, '%H:%i:%s') as total_geral, time_format(tbl_tempo.tempo_liquido, '%H:%i:%s') as tempo_liquido, tbl_tempo.observacao from tbl_tempo;               
     `;
     console.log(sql);
 
@@ -109,11 +108,10 @@ const selectAllTempoAtividade = async () => {
 
 const selectByIdTempoAtividade = async (id) => {
 
-    let idTempo = id;
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `
-    select tbl_tempo.id, tbl_tempo.inicio, tbl_tempo.termino, tbl_tempo.tempo_liquido, tbl_tempo.desconto, tbl_tempo.observacao from tbl_tempo where id = ${idProfessor}
+    select tbl_tempo.id, date_format( tbl_tempo.inicio,'%d/%m/%Y') as data_inico, time_format(tbl_tempo.inicio, '%H:%i:%s') as hora_inicio,date_format(  tbl_tempo.termino,'%d/%m/%Y') as data_termino, time_format( tbl_tempo.termino, '%H:%i:%s') as hora_termino, tbl_tempo.desconto, time_format(tbl_tempo.total_geral, '%H:%i:%s') as total_geral, time_format(tbl_tempo.tempo_liquido, '%H:%i:%s') as tempo_liquido, tbl_tempo.observacao from tbl_tempo where id = ${id};
     `;
 
 
@@ -130,62 +128,16 @@ const selectByIdTempoAtividade = async (id) => {
 
 };
 
-const selectByInicioAtividade = async (inicio) => {
-
-    let inicioTempo = inicio;
-    console.log(inicioTempo);
-
-
-    //ScriptSQL para buscar todos os itens no BD
-    let sql = `
-    select tbl_tempo.id, tbl_tempo.inicio, tbl_tempo.termino, tbl_tempo.tempo_liquido, tbl_tempo.desconto, tbl_tempo.observacao from tbl_tempo where tbl_tempo.inicio like '%${inicioTempo}%'
-    `;
-
-
-    //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
-    let rsInicioTempo = await prisma.$queryRawUnsafe(sql)
-
-    //Valida se o banco de dados retornou algum registro 
-    if (rsInicioTempo.length > 0) {
-        return rsInicioTempo;
-    } else {
-        return false;
-    }
-
-};
-
-const selectByTerminoAtividade = async (termino) => {
-
-    let terminoTempo = inicio;
-    console.log(terminoTempo);
-
-
-    //ScriptSQL para buscar todos os itens no BD
-    let sql = `
-    select tbl_tempo.id, tbl_tempo.inicio, tbl_tempo.termino, tbl_tempo.tempo_liquido, tbl_tempo.desconto, tbl_tempo.observacao from tbl_tempo where tbl_tempo.termino like '%${terminoTempo}%'
-    `;
-
-
-    //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
-    let rsTerminoTempo = await prisma.$queryRawUnsafe(sql)
-
-    //Valida se o banco de dados retornou algum registro 
-    if (rsTerminoTempo.length > 0) {
-        return rsTerminoTempo;
-    } else {
-        return false;
-    }
-
-};
 
 const selectLastId = async () => {
 
-    let sql = '    select tbl_tempo.id, tbl_tempo.inicio, tbl_tempo.termino, tbl_tempo.tempo_liquido, tbl_tempo.desconto, tbl_tempo.observacao from tbl_tempo order by id desc limit 1;'
+    let sql = `    
+    select tbl_tempo.id, date_format( tbl_tempo.inicio,'%d/%m/%Y') as data_inico, time_format(tbl_tempo.inicio, '%H:%i:%s') as hora_inicio,date_format(  tbl_tempo.termino,'%d/%m/%Y') as data_termino, time_format( tbl_tempo.termino, '%H:%i:%s') as hora_termino, tbl_tempo.desconto, time_format(tbl_tempo.total_geral, '%H:%i:%s') as total_geral, time_format(tbl_tempo.tempo_liquido, '%H:%i:%s') as tempo_liquido, tbl_tempo.observacao from tbl_tempo order by id desc limit 1;`
 
-    let rsProfessor = await prisma.$queryRawUnsafe(sql);
+    let rsTempo = await prisma.$queryRawUnsafe(sql);
 
-    if (rsProfessor.length > 0) {
-        return rsProfessor;
+    if (rsTempo.length > 0) {
+        return rsTempo;
     } else {
         return false;
     }
@@ -199,8 +151,6 @@ module.exports = {
     deleteTempoAtividade,
     selectAllTempoAtividade,
     selectByIdTempoAtividade,
-    selectByInicioAtividade,
-    selectByTerminoAtividade,
     selectLastId
 };
 

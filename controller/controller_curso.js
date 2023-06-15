@@ -114,10 +114,7 @@ const deletarCurso = async (idCurso) => {
         }else {
             return message.ERROR_NOT_FOUND; //404
         }
-
     }
-
-
 }
 
 //Retorna a lista de todos os cursos
@@ -147,15 +144,12 @@ const getBuscarCursosNome = async (nome) => {
 
     let nomeCurso = nome
 
-
     let dadosByNomeCursoJSON = {}
-
 
     if (isNaN(nomeCurso) || nomeCurso !== undefined || nomeCurso !== '') {
 
         //chama a função do arquivo DAO que irá retornar todos os registros do DB
         let dadosByNomeCurso = await cursoDAO.selectByNameCurso(nomeCurso);
-
 
         if (dadosByNomeCurso) {
             //Criando um JSON com o atrbuto cursos, para encaminhar um array de cursos
