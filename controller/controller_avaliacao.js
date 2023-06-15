@@ -5,7 +5,12 @@
  * Versão: 1.0
  *****************************************************************************/
 //Import do arquivo para acessar dados do Curso
-var avaliacaoDAO = require('../model/DAO/avaliacaoDAO.js')
+var avaliacaoDAO = require('../model/DAO/avaliacaoDAO.js');
+var criterioDAO = require('../model/DAO/criterioDAO.js');
+var professorDAO = require('../model/DAO/professorDAO.js');
+var tempoDAO = require('../model/DAO/tempo_atividadeDAO.js');
+var atividadeDAO = require('../model/DAO/atividadeDAO.js');
+var matriculaDAO = require('../model/DAO/matricula_atividadeDAO.js');
 
 //Import do arquivo de configuração das variáveis, constantes e funções globais
 var message = require('./modulo/config.js');
@@ -13,16 +18,29 @@ var message = require('./modulo/config.js');
 //Inserir um novo Curso
 const inserirAvaliacao = async (dadosAvaliacao) => {
     console.log(dadosAvaliacao);
+    let idCriterioStatus = criterioDAO.selectByIdCriterio(dadosAvaliacao.id_criterio);
+    let idProfessorStatus = professorDAO.selectByIdProfessor(dadosAvaliacao.id_professor);
+    let idTempoStatus = tempoDAO.selectByIdTempoAtividade(dadosAvaliacao.id_tempo);
+    let idAtividadeStatus = atividadeDAO.selectByIdAtividade(dadosAvaliacao.id_atividade);
+    let idMatriculaAlunoStatus = matriculaDAO.selectByIdMatriculaAtividade(dadosAvaliacao.id_matricula_aluno);
+
+
 
     //Validação para campos obrigatórios e numero de caracteres
     if (
-        dadosAvaliacao.nome == '' || dadosAvaliacao.nome == undefined || dadosAvaliacao.nome.length > 100 ||
-        dadosAvaliacao.carga_horaria == '' || dadosAvaliacao.carga_horaria == undefined || dadosAvaliacao.carga_horaria.length > 20 ||
-        dadosAvaliacao.descricao == '' || dadosAvaliacao.descricao == undefined ||
-        dadosAvaliacao.sigla == '' || dadosAvaliacao.sigla == undefined || dadosAvaliacao.sigla.length > 4
+        dadosAvaliacao.avaliacao_aluno == ''     || dadosAvaliacao.avaliacao_aluno == undefined     || typeof dadosAvaliacao.avaliacao_aluno == Boolean     ||
+        dadosAvaliacao.avaliacao_professor == '' || dadosAvaliacao.avaliacao_professor == undefined || typeof dadosAvaliacao.avaliacao_professor == Boolean ||
+        dadosAvaliacao.observacao == ''          || dadosAvaliacao.observacao == undefined          ||
+        dadosAvaliacao.id_criterio == ''         || dadosAvaliacao.id_criterio == undefined         || isNaN(dadosAvaliacao.id_criterio)                    ||
+        dadosAvaliacao.id_professor == ''        || dadosAvaliacao.id_professor == undefined        || isNaN(dadosAvaliacao.id_professor)                   ||
+        dadosAvaliacao.id_tempo == ''            || dadosAvaliacao.id_tempo == undefined            || isNaN(dadosAvaliacao.id_tempo)                       ||
+        dadosAvaliacao.id_atividade == ''        || dadosAvaliacao.id_atividade == undefined        || isNaN(dadosAvaliacao.id_atividade)                   ||
+        dadosAvaliacao.id_matricula_aluno == ''  || dadosAvaliacao.id_matricula_aluno == undefined  || isNaN(dadosAvaliacao.id_matricula_aluno)
     ) {
         return message.ERROR_REQUIRED_FIELDS;
     } else {
+        
+        if ( idAtividadeStatus && idCriterioStatus && idMatriculaAlunoStatus && idProfessorStatus && idTempoStatus && idMatriculaAlunoStatus) {
 
         let resultadoDadosAvaliacao = avaliacaoDAO.insertAvaliacao(dadosAvaliacao)
 
@@ -43,7 +61,9 @@ const inserirAvaliacao = async (dadosAvaliacao) => {
         } else {
             return message.ERROR_INTERNAL_SERVER;
         }
-
+        } else {
+            return message.ERROR_NOT_FOUND; //404
+        }
     }
 
 }
@@ -52,22 +72,37 @@ const inserirAvaliacao = async (dadosAvaliacao) => {
 const atualizarAvaliacao = async (dadosAvaliacao, idAvaliacao) => {
 
     //Validação para campos obrigatórios e numero de caracteres
+
+
+
+
+    //Validação para campos obrigatórios e numero de caracteres
     if (
-        dadosAvaliacao.nome == '' || dadosAvaliacao.nome == undefined || dadosAvaliacao.nome.length > 100 ||
-        dadosAvaliacao.carga_horaria == '' || dadosAvaliacao.carga_horaria == undefined || dadosAvaliacao.carga_horaria.length > 20 ||
-        dadosAvaliacao.descricao == '' || dadosAvaliacao.descricao == undefined ||
-        dadosAvaliacao.sigla == '' || dadosAvaliacao.sigla == undefined || dadosAvaliacao.sigla.length > 4
+        dadosAvaliacao.avaliacao_aluno == ''     || dadosAvaliacao.avaliacao_aluno == undefined     || typeof dadosAvaliacao.avaliacao_aluno == Boolean     ||
+        dadosAvaliacao.avaliacao_professor == '' || dadosAvaliacao.avaliacao_professor == undefined || typeof dadosAvaliacao.avaliacao_professor == Boolean ||
+        dadosAvaliacao.observacao == ''          || dadosAvaliacao.observacao == undefined          ||
+        dadosAvaliacao.id_criterio == ''         || dadosAvaliacao.id_criterio == undefined         || isNaN(dadosAvaliacao.id_criterio)                    ||
+        dadosAvaliacao.id_professor == ''        || dadosAvaliacao.id_professor == undefined        || isNaN(dadosAvaliacao.id_professor)                   ||
+        dadosAvaliacao.id_tempo == ''            || dadosAvaliacao.id_tempo == undefined            || isNaN(dadosAvaliacao.id_tempo)                       ||
+        dadosAvaliacao.id_atividade == ''        || dadosAvaliacao.id_atividade == undefined        || isNaN(dadosAvaliacao.id_atividade)                   ||
+        dadosAvaliacao.id_matricula_aluno == ''  || dadosAvaliacao.id_matricula_aluno == undefined  || isNaN(dadosAvaliacao.id_matricula_aluno)
     ) {
         return message.ERROR_REQUIRED_FIELDS;
-    } else if (idAvaliacao == '' || idAvaliacao == undefined || isNaN(idAvaliacao)) {
+    }  else if (idAvaliacao == '' || idAvaliacao == undefined || isNaN(idAvaliacao)) {
         return message.ERROR_INVALID_ID; //status code 400 
     } else {
+
         //Adiciona o id do avaliacao no json
         dadosAvaliacao.id = idAvaliacao;
         let statusID = await avaliacaoDAO.selectByIdAvaliacao(idAvaliacao);
+        let idCriterioStatus = criterioDAO.selectByIdCriterio(dadosAvaliacao.id_criterio);
+        let idProfessorStatus = professorDAO.selectByIdProfessor(dadosAvaliacao.id_professor);
+        let idTempoStatus = tempoDAO.selectByIdTempoAtividade(dadosAvaliacao.id_tempo);
+        let idAtividadeStatus = atividadeDAO.selectByIdAtividade(dadosAvaliacao.id_atividade);
+        let idMatriculaAlunoStatus = matriculaDAO.selectByIdMatriculaAtividade(dadosAvaliacao.id_matricula_aluno);
 
 
-        if (statusID) {
+        if (statusID && idAtividadeStatus && idCriterioStatus && idMatriculaAlunoStatus && idProfessorStatus && idTempoStatus && idMatriculaAlunoStatus) {
             //Encaminha os dados para a model do curso
             let resultDadosAvaliacao = await avaliacaoDAO.updateAvaliacao(dadosAvaliacao);
 
@@ -139,7 +174,7 @@ const getAllAvaliacoes = async () => {
 
 };
 
-//Retorna um Avaliacao pelo nome
+//Retorna um Avaliacao pela matricula do aluno
 const getBuscarAvaliacaoByMatricula = async (numero) => {
 
     let numeroAvaliacao = numero
@@ -168,6 +203,38 @@ const getBuscarAvaliacaoByMatricula = async (numero) => {
     }
 
 };
+
+//Retorna um Avaliacao pela matricula do aluno
+const getBuscarAvaliacaoByNomeProfessor = async (numero) => {
+
+    let numeroAvaliacao = numero
+
+    let dadosByNomeAvaliacaoJSON = {}
+
+    if (isNaN(numeroAvaliacao) || numeroAvaliacao !== undefined || numeroAvaliacao !== '') {
+
+        //chama a função do arquivo DAO que irá retornar todos os registros do DB
+        let dadosByNomeAvaliacao = await avaliacaoDAO.selectByMatriculaAlunoAvaliacao(nomeAvaliacao);
+
+        if (dadosByNomeAvaliacao) {
+            //Criando um JSON com o atrbuto avaliacao, para encaminhar um array de avaliacao
+            dadosByNomeAvaliacaoJSON.status = message.SUCCESS_REQUEST.status;
+            dadosByNomeAvaliacaoJSON.quantidade = dadosByNomeAvaliacao.length;
+            dadosByNomeAvaliacaoJSON.Avaliacaos = dadosByNomeAvaliacao;
+
+            console.log(dadosByNomeAvaliacaoJSON);
+            return dadosByNomeAvaliacaoJSON;
+        } else {
+            return false;
+        }
+    } else {
+
+        return false;
+    }
+
+};
+
+
 
 //Retorna um avaliacao pelo ID
 const getBuscarAvaliacaoByID = async (id) => {
