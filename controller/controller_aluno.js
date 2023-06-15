@@ -109,7 +109,7 @@ const atualizarAluno = async function (dadosAluno, idAluno) {
                 dadosAlunoJSON.status = message.SUCCESS_UPDATED_ITEM.status //200
                 dadosAlunoJSON.message = message.SUCCESS_UPDATED_ITEM.message
                 dadosAlunoJSON.aluno = alunoId[0]
-                
+
                 return dadosAlunoJSON
 
             } else {
@@ -193,10 +193,33 @@ const deletarAluno = async function (id) {
     }
 }
 
+const autenticarAluno = async function (email, senha) {
+    const jwt = require('../middleware/middlewareJWT.js')
+
+    const dadosAluno = await alunoDAO.selectAlunoAuthentication(email, senha)
+
+    let dadosAlunoJSON = {}
+
+    if (dadosAluno) {
+        //Gera o token pelo jwt
+        let tokenUser = await jwt.createJWT(dadosAluno.id)
+
+        dadosAlunoJSON.status = message.SUCCESS_REQUEST.status
+        dadosAlunoJSON.aluno = dadosAluno
+        dadosAlunoJSON.token = tokenUser
+
+        return dadosAlunoJSON
+    } else {
+        return message.ERROR_UNAUTHORIZED //401
+    }
+
+}
+
 module.exports = {
     inserirAluno,
     atualizarAluno,
     getBuscarAlunoID,
     getAlunos,
-    deletarAluno
+    deletarAluno,
+    autenticarAluno
 }
