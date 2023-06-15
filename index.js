@@ -141,7 +141,7 @@ app.get('/v1/senai/usinagem/aluno/:id', cors(), async function (request, respons
 })
 
 //EndPoint que retorna todos os alunos
-app.get('/v1/senai/usinagem/aluno', verifyJWT, cors(), async function (request, response) {
+app.get('/v1/senai/usinagem/aluno', cors(), async function (request, response) {
     let dadosAluno = await controllerAluno.getAlunos()
 
     response.json(dadosAluno)
