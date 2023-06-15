@@ -102,11 +102,11 @@ const selectByIdCurso = async (id) => {
     `;
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
-    let rsIdAtividade = await prisma.$queryRawUnsafe(sql)
+    let rsIdCurso = await prisma.$queryRawUnsafe(sql)
 
     //Valida se o banco de dados retornou algum registro 
-    if (rsIdAtividade.length > 0) {
-        return rsIdAtividade;
+    if (rsIdCurso.length > 0) {
+        return rsIdCurso;
     } else {
         return false;
     }
