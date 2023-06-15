@@ -11,6 +11,7 @@ var message = require('./modulo/config.js')
 //Import dos arquivos DAO 
 var matriculaDAO = require('../model/DAO/matriculaDAO.js')
 var alunoDAO = require('../model/DAO/alunoDAO.js')
+var statusMatriculaDAO = require('../model/DAO/status_matriculaDAO.js')
 
 const inserirMatricula = async function (dadosMatricula) {  //******************** */
     if (dadosMatricula.numero_matricula == undefined || dadosMatricula.numero_matricula == '' || dadosMatricula.numero_matricula.length > 50 || dadosMatricula.numero_matricula == null ||
@@ -20,38 +21,43 @@ const inserirMatricula = async function (dadosMatricula) {  //******************
         return message.ERROR_REQUIRED_FIELDS //400
 
     } else {
-        let resultDadosMatricula = await matriculaDAO.selectMatriculaByNumero(dadosMatricula.numero_matricula)
+        let resultDadosAluno = await alunoDAO.selectByIdAluno(dadosMatricula.id_aluno)
+        let resultDadosStatusMatricula = await statusMatriculaDAO.selectByIdStatusMatricula(dadosMatricula.id_status_matricula)
 
-        //Verifica se já existe uma matrícula com aquele número
-        if (resultDadosMatricula) {
-            return message.ERROR_DATA_CONFLICT //409
+        if (resultDadosAluno && resultDadosStatusMatricula) {
+            let resultDadosMatricula = await matriculaDAO.selectMatriculaByNumero(dadosMatricula.numero_matricula)
 
-        } else {
-            //Verifica se o aluno existe
-            let resultDadosAluno = await alunoDAO.selectByIdAluno(dadosMatricula.id_aluno)
-            if (resultDadosAluno) {
-                let resultDadosMatricula = await matriculaDAO.insertMatricula(dadosMatricula)
+            //Verifica se já existe uma matrícula com aquele número
+            if (resultDadosMatricula) {
+                return message.ERROR_DATA_CONFLICT //409
 
-                //Verifica se o banco inseriu corretamente
-                if (resultDadosMatricula) {
-                    let dadosMatriculaJSON = {}
-                    let novaMatricula = await matriculaDAO.selectLastId()
-
-
-                    dadosMatriculaJSON.status = message.SUCCESS_CREATED_ITEM.status //201
-                    dadosMatriculaJSON.message = message.SUCCESS_CREATED_ITEM.message
-                    dadosMatriculaJSON.matricula = novaMatricula[0]
-
-                    return dadosMatriculaJSON
-                } else {
-                    return message.ERROR_INTERNAL_SERVER //500
-                }
             } else {
-                return message.ERROR_NOT_FOUND //404
+                //Verifica se o aluno existe
+                let resultDadosAluno = await alunoDAO.selectByIdAluno(dadosMatricula.id_aluno)
+                if (resultDadosAluno) {
+                    let resultDadosMatricula = await matriculaDAO.insertMatricula(dadosMatricula)
+
+                    //Verifica se o banco inseriu corretamente
+                    if (resultDadosMatricula) {
+                        let dadosMatriculaJSON = {}
+                        let novaMatricula = await matriculaDAO.selectLastId()
+
+
+                        dadosMatriculaJSON.status = message.SUCCESS_CREATED_ITEM.status //201
+                        dadosMatriculaJSON.message = message.SUCCESS_CREATED_ITEM.message
+                        dadosMatriculaJSON.matricula = novaMatricula[0]
+
+                        return dadosMatriculaJSON
+                    } else {
+                        return message.ERROR_INTERNAL_SERVER //500
+                    }
+                } else {
+                    return message.ERROR_NOT_FOUND //404
+                }
             }
+        } else {
+            return message.ERROR_NOT_FOUND
         }
-
-
     }
 }
 
@@ -66,32 +72,40 @@ const atualizarMatricula = async function (dadosMatricula, id) {
         return message.ERROR_INVALID_ID //400
 
     } else {
-        dadosMatricula.id = id
-        let dadosMatriculaJSON = {}
 
-        let statusId = await matriculaDAO.selectByIdMatricula(id)
+        let resultDadosAluno = await alunoDAO.selectByIdAluno(dadosMatricula.id_aluno)
+        let resultDadosStatusMatricula = await statusMatriculaDAO.selectByIdStatusMatricula(dadosMatricula.id_status_matricula)
 
-        if (statusId) {
+        if (resultDadosAluno && resultDadosStatusMatricula) {
+            dadosMatricula.id = id
+            let dadosMatriculaJSON = {}
 
-            let resultDadosMatricula = await matriculaDAO.updateMatricula(dadosMatricula)
+            let statusId = await matriculaDAO.selectByIdMatricula(id)
 
-            let matriculaId = await await matriculaDAO.selectByIdMatricula(id)
+            if (statusId) {
 
-            if (resultDadosMatricula) {
-                dadosMatriculaJSON.status = message.SUCCESS_UPDATED_ITEM.status //200
-                dadosMatriculaJSON.message = message.SUCCESS_UPDATED_ITEM.message
-                dadosMatriculaJSON.matricula = matriculaId[0]
+                let resultDadosMatricula = await matriculaDAO.updateMatricula(dadosMatricula)
 
-                return dadosMatriculaJSON
+                let matriculaId = await await matriculaDAO.selectByIdMatricula(id)
+
+                if (resultDadosMatricula) {
+                    dadosMatriculaJSON.status = message.SUCCESS_UPDATED_ITEM.status //200
+                    dadosMatriculaJSON.message = message.SUCCESS_UPDATED_ITEM.message
+                    dadosMatriculaJSON.matricula = matriculaId[0]
+
+                    return dadosMatriculaJSON
+
+                } else {
+                    return message.ERROR_INTERNAL_SERVER //500
+                }
+
 
             } else {
-                return message.ERROR_INTERNAL_SERVER //500
+                return message.ERROR_NOT_FOUND //404
             }
-
-
-        } else {
-            return message.ERROR_NOT_FOUND //404
         }
+
+
 
     }
 }

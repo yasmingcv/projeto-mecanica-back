@@ -62,7 +62,6 @@ const updateSubTurma = async (dadosSubTurma) => {
 const deleteSubTurma = async (id) => {
 
     let idSubTurma = id;
-    console.log(idSubTurma);
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `delete from tbl_subturma where id = ${idSubTurma}`;
@@ -89,7 +88,6 @@ from tbl_subturma
      inner join tbl_turma 
         on tbl_turma.id = tbl_subturma.id_turma
     `;
-    console.log(sql);
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
     let rsSubTurma = await prisma.$queryRawUnsafe(sql)
@@ -174,7 +172,6 @@ from tbl_subturma
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
     let rsNomeTurma = await prisma.$queryRawUnsafe(sql)
-    console.log('prisma - ' + prisma);
 
     //Valida se o banco de dados retornou algum registro 
     if (rsNomeTurma.length > 0) {

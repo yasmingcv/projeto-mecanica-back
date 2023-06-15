@@ -21,12 +21,10 @@ const insertUnidadeCurricularProfessor = async (dadosUnidadeCurricularProfessor)
     ${dadosUnidadeCurricularProfessor.id_unidade_curricular},
     ${dadosUnidadeCurricularProfessor.id_professor})
     `;
-    console.log(sql);
     
 
     //Executa o scriptSQL no BD
     let resultStatus = await prisma.$executeRawUnsafe(sql);
-    console.log(resultStatus);
 
     if (resultStatus) {
         return true;
@@ -61,8 +59,6 @@ const updateUnidadeCurricularProfessor = async (dadosUnidadeCurricularProfessor)
 const deleteUnidadeCurricularProfessor = async (id) => {
 
     let idUnidadeCurricularProfessor = id;
-    console.log(idUnidadeCurricularProfessor);
-
     //ScriptSQL para buscar todos os itens no BD
     let sql = `delete from tbl_unidade_curricular_professor where id = ${idUnidadeCurricularProfessor}`;
 
@@ -91,11 +87,9 @@ from tbl_unidade_curricular_professor
     inner join tbl_professor
         on tbl_professor.id = tbl_unidade_curricular_professor.id_professor;
     `;
-    console.log(sql);
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
     let rsTempo = await prisma.$queryRawUnsafe(sql)
-    console.log('DAO - ' + rsTempo);
 
     //Valida se o banco de dados retornou algum registro 
     if (rsTempo.length > 0) {

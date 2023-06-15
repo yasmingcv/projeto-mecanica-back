@@ -25,9 +25,9 @@ const insertAtividade = async (dadosAtividade) => {
                         '${dadosAtividade.nome}',
                         ${dadosAtividade.id_tipo_atividade},
                         ${dadosAtividade.id_unidade_curricular}
-                        );`
+                        )`
 
-                    console.log(sql);
+        
     //Executa o scriptSQL no BD
     let resultStatus = await prisma.$queryRawUnsafe(sql);
 
@@ -51,7 +51,6 @@ const updateAtividade = async (dadosAtividade) => {
                 where id = ${dadosAtividade.id};
     `
     //Executa o scriptSQL no BD
-    console.log(dadosAtividade.id_tipo);
     let resultStatus = await prisma.$queryRawUnsafe(sql);
 
     if (resultStatus) {
@@ -133,7 +132,6 @@ from tbl_atividade
 const selectByNameAtividade = async (name) => {
 
     let nomeAtividade = name;
-    console.log(nomeAtividade);
 
 
     //ScriptSQL para buscar todos os itens no BD
@@ -151,7 +149,6 @@ from tbl_atividade
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
     let rsNomeAtividade = await prisma.$queryRawUnsafe(sql)
-    console.log(rsNomeAtividade);
 
     //Valida se o banco de dados retornou algum registro 
     if (rsNomeAtividade.length > 0) {
@@ -164,7 +161,6 @@ from tbl_atividade
 const selectByNameUnidadeCurricular = async (name) => {
 
     let nomeUnidadeCurricular = name;
-    console.log('nome- ' + nomeUnidadeCurricular);
 
 
     //ScriptSQL para buscar todos os itens no BD
@@ -182,7 +178,6 @@ where tbl_unidade_curricular.nome like '%${nomeUnidadeCurricular}%';
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
     let rsNomeAtividade = await prisma.$queryRawUnsafe(sql)
-    console.log('prisma - ' + prisma);
 
     //Valida se o banco de dados retornou algum registro 
     if (rsNomeAtividade.length > 0) {

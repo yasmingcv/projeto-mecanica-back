@@ -13,7 +13,6 @@ var message = require('./modulo/config.js');
 
 //Inserir um novo Professor
 const inserirProfessor = async (dadosProfessor) => {
-    console.log(await dadosProfessor);
 
     //Validação para campos obrigatórios e numero de caracteres
     if (
@@ -26,7 +25,6 @@ const inserirProfessor = async (dadosProfessor) => {
 
         let resultadoDadosProfessor = professorDAO.insertProfessor(dadosProfessor)
 
-        console.log(resultadoDadosProfessor);
 
         //Valida pra se o DB inseriu os dados corretamente
         if (resultadoDadosProfessor) {
@@ -53,7 +51,7 @@ const atualizarProfessor = async (dadosProfessor, idProfessor) => {
 
     //Validação para campos obrigatórios e numero de caracteres
     if (
-        dadosProfessor.nome == '' || dadosProfessor.nome == undefined || dadosProfessor.nome.length > 200 || !isNaN(dadosProfessor.nome) ||
+        dadosProfessor.nome == '' || dadosProfessor.nome == undefined || dadosProfessor.nome.length > 200 ||
         dadosProfessor.email == '' || dadosProfessor.email == undefined || dadosProfessor.email.length > 255 ||
         dadosProfessor.senha == '' || dadosProfessor.senha == undefined || dadosProfessor.senha.length > 513
     ) {
@@ -156,14 +154,14 @@ const getBuscarProfessorNome = async (nome) => {
             dadosByNomeProfessorJSON.status = message.SUCCESS_REQUEST.status;
             dadosByNomeProfessorJSON.professores = dadosByNomeProfessor;
 
-            console.log(dadosByNomeProfessorJSON);
+        
             return dadosByNomeProfessorJSON;
         } else {
-            return false;
+            return message.ERROR_NOT_FOUND;
         }
     } else {
 
-        return false;
+        return message.ERROR_REQUIRED_FIELDS;
     }
 
 };

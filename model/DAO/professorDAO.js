@@ -61,7 +61,6 @@ const updateProfessor = async (dadosProfessor) => {
 const deleteProfessor = async (id) => {
 
     let idProfessor = id;
-    console.log(idProfessor);
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `delete from tbl_professor where id = ${idProfessor}`;
@@ -84,7 +83,6 @@ const selectAllProfessores = async () => {
     let sql = `
     select tbl_professor.id, tbl_professor.nome, tbl_professor.email, tbl_professor.senha from tbl_professor;
     `;
-    console.log(sql);
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
     //$queryRaw('select * from tbl_professor') - Permite interpretar o scriptSQL direto no método
@@ -126,7 +124,6 @@ const selectByIdProfessor = async (id) => {
 const selectByNameProfessor = async (name) => {
 
     let nomeProfessor = name;
-    console.log(nomeProfessor);
 
 
     //ScriptSQL para buscar todos os itens no BD

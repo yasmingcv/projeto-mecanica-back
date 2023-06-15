@@ -11,6 +11,9 @@ var message = require('./modulo/config.js')
 //Import do arquivo DAO para acessar dados do critério no BD
 var criterioDAO = require('../model/DAO/criterioDAO.js')
 
+var tipoCriterioDAO = require('../model/DAO/tipo_criterioDAO.js')
+var atividadeDAO = require('../model/DAO/atividadeDAO.js')
+
 //Insere um novo criterio
 const inserirCriterio = async function (dadosCriterio) {
     if (dadosCriterio.criterio == '' || dadosCriterio.criterio == undefined || dadosCriterio.criterio.length > 115 || dadosCriterio.criterio == null ||
@@ -20,23 +23,32 @@ const inserirCriterio = async function (dadosCriterio) {
         return message.ERROR_REQUIRED_FIELDS //400
 
     } else {
-        let resultDadosCriterio = await criterioDAO.insertCriterio(dadosCriterio)
+        let resultDadosTipoCriterio = await tipoCriterioDAO.selectByIdTipoCriterio(dadosCriterio.id_tipo_criterio)
+        let resultDadosAtividade = await atividadeDAO.selectByIdAtividade(dadosCriterio.id_atividade)
 
-        //Tratamento para ver se o banco inseriu corretamente os dados
-        if (resultDadosCriterio) {
-            let dadosCriterioJSON = {}
-            let novoCriterio = await criterioDAO.selectLastId()
+        if (resultDadosAtividade && resultDadosTipoCriterio) {
+            let resultDadosCriterio = await criterioDAO.insertCriterio(dadosCriterio)
 
-            dadosCriterioJSON.status = message.SUCCESS_CREATED_ITEM.status //201
-            dadosCriterioJSON.message = message.SUCCESS_CREATED_ITEM.message
-            dadosCriterioJSON.criterio = novoCriterio[0]
+            //Tratamento para ver se o banco inseriu corretamente os dados
+            if (resultDadosCriterio) {
+                let dadosCriterioJSON = {}
+                let novoCriterio = await criterioDAO.selectLastId()
 
-            return dadosCriterioJSON
+                dadosCriterioJSON.status = message.SUCCESS_CREATED_ITEM.status //201
+                dadosCriterioJSON.message = message.SUCCESS_CREATED_ITEM.message
+                dadosCriterioJSON.criterio = novoCriterio[0]
+
+                return dadosCriterioJSON
 
 
+            } else {
+                return message.ERROR_INTERNAL_SERVER //500
+            }
         } else {
-            return message.ERROR_INTERNAL_SERVER //500
+            return message.ERROR_NOT_FOUND
         }
+
+
     }
 }
 
@@ -45,39 +57,49 @@ const atualizarCriterio = async function (dadosCriterio, idCriterio) {
     if (dadosCriterio.criterio == '' || dadosCriterio.criterio == undefined || dadosCriterio.criterio.length > 115 || dadosCriterio.criterio == null ||
         dadosCriterio.id_tipo_criterio == '' || dadosCriterio.id_tipo_criterio == undefined || isNaN(dadosCriterio.id_tipo_criterio) || dadosCriterio.id_tipo_criterio == null ||
         dadosCriterio.id_atividade == '' || dadosCriterio.id_atividade == undefined || isNaN(dadosCriterio.id_atividade) || dadosCriterio.id_atividade == null
-    ){
+    ) {
         return message.ERROR_REQUIRED_FIELDS //400
 
     } else if (idCriterio == '' || idCriterio == undefined || isNaN(idCriterio)) {
         return message.ERROR_INVALID_ID //400
 
     } else {
-        dadosCriterio.id = idCriterio
-        let dadosCriterioJSON = {}
 
-        let statusId = await criterioDAO.selectByIdCriterio(idCriterio)
+        let resultDadosTipoCriterio = await tipoCriterioDAO.selectByIdTipoCriterio(dadosCriterio.id_tipo_criterio)
+        let resultDadosAtividade = await atividadeDAO.selectByIdAtividade(dadosCriterio.id_atividade)
 
-        if (statusId) {
+        if (resultDadosAtividade && resultDadosTipoCriterio) {
+            dadosCriterio.id = idCriterio
+            let dadosCriterioJSON = {}
 
-            let resultDadosCriterio = await criterioDAO.updateCriterio(dadosCriterio)
+            let statusId = await criterioDAO.selectByIdCriterio(idCriterio)
 
-            let criterioId = await criterioDAO.selectByIdCriterio(idCriterio)
+            if (statusId) {
 
-            if (resultDadosCriterio) {
-                dadosCriterioJSON.status = message.SUCCESS_UPDATED_ITEM.status //200
-                dadosCriterioJSON.message = message.SUCCESS_UPDATED_ITEM.message
-                dadosCriterioJSON.criterio = criterioId[0]
-                
-                return dadosCriterioJSON
+                let resultDadosCriterio = await criterioDAO.updateCriterio(dadosCriterio)
+
+                let criterioId = await criterioDAO.selectByIdCriterio(idCriterio)
+
+                if (resultDadosCriterio) {
+                    dadosCriterioJSON.status = message.SUCCESS_UPDATED_ITEM.status //200
+                    dadosCriterioJSON.message = message.SUCCESS_UPDATED_ITEM.message
+                    dadosCriterioJSON.criterio = criterioId[0]
+
+                    return dadosCriterioJSON
+
+                } else {
+                    return message.ERROR_INTERNAL_SERVER //500
+                }
+
 
             } else {
-                return message.ERROR_INTERNAL_SERVER //500
+                return message.ERROR_NOT_FOUND //404
             }
-
-
         } else {
-            return message.ERROR_NOT_FOUND //404
+            return message.ERROR_NOT_FOUND
         }
+
+
 
     }
 }
@@ -138,7 +160,7 @@ const deletarCriterio = async function (id) {
         if (buscarById.status == 404) {
             return buscarById
 
-        //Se o criterio existir, prossegue e deleta o criterio
+            //Se o criterio existir, prossegue e deleta o criterio
         } else {
             let resultDadosCriterio = await criterioDAO.deleteCriterio(id)
 

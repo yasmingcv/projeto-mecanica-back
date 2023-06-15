@@ -26,7 +26,6 @@ const insertCurso = async (dadosCurso) => {
                         '${dadosCurso.sigla}'
                         );`
 
-    console.log(sql);
     //Executa o scriptSQL no BD
     let resultStatus = await prisma.$queryRawUnsafe(sql);
 
@@ -51,7 +50,6 @@ const updateCurso = async (dadosCurso) => {
                 where id = ${dadosCurso.id};
     `
     //Executa o scriptSQL no BD
-    console.log(sql);
     let resultStatus = await prisma.$queryRawUnsafe(sql);
 
     if (resultStatus) {
@@ -119,7 +117,6 @@ const selectByIdCurso = async (id) => {
 const selectByNameCurso = async (name) => {
 
     let nomeCurso = name;
-    console.log(nomeCurso);
 
 
     //ScriptSQL para buscar todos os itens no BD
@@ -129,7 +126,6 @@ const selectByNameCurso = async (name) => {
 
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
-    console.log(sql);
     let rsNomeCurso = await prisma.$queryRawUnsafe(sql)
 
     //Valida se o banco de dados retornou algum registro 

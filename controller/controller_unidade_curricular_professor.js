@@ -6,81 +6,100 @@
  *****************************************************************************/
 //Import do arquivo para acessar dados de Unidade Curricular Professor
 var unidadeCurricularProfessorDAO = require('../model/DAO/unidade_curricular_professor_DAO.js')
+var unidadeCurricularDAO = require('../model/DAO/unidade_curricularDAO.js')
+var professorDAO = require('../model/DAO/professorDAO.js')
 
 //Import do arquivo de configuração das variáveis, constantes e funções globais
 var message = require('./modulo/config.js');
 
 const inserirUnidadeCurricularProfessor = async function (dadosUnidadeCurricularProfessor) {
 
-    console.log(dadosUnidadeCurricularProfessor);
-    
-    if(dadosUnidadeCurricularProfessor.id_unidade_curricular == '' || dadosUnidadeCurricularProfessor.id_unidade_curricular == undefined ||  isNaN(dadosUnidadeCurricularProfessor.id_unidade_curricular)  ||
-       dadosUnidadeCurricularProfessor.id_professor == '' || dadosUnidadeCurricularProfessor.id_professor == undefined || isNaN(dadosUnidadeCurricularProfessor.id_professor) 
+    if (dadosUnidadeCurricularProfessor.id_unidade_curricular == '' || dadosUnidadeCurricularProfessor.id_unidade_curricular == undefined || isNaN(dadosUnidadeCurricularProfessor.id_unidade_curricular) ||
+        dadosUnidadeCurricularProfessor.id_professor == '' || dadosUnidadeCurricularProfessor.id_professor == undefined || isNaN(dadosUnidadeCurricularProfessor.id_professor)
     ) {
         return message.ERROR_REQUIRED_FIELDS // 400
     } else {
-        let resultDadosUnidadeCurricularProfessor = await unidadeCurricularProfessorDAO.insertUnidadeCurricularProfessor(dadosUnidadeCurricularProfessor)
-        console.log('controller - ' + resultDadosUnidadeCurricularProfessor);
-        
 
-        //Verificar se o banco inseriu corretamente
-        if(resultDadosUnidadeCurricularProfessor) {
-            let dadosUnidadeCurricularProfessorJSON = {};
-            let novaUnidadeCurricularProfessor = await unidadeCurricularProfessorDAO.selectLastId();
+        let resultDadosUnidadeCurricular = await unidadeCurricularDAO.selectByIdUnidadeCurricular(dadosUnidadeCurricularProfessor.id_unidade_curricular)
+        let resultDadosProfessor = await professorDAO.selectByIdProfessor(dadosUnidadeCurricularProfessor.id_professor)
 
-            dadosUnidadeCurricularProfessorJSON.status = message.SUCCESS_CREATED_ITEM.status; //201
-            dadosUnidadeCurricularProfessorJSON.mensagem = message.SUCCESS_CREATED_ITEM.message;
-            dadosUnidadeCurricularProfessorJSON.unidade_curricular_professor = novaUnidadeCurricularProfessor;
-            console.log(novaUnidadeCurricularProfessor);
-            
+        if (resultDadosUnidadeCurricular && resultDadosProfessor) {
 
-            return dadosUnidadeCurricularProfessorJSON;
+            let resultDadosUnidadeCurricularProfessor = await unidadeCurricularProfessorDAO.insertUnidadeCurricularProfessor(dadosUnidadeCurricularProfessor)
 
-        } else {
-            return message.ERROR_INTERNAL_SERVER; //500
+            //Verificar se o banco inseriu corretamente
+            if (resultDadosUnidadeCurricularProfessor) {
+                let dadosUnidadeCurricularProfessorJSON = {};
+                let novaUnidadeCurricularProfessor = await unidadeCurricularProfessorDAO.selectLastId();
 
-        }
-    }
-}
+                dadosUnidadeCurricularProfessorJSON.status = message.SUCCESS_CREATED_ITEM.status; //201
+                dadosUnidadeCurricularProfessorJSON.mensagem = message.SUCCESS_CREATED_ITEM.message;
+                dadosUnidadeCurricularProfessorJSON.unidade_curricular_professor = novaUnidadeCurricularProfessor;
 
-const atualizarUnidadeCurricularProfessor = async function (dadosUnidadeCurricularProfessor, idUnidadeCurricularProfessor) {
-
-    if(
-        dadosUnidadeCurricularProfessor.id_unidade_curricular == '' || dadosUnidadeCurricularProfessor.id_unidade_curricular == undefined ||  isNaN(dadosUnidadeCurricularProfessor.id_unidade_curricular)  ||
-        dadosUnidadeCurricularProfessor.id_professor == '' || dadosUnidadeCurricularProfessor.id_professor == undefined || isNaN(dadosUnidadeCurricularProfessor.id_professor)  
-    ) {
-        return message.ERROR_REQUIRED_FIELDS // 400
-
-    } else if (idUnidadeCurricularProfessor == '' || idUnidadeCurricularProfessor == undefined || isNaN(idUnidadeCurricularProfessor)){
-        return message.ERROR_INVALID_ID //400
-
-    } else {
-        dadosUnidadeCurricularProfessor.id = idUnidadeCurricularProfessor;
-        let dadosUnidadeCurricularProfessorJSON = {}
-
-        let statusId = await unidadeCurricularProfessorDAO.selectUnidadeCurricularProfessorbyID(idUnidadeCurricularProfessor)
-        console.log(statusId)
-
-        if(statusId) {
-            let resultDadosUnidadeCurricularProfessor = await unidadeCurricularProfessorDAO.updateUnidadeCurricularProfessor(dadosUnidadeCurricularProfessor)
-
-            if(resultDadosUnidadeCurricularProfessor) {
-                dadosUnidadeCurricularProfessorJSON.message = message.SUCCESS_UPDATED_ITEM.message;
-                dadosUnidadeCurricularProfessorJSON.status = message.SUCCESS_UPDATED_ITEM.status; // 200
-                dadosUnidadeCurricularProfessorJSON.unidade_curricular_professor = dadosUnidadeCurricularProfessor;
 
                 return dadosUnidadeCurricularProfessorJSON;
 
             } else {
                 return message.ERROR_INTERNAL_SERVER; //500
+
             }
         } else {
-            return message.ERROR_NOT_FOUND; //404
+            return message.ERROR_NOT_FOUND
         }
+
+
+
     }
 }
 
-const deletarUnidadeCurricularProfessor= async function (id) {
+const atualizarUnidadeCurricularProfessor = async function (dadosUnidadeCurricularProfessor, idUnidadeCurricularProfessor) {
+
+    if (
+        dadosUnidadeCurricularProfessor.id_unidade_curricular == '' || dadosUnidadeCurricularProfessor.id_unidade_curricular == undefined || isNaN(dadosUnidadeCurricularProfessor.id_unidade_curricular) ||
+        dadosUnidadeCurricularProfessor.id_professor == '' || dadosUnidadeCurricularProfessor.id_professor == undefined || isNaN(dadosUnidadeCurricularProfessor.id_professor)
+    ) {
+        return message.ERROR_REQUIRED_FIELDS // 400
+
+    } else if (idUnidadeCurricularProfessor == '' || idUnidadeCurricularProfessor == undefined || isNaN(idUnidadeCurricularProfessor)) {
+        return message.ERROR_INVALID_ID //400
+
+    } else {
+
+        let resultDadosUnidadeCurricular = await unidadeCurricularDAO.selectByIdUnidadeCurricular(dadosUnidadeCurricularProfessor.id_unidade_curricular)
+        let resultDadosProfessor = await professorDAO.selectByIdProfessor(dadosUnidadeCurricularProfessor.idUnidadeCurricularProfessor)
+
+        if (resultDadosUnidadeCurricular && resultDadosProfessor) {
+            dadosUnidadeCurricularProfessor.id = idUnidadeCurricularProfessor;
+            let dadosUnidadeCurricularProfessorJSON = {}
+    
+            let statusId = await unidadeCurricularProfessorDAO.selectUnidadeCurricularProfessorbyID(idUnidadeCurricularProfessor)
+
+    
+            if (statusId) {
+                let resultDadosUnidadeCurricularProfessor = await unidadeCurricularProfessorDAO.updateUnidadeCurricularProfessor(dadosUnidadeCurricularProfessor)
+    
+                if (resultDadosUnidadeCurricularProfessor) {
+                    dadosUnidadeCurricularProfessorJSON.message = message.SUCCESS_UPDATED_ITEM.message;
+                    dadosUnidadeCurricularProfessorJSON.status = message.SUCCESS_UPDATED_ITEM.status; // 200
+                    dadosUnidadeCurricularProfessorJSON.unidade_curricular_professor = dadosUnidadeCurricularProfessor;
+    
+                    return dadosUnidadeCurricularProfessorJSON;
+    
+                } else {
+                    return message.ERROR_INTERNAL_SERVER; //500
+                }
+            } else {
+                return message.ERROR_NOT_FOUND; //404
+            }
+        } else {
+            return message.ERROR_NOT_FOUND
+        }
+        
+        
+    }
+}
+
+const deletarUnidadeCurricularProfessor = async function (id) {
     if (id == ' ' || id == undefined || isNaN(id) || id == null) {
         return message.ERROR_INVALID_ID //400
 
@@ -88,10 +107,10 @@ const deletarUnidadeCurricularProfessor= async function (id) {
         let statusId = await unidadeCurricularProfessorDAO.selectUnidadeCurricularProfessorbyID(id)
 
         //Verificar se a unidade curricular professor selecionado existe
-        if(statusId){
+        if (statusId) {
             let resultDadosUnidadeCurricularProfessor = await unidadeCurricularProfessorDAO.deleteUnidadeCurricularProfessor(id)
 
-            if(resultDadosUnidadeCurricularProfessor){
+            if (resultDadosUnidadeCurricularProfessor) {
                 return message.SUCCESS_DELETED_ITEM //200
             } else {
                 return message.ERROR_INTERNAL_SERVER //500
@@ -110,7 +129,7 @@ const getBuscarUnidadeCurricularProfessorById = async function (id) {
         let dadosUnidadeCurricularProfessorJSON = {}
         let dadosUnidadeCurricularProfessor = await unidadeCurricularProfessorDAO.selectUnidadeCurricularProfessorbyID(id)
 
-        if(dadosUnidadeCurricularProfessor) {
+        if (dadosUnidadeCurricularProfessor) {
             dadosUnidadeCurricularProfessorJSON.message = message.SUCCESS_REQUEST.message
             dadosUnidadeCurricularProfessorJSON.status = message.SUCCESS_REQUEST.status //200
             dadosUnidadeCurricularProfessorJSON.unidade_curricular_professor = dadosUnidadeCurricularProfessor;
@@ -126,9 +145,8 @@ const getAllUnidadeCurricularProfessor = async function () {
     let dadosUnidadeCurricularProfessorJSON = {}
 
     let dadosUnidadeCurricularProfessor = await unidadeCurricularProfessorDAO.selectAllUnidadeCurricularProfessor()
-    console.log(dadosUnidadeCurricularProfessor);
 
-    if(dadosUnidadeCurricularProfessor) {
+    if (dadosUnidadeCurricularProfessor) {
         dadosUnidadeCurricularProfessorJSON.message = message.SUCCESS_REQUEST.message
         dadosUnidadeCurricularProfessorJSON.status = message.SUCCESS_REQUEST.status //200
         dadosUnidadeCurricularProfessorJSON.quantidade = unidadeCurricularProfessorDAO.length

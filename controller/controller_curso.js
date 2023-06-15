@@ -12,7 +12,6 @@ var message = require('./modulo/config.js');
 
 //Inserir um novo Curso
 const inserirCurso = async (dadosCurso) => {
-    console.log(dadosCurso);
 
     //Validação para campos obrigatórios e numero de caracteres
     if (
@@ -25,8 +24,6 @@ const inserirCurso = async (dadosCurso) => {
     } else {
 
         let resultadoDadosCurso = cursoDAO.insertCurso(dadosCurso)
-
-        console.log(resultadoDadosCurso);
 
         //Valida pra se o DB inseriu os dados corretamente
         if (resultadoDadosCurso) {
@@ -157,14 +154,13 @@ const getBuscarCursosNome = async (nome) => {
             dadosByNomeCursoJSON.quantidade = dadosByNomeCurso.length;
             dadosByNomeCursoJSON.Cursos = dadosByNomeCurso;
 
-            console.log(dadosByNomeCursoJSON);
             return dadosByNomeCursoJSON;
         } else {
-            return false;
+            return message.ERROR_NOT_FOUND;
         }
     } else {
 
-        return false;
+        return message.ERROR_REQUIRED_FIELDS;
     }
 
 };
@@ -207,11 +203,3 @@ module.exports = {
     getBuscarCursosNome,
     getBuscarCursoByID
 }
-
-
-
-
-
-
-
-

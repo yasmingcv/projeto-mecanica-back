@@ -11,41 +11,56 @@ var message = require('./modulo/config.js')
 //Import do arquivo DAO para acessar dados do aluno no BD
 var turmaDAO = require('../model/DAO/turmaDAO.js')
 
+var cursoDAO = require('../model/DAO/cursoDAO.js')
+
 const inserirTurma = async function (dadosTurma) {
-    
-    if(dadosTurma.nome == '' || dadosTurma.nome == undefined || dadosTurma.nome > 100 ||
-       dadosTurma.ano == '' || dadosTurma.ano == undefined || isNaN(dadosTurma.ano) 
+
+    if (dadosTurma.nome == '' || dadosTurma.nome == undefined || dadosTurma.nome > 100 ||
+        dadosTurma.ano == '' || dadosTurma.ano == undefined || isNaN(dadosTurma.ano)
     ) {
         return message.ERROR_REQUIRED_FIELDS // 400
-    } else {
-        let resultDadosTurma = await turmaDAO.insertTurma(dadosTurma)
 
-        //Verificar se o banco inseriu corretamente
-        if(resultDadosTurma) {
-            let dadosTurmaJSON = {}
-            let novaTurma = await turmaDAO.selectLastId()
+    } else if (dadosTurma.id_curso == '' || dadosTurma.id_curso == undefined || isNaN(dadosTurma.id_curso)) {
+        return message.ERROR_INVALID_ID
+    }
 
-            dadosTurmaJSON.mensagem = message.SUCCESS_CREATED_ITEM.message
-            dadosTurmaJSON.status = message.SUCCESS_CREATED_ITEM.status //201
-            dadosTurmaJSON.turma = novaTurma
+    else {
+        let resultDadosCurso = await cursoDAO.selectByIdCurso(dadosTurma.id_curso)
 
-            return dadosTurmaJSON
+        if (resultDadosCurso) {
+            let resultDadosTurma = await turmaDAO.insertTurma(dadosTurma)
 
+            //Verificar se o banco inseriu corretamente
+            if (resultDadosTurma) {
+                let dadosTurmaJSON = {}
+                let novaTurma = await turmaDAO.selectLastId()
+
+                dadosTurmaJSON.mensagem = message.SUCCESS_CREATED_ITEM.message
+                dadosTurmaJSON.status = message.SUCCESS_CREATED_ITEM.status //201
+                dadosTurmaJSON.turma = novaTurma
+
+                return dadosTurmaJSON
+
+            } else {
+                return message.ERROR_INTERNAL_SERVER //500
+
+            }
         } else {
-            return message.ERROR_INTERNAL_SERVER //500
-
+            return message.ERROR_NOT_FOUND
         }
+
+
     }
 }
 
 const atualizarTurma = async function (dadosTurma, idTurma) {
 
-    if(dadosTurma.nome == '' || dadosTurma.nome == undefined || dadosTurma.nome > 100 ||
-       dadosTurma.ano == '' || dadosTurma.ano == undefined || isNaN(dadosTurma.ano)
+    if (dadosTurma.nome == '' || dadosTurma.nome == undefined || dadosTurma.nome > 100 ||
+        dadosTurma.ano == '' || dadosTurma.ano == undefined || isNaN(dadosTurma.ano)
     ) {
         return message.ERROR_REQUIRED_FIELDS // 400
 
-    } else if (idTurma == '' || idTurma == undefined || isNaN(idTurma)){
+    } else if (idTurma == '' || idTurma == undefined || isNaN(idTurma) || dadosTurma.id_curso == '' || dadosTurma.id_curso == undefined || isNaN(dadosTurma.id_curso)) {
         return message.ERROR_INVALID_ID //400
 
     } else {
@@ -53,12 +68,13 @@ const atualizarTurma = async function (dadosTurma, idTurma) {
         let dadosTurmaJSON = {}
 
         let statusId = await turmaDAO.selectByIdTurma(idTurma)
+        let resultDadosCurso = await cursoDAO.selectByIdCurso(dadosTurma.id_curso)
 
-        if(statusId) {
+        if (statusId && resultDadosCurso) {
             let resultDadosTurma = await turmaDAO.updateTurma(dadosTurma)
             let turmaId = await turmaDAO.selectByIdTurma(idTurma)
 
-            if(resultDadosTurma) {
+            if (resultDadosTurma) {
                 dadosTurmaJSON.message = message.SUCCESS_UPDATED_ITEM.message
                 dadosTurmaJSON.status = message.SUCCESS_UPDATED_ITEM.status // 200
                 dadosTurmaJSON.turma = turmaId
@@ -82,10 +98,10 @@ const deletarTurma = async function (id) {
         let buscarById = await turmaDAO.selectByIdTurma(id)
 
         //Verificar se a turma selecionado existe
-        if(buscarById){
+        if (buscarById) {
             let resultDadosTurma = await turmaDAO.deleteTurma(id)
 
-            if(resultDadosTurma){
+            if (resultDadosTurma) {
                 return message.SUCCESS_DELETED_ITEM //200
             } else {
                 return message.ERROR_INTERNAL_SERVER //500
@@ -104,7 +120,7 @@ const getBuscarTurmaId = async function (id) {
         let dadosTurmaJSON = {}
         let dadosTurma = await turmaDAO.selectByIdTurma(id)
 
-        if(dadosTurma) {
+        if (dadosTurma) {
             dadosTurmaJSON.message = message.SUCCESS_REQUEST.message
             dadosTurmaJSON.status = message.SUCCESS_REQUEST.status //200
             dadosTurmaJSON.turma = dadosTurma
@@ -121,7 +137,7 @@ const getTurmas = async function () {
 
     let dadosTurma = await turmaDAO.selectAllTurmas()
 
-    if(dadosTurma) {
+    if (dadosTurma) {
         dadosTurmaJSON.message = message.SUCCESS_REQUEST.message
         dadosTurmaJSON.status = message.SUCCESS_REQUEST.status //200
         dadosTurmaJSON.quantidade = dadosTurma.length
@@ -129,7 +145,7 @@ const getTurmas = async function () {
 
         return dadosTurmaJSON
     } else {
-        return message.ERROR_INTERNAL_SERVER //500
+        return message.ERROR_NOT_FOUND //404
     }
 }
 

@@ -153,7 +153,7 @@ const getDesempenhosMatriculasAlunos = async function () {
 
         return dadosDesempenhoMatriculaAlunoJSON
     } else {
-        return message.ERROR_INTERNAL_SERVER //500
+        return message.ERROR_NOT_FOUND //404
     }
 }
 

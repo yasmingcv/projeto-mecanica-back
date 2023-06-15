@@ -24,7 +24,7 @@ const inserirAtividade = async (dadosAtividade) => {
     } else {
 
         let resultadoDadosAtividade = await atividadeDAO.insertAtividade(dadosAtividade)
-        console.log(resultadoDadosAtividade);
+      
 
 
         //Valida pra se o DB inseriu os dados corretamente
@@ -65,7 +65,7 @@ const atualizarAtividade = async (dadosAtividade, idAtividade) => {
 
         if (statusID) {
             //Encaminha os dados para a model do atividade
-            console.log(atividadeDAO.updateAtividade(dadosAtividade));
+           
             let resultDadosAtividade = await atividadeDAO.updateAtividade(dadosAtividade);
 
             if (resultDadosAtividade) {
@@ -130,7 +130,6 @@ const getAllAtividades = async () => {
         dadosAtividadeJSON.status = message.SUCCESS_REQUEST.status;
         dadosAtividadeJSON.quantidade = dadosAtividades.length;
         dadosAtividadeJSON.atividades = dadosAtividades;
-        console.log(dadosAtividadeJSON);
         return dadosAtividadeJSON;
     } else {
         return message.ERROR_NOT_FOUND;
@@ -158,7 +157,7 @@ const getBuscarAtividadeNome = async (nome) => {
             dadosByNomeAtividadeJSON.status = message.SUCCESS_REQUEST.status;
             dadosByNomeAtividadeJSON.atividade = dadosByNomeAtividade;
 
-            console.log(dadosByNomeAtividadeJSON);
+           
             return dadosByNomeAtividadeJSON;
         } else {
             return message.ERROR_NOT_FOUND;
@@ -212,15 +211,14 @@ const getBuscarAtividadeByNameUnidadeCurricular = async (name) => {
 
         //chama a função do arquivo DAO que irá retornar todos os registros do DB
         let dadosByNameUnidadeCurricular = await atividadeDAO.selectByNameUnidadeCurricular(nameUnidadeCurricular);
-        console.log('1-' + dadosByNameUnidadeCurricular);
-
+       
 
         if (dadosByNameUnidadeCurricular) {
             //Criando um JSON com o atrbuto atividades, para encaminhar um array de atividades
             dadosByNomeUnidadeCurricularAtividadeJSON.status = message.SUCCESS_REQUEST.status;
             dadosByNomeUnidadeCurricularAtividadeJSON.atividade = dadosByNameUnidadeCurricular;
 
-            console.log(dadosByNomeUnidadeCurricularAtividadeJSON);
+            
             return dadosByNomeUnidadeCurricularAtividadeJSON;
         } else {
             return message.ERROR_NOT_FOUND;

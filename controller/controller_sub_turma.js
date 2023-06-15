@@ -63,7 +63,6 @@ const atualizarSubTurma = async (dadosSubTurma, idSubTurma) => {
 
         if (statusID) {
             //Encaminha os dados para a model do SubTurma
-            console.log(subTurmaDAO.updateSubTurma(dadosSubTurma));
             let resultDadosSubTurma = await subTurmaDAO.updateSubTurma(dadosSubTurma);
 
             if (resultDadosSubTurma) {
@@ -127,7 +126,7 @@ const getAllSubTurmas = async () => {
         dadosSubTurmasJSON.status = message.SUCCESS_REQUEST.status;
         dadosSubTurmasJSON.quantidade = dadosSubTurmas.length;
         dadosSubTurmasJSON.sub_turmas = dadosSubTurmas;
-        console.log(dadosSubTurmasJSON);
+
         return dadosSubTurmasJSON;
     } else {
         return message.ERROR_NOT_FOUND;
@@ -212,7 +211,7 @@ const getBuscarSubTurmaByNameTurma = async (name) => {
             dadosByTurmaSubTurmaJSON.status = message.SUCCESS_REQUEST.status;
             dadosByTurmaSubTurmaJSON.sub_turmas = dadosByNameTurma;
 
-            console.log(dadosByTurmaSubTurmaJSON);
+           
             return dadosByTurmaSubTurmaJSON;
         } else {
             return message.ERROR_NOT_FOUND;

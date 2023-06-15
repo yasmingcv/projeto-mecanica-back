@@ -69,7 +69,6 @@ const updateTempoAtividade = async (dadosTime) => {
 const deleteTempoAtividade = async (id) => {
 
     let idTempo = id;
-    console.log(idTempo);
 
     //ScriptSQL para buscar todos os itens no BD
     let sql = `delete from tbl_tempo where id = ${idTempo}`;
@@ -92,7 +91,6 @@ const selectAllTempoAtividade = async () => {
     let sql = `
     select tbl_tempo.id, date_format( tbl_tempo.inicio,'%d/%m/%Y') as data_inicio, time_format(tbl_tempo.inicio, '%H:%i:%s') as hora_inicio,date_format(  tbl_tempo.termino,'%d/%m/%Y') as data_termino, time_format( tbl_tempo.termino, '%H:%i:%s') as hora_termino, tbl_tempo.desconto, time_format(tbl_tempo.total_geral, '%H:%i:%s') as total_geral, time_format(tbl_tempo.tempo_liquido, '%H:%i:%s') as tempo_liquido, tbl_tempo.observacao from tbl_tempo;               
     `;
-    console.log(sql);
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
     let rsTempo = await prisma.$queryRawUnsafe(sql)

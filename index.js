@@ -173,7 +173,7 @@ app.post('/v1/senai/usinagem/professor', cors(), bodyParserJSON, async function 
     if (String(contentType).toLocaleLowerCase() == 'application/json') {
         //Recebe os dados encaminhados na requisição 
         let dadosBody = request.body;
-        console.log(dadosBody);
+        
         let resultDadosProfessor = await controllerProfessor.inserirProfessor(dadosBody);
 
 
@@ -189,7 +189,7 @@ app.post('/v1/senai/usinagem/professor', cors(), bodyParserJSON, async function 
 });
 
 //Endpoint: Atualiza um Professor filtrando pelo id
-app.put('/v1/senai/usinagem/professor/:id', cors(), async function (request, response) {
+app.put('/v1/senai/usinagem/professor/:id', cors(), bodyParserJSON, async function (request, response) {
 
     let contentType = request.headers['content-type'];
 
@@ -201,8 +201,6 @@ app.put('/v1/senai/usinagem/professor/:id', cors(), async function (request, res
         //Recebe os dados encaminhados na requisição 
         let dadosBody = request.body;
 
-        
-    
         //Encaminha os dados para a controller
         let resultDadosProfessor = await controllerProfessor.atualizarProfessor(dadosBody, idProfessor);
     
@@ -393,7 +391,7 @@ app.delete('/v1/senai/usinagem/turma/:id', cors(), async function (request, resp
 //EndPoint: retorna todas as atividades
 app.get('/v1/senai/usinagem/atividade', cors(), async function (request, response){
     let dadosAtividades = await controllerAtividade.getAllAtividades()
-    console.log(dadosAtividades);
+   
 
     response.json(dadosAtividades)
     response.status(dadosAtividades.status)
@@ -492,7 +490,7 @@ app.get('/v1/senai/usinagem/atividade/unidade-curricular/:nome', cors(), async f
 //EndPoint: retorna todas as unidades curriculares
 app.get('/v1/senai/usinagem/unidade-curricular', cors(), async function (request, response){
     let dadosUnidadesCurriculares = await controllerUnidadeCurricular.getUnidadesCurriculares()
-    console.log(dadosUnidadesCurriculares);
+    
 
     response.json(dadosUnidadesCurriculares)
     response.status(dadosUnidadesCurriculares.status)
@@ -697,7 +695,7 @@ app.post('/v1/senai/usinagem/sub-turma', cors(), bodyParserJSON, async function 
     if (String(contentType).toLowerCase() == 'application/json') {
         //Recebe os dados encaminhados na requisição
         let dadosBody = request.body
-        console.log(dadosBody);
+      
 
         let resultDadosSubTurma = await controllerSubTurmas.inserirSubTurma(dadosBody)
 
@@ -797,7 +795,7 @@ app.post('/v1/senai/usinagem/curso', cors(), bodyParserJSON, async function (req
     if (String(contentType).toLowerCase() == 'application/json') {
         //Recebe os dados encaminhados na requisição
         let dadosBody = request.body
-        console.log(dadosBody);
+    
 
         let resultDadosCursos = await controllerCursos.inserirCurso(dadosBody)
 
@@ -1726,7 +1724,7 @@ app.post('/v1/senai/usinagem/unidade-curricular-professor', cors(), bodyParserJS
         
         let resultDadosUnidadeCurricularProfessor = await controllerUnidadeCurricularProfessor.inserirUnidadeCurricularProfessor(dadosBody)
         
-        console.log(dadosBody);
+        
         response.status(resultDadosUnidadeCurricularProfessor.status)
         response.json(resultDadosUnidadeCurricularProfessor)
     } else {
