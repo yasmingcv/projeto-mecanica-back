@@ -24,8 +24,8 @@ const insertAvaliacao = async (dadosAvaliacao) => {
         id_atividade, 
         id_matricula_aluno
         )values(
-                '${dadosAvaliacao.avaliacao_aluno}',
-                '${dadosAvaliacao.avaliacao_professor}',
+                ${dadosAvaliacao.avaliacao_aluno},
+                ${dadosAvaliacao.avaliacao_professor},
                 '${dadosAvaliacao.observacao}',
                 '${dadosAvaliacao.id_criterio}',
                 '${dadosAvaliacao.id_professor}',
@@ -36,7 +36,7 @@ const insertAvaliacao = async (dadosAvaliacao) => {
         `
 
     //Executa o scriptSQL no BD
-    let resultStatus = await prisma.$queryRawUnsafe(sql);
+    let resultStatus = await prisma.$executeRawUnsafe(sql);
 
     if (resultStatus) {
         return true;
@@ -50,18 +50,18 @@ const updateAvaliacao = async (dadosAvaliacao) => {
 
     const sql = `
     update tbl_avaliacao set
-                        avaliacao_aluno = '${dadosAvaliacao.avaliacao_aluno}',
-                        avaliacao_professor = '${dadosAvaliacao.avaliacao_professor}',
+                        avaliacao_aluno = ${dadosAvaliacao.avaliacao_aluno},
+                        avaliacao_professor = ${dadosAvaliacao.avaliacao_professor},
                         observacao = '${dadosAvaliacao.observacao}',
-                        id_criterio = '${dadosAvaliacao.id_criterio}'
-                        id_professor = '${dadosAvaliacao.id_professor}'
-                        id_tempo = '${dadosAvaliacao.id_tempo}'
-                        id_atividade = '${dadosAvaliacao.id_atividade}'
+                        id_criterio = ${dadosAvaliacao.id_criterio},
+                        id_professor = ${dadosAvaliacao.id_professor},
+                        id_tempo = ${dadosAvaliacao.id_tempo},
+                        id_atividade = ${dadosAvaliacao.id_atividade},
                         id_matricula_aluno = '${dadosAvaliacao.id_matricula_aluno}'
                 where id = ${dadosAvaliacao.id};
     `
     //Executa o scriptSQL no BD
-    let resultStatus = await prisma.$queryRawUnsafe(sql);
+    let resultStatus = await prisma.$executeRawUnsafe(sql);
 
     if (resultStatus) {
         return true;
@@ -89,7 +89,7 @@ const deleteAvaliacao = async (id) => {
 const selectAllAvaliacao = async () => {
 
     const sql = `
-    select tbl_avaliacao.avaliacao_aluno, tbl_avaliacao.avaliacao_professor, tbl_avaliacao.observacao, tbl_avaliacao.id_criterio, tbl_avaliacao.id_professor, tbl_avaliacao.id_tempo, tbl_avaliacao.id_atividade, tbl_avaliacao.id_matricula_aluno,
+    select tbl_avaliacao.id as id_avaliacao, tbl_avaliacao.avaliacao_aluno, tbl_avaliacao.avaliacao_professor, tbl_avaliacao.observacao, tbl_avaliacao.id_criterio, tbl_avaliacao.id_professor, tbl_avaliacao.id_tempo, tbl_avaliacao.id_atividade, tbl_avaliacao.id_matricula_aluno,
     tbl_criterio.id as id_criterio, tbl_criterio.criterio as criterio,
     tbl_professor.id as id_professor, tbl_professor.nome as nome_professor,
     tbl_tempo.id as id_tempo, date_format( tbl_tempo.inicio,'%d/%m/%Y') as data_inicio, time_format(tbl_tempo.inicio, '%H:%i:%s') as hora_inicio,date_format( tbl_tempo.termino,'%d/%m/%Y') as data_termino , time_format(tbl_tempo.termino, '%H:%i:%s') as hora_termino, time_format(tbl_tempo.tempo_liquido, '%H:%i:%s') as tempo_liquido,
@@ -140,7 +140,7 @@ from tbl_avaliacao
     inner join tbl_atividade
         on tbl_atividade.id = tbl_avaliacao.id_atividade
     inner join tbl_matricula_aluno
-        on tbl_matricula_aluno.id = tbl_avaliacao.id_matricula_aluno;
+        on tbl_matricula_aluno.id = tbl_avaliacao.id_matricula_aluno
     where tbl_avaliacao.id = ${idAvaliacao};
     `;
 

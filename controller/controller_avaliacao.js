@@ -25,45 +25,50 @@ const inserirAvaliacao = async (dadosAvaliacao) => {
     let idMatriculaAlunoStatus = matriculaDAO.selectByIdMatriculaAtividade(dadosAvaliacao.id_matricula_aluno);
 
 
+    console.log(dadosAvaliacao);
 
     //Validação para campos obrigatórios e numero de caracteres
     if (
-        dadosAvaliacao.avaliacao_aluno == ''     || dadosAvaliacao.avaliacao_aluno == undefined     || typeof dadosAvaliacao.avaliacao_aluno == Boolean     ||
-        dadosAvaliacao.avaliacao_professor == '' || dadosAvaliacao.avaliacao_professor == undefined || typeof dadosAvaliacao.avaliacao_professor == Boolean ||
-        dadosAvaliacao.observacao == ''          || dadosAvaliacao.observacao == undefined          ||
-        dadosAvaliacao.id_criterio == ''         || dadosAvaliacao.id_criterio == undefined         || isNaN(dadosAvaliacao.id_criterio)                    ||
-        dadosAvaliacao.id_professor == ''        || dadosAvaliacao.id_professor == undefined        || isNaN(dadosAvaliacao.id_professor)                   ||
-        dadosAvaliacao.id_tempo == ''            || dadosAvaliacao.id_tempo == undefined            || isNaN(dadosAvaliacao.id_tempo)                       ||
-        dadosAvaliacao.id_atividade == ''        || dadosAvaliacao.id_atividade == undefined        || isNaN(dadosAvaliacao.id_atividade)                   ||
-        dadosAvaliacao.id_matricula_aluno == ''  || dadosAvaliacao.id_matricula_aluno == undefined  || isNaN(dadosAvaliacao.id_matricula_aluno)
+        dadosAvaliacao.avaliacao_aluno !== ''     || dadosAvaliacao.avaliacao_aluno !== undefined     || typeof dadosAvaliacao.avaliacao_aluno == 'boolean'     ||
+        dadosAvaliacao.avaliacao_professor !== '' || dadosAvaliacao.avaliacao_professor !== undefined || typeof dadosAvaliacao.avaliacao_professor == 'boolean' ||
+        dadosAvaliacao.observacao !== ''          || dadosAvaliacao.observacao !== undefined          ||
+        dadosAvaliacao.id_criterio !== ''         || dadosAvaliacao.id_criterio !== undefined         || !isNaN(dadosAvaliacao.id_criterio)                    ||
+        dadosAvaliacao.id_professor !== ''        || dadosAvaliacao.id_professor !== undefined        || !isNaN(dadosAvaliacao.id_professor)                   ||
+        dadosAvaliacao.id_tempo !== ''            || dadosAvaliacao.id_tempo !== undefined            || !isNaN(dadosAvaliacao.id_tempo)                       ||
+        dadosAvaliacao.id_atividade !== ''        || dadosAvaliacao.id_atividade !== undefined        || !isNaN(dadosAvaliacao.id_atividade)                   ||
+        dadosAvaliacao.id_matricula_aluno !== ''  || dadosAvaliacao.id_matricula_aluno !== undefined  || !isNaN(dadosAvaliacao.id_matricula_aluno)
     ) {
-        return message.ERROR_REQUIRED_FIELDS;
-    } else {
-        
+
         if ( idAtividadeStatus && idCriterioStatus && idMatriculaAlunoStatus && idProfessorStatus && idTempoStatus && idMatriculaAlunoStatus) {
 
-        let resultadoDadosAvaliacao = avaliacaoDAO.insertAvaliacao(dadosAvaliacao)
+            let resultadoDadosAvaliacao = avaliacaoDAO.insertAvaliacao(dadosAvaliacao)
+    
+            console.log(resultadoDadosAvaliacao);
+    
+            //Valida pra se o DB inseriu os dados corretamente
+            if (resultadoDadosAvaliacao) {
+    
+                //Chama a função que vai encontrar o ID gerado após o insert
+                let novoAvaliacao = await avaliacaoDAO.selectLastId();
+                let dadosAvaliacaoJSON = {};
+    
+                dadosAvaliacaoJSON.status = message.SUCCESS_CREATED_ITEM.status;
+                dadosAvaliacaoJSON.avaliacao = novoAvaliacao;
+    
+    
+                return dadosAvaliacaoJSON; //status code 201
+            } else {
+                return message.ERROR_INTERNAL_SERVER;
+            }
+            } else {
+                return message.ERROR_NOT_FOUND; //404
+            }
 
-        console.log(resultadoDadosAvaliacao);
-
-        //Valida pra se o DB inseriu os dados corretamente
-        if (resultadoDadosAvaliacao) {
-
-            //Chama a função que vai encontrar o ID gerado após o insert
-            let novoAvaliacao = await avaliacaoDAO.selectLastId();
-            let dadosAvaliacaoJSON = {};
-
-            dadosAvaliacaoJSON.status = message.SUCCESS_CREATED_ITEM.status;
-            dadosAvaliacaoJSON.avaliacao = novoAvaliacao;
+    } else {
+        
 
 
-            return dadosAvaliacaoJSON; //status code 201
-        } else {
-            return message.ERROR_INTERNAL_SERVER;
-        }
-        } else {
-            return message.ERROR_NOT_FOUND; //404
-        }
+        return message.ERROR_REQUIRED_FIELDS;
     }
 
 }
@@ -73,24 +78,17 @@ const atualizarAvaliacao = async (dadosAvaliacao, idAvaliacao) => {
 
     //Validação para campos obrigatórios e numero de caracteres
 
-
-
-
     //Validação para campos obrigatórios e numero de caracteres
     if (
-        dadosAvaliacao.avaliacao_aluno == ''     || dadosAvaliacao.avaliacao_aluno == undefined     || typeof dadosAvaliacao.avaliacao_aluno == Boolean     ||
-        dadosAvaliacao.avaliacao_professor == '' || dadosAvaliacao.avaliacao_professor == undefined || typeof dadosAvaliacao.avaliacao_professor == Boolean ||
-        dadosAvaliacao.observacao == ''          || dadosAvaliacao.observacao == undefined          ||
-        dadosAvaliacao.id_criterio == ''         || dadosAvaliacao.id_criterio == undefined         || isNaN(dadosAvaliacao.id_criterio)                    ||
-        dadosAvaliacao.id_professor == ''        || dadosAvaliacao.id_professor == undefined        || isNaN(dadosAvaliacao.id_professor)                   ||
-        dadosAvaliacao.id_tempo == ''            || dadosAvaliacao.id_tempo == undefined            || isNaN(dadosAvaliacao.id_tempo)                       ||
-        dadosAvaliacao.id_atividade == ''        || dadosAvaliacao.id_atividade == undefined        || isNaN(dadosAvaliacao.id_atividade)                   ||
-        dadosAvaliacao.id_matricula_aluno == ''  || dadosAvaliacao.id_matricula_aluno == undefined  || isNaN(dadosAvaliacao.id_matricula_aluno)
+        dadosAvaliacao.avaliacao_aluno !== ''     || dadosAvaliacao.avaliacao_aluno !== undefined     || typeof dadosAvaliacao.avaliacao_aluno == Boolean     ||
+        dadosAvaliacao.avaliacao_professor !== '' || dadosAvaliacao.avaliacao_professor !== undefined || typeof dadosAvaliacao.avaliacao_professor == Boolean ||
+        dadosAvaliacao.observacao !== ''          || dadosAvaliacao.observacao !== undefined          ||
+        dadosAvaliacao.id_criterio !== ''         || dadosAvaliacao.id_criterio !== undefined         || !isNaN(dadosAvaliacao.id_criterio)                    ||
+        dadosAvaliacao.id_professor !== ''        || dadosAvaliacao.id_professor !== undefined        || !isNaN(dadosAvaliacao.id_professor)                   ||
+        dadosAvaliacao.id_tempo !== ''            || dadosAvaliacao.id_tempo !== undefined            || !isNaN(dadosAvaliacao.id_tempo)                       ||
+        dadosAvaliacao.id_atividade !== ''        || dadosAvaliacao.id_atividade !== undefined        || !isNaN(dadosAvaliacao.id_atividade)                   ||
+        dadosAvaliacao.id_matricula_aluno !== ''  || dadosAvaliacao.id_matricula_aluno !== undefined  || !isNaN(dadosAvaliacao.id_matricula_aluno)
     ) {
-        return message.ERROR_REQUIRED_FIELDS;
-    }  else if (idAvaliacao == '' || idAvaliacao == undefined || isNaN(idAvaliacao)) {
-        return message.ERROR_INVALID_ID; //status code 400 
-    } else {
 
         //Adiciona o id do avaliacao no json
         dadosAvaliacao.id = idAvaliacao;
@@ -121,6 +119,12 @@ const atualizarAvaliacao = async (dadosAvaliacao, idAvaliacao) => {
         } else {
             return message.ERROR_NOT_FOUND; //404
         }
+
+    }  else if (idAvaliacao == '' || idAvaliacao == undefined || isNaN(idAvaliacao)) {
+        return message.ERROR_INVALID_ID; //status code 400 
+    } else {
+        return message.ERROR_REQUIRED_FIELDS;
+
 
     }
 }
@@ -268,16 +272,12 @@ const getBuscarAvaliacaoByNomeAtividade = async (nome) => {
 
     let nomeAtividade = nome
 
-<<<<<<< HEAD
     let dadosByNomeAtividadeAvaliacaoJSON = {}
-=======
-    let dadosByNomeAvaliacaoJSON = {}
->>>>>>> d4c138067d135ab73beb8f03a87828a5badcf6c5
 
     if ( nomeAtividade !== undefined || nomeAtividade !== '') {
 
         //chama a função do arquivo DAO que irá retornar todos os registros do DB
-        let dadosByNomeAtividadeAvaliacao = await avaliacaoDAO.selectByNomeAtividadeAvaliacao(nomeAvaliacao);
+        let dadosByNomeAtividadeAvaliacao = await avaliacaoDAO.selectByNomeAtividadeAvaliacao(nomeAtividade);
 
         if (dadosByNomeAtividadeAvaliacao) {
             //Criando um JSON com o atrbuto avaliacao, para encaminhar um array de avaliacao
@@ -285,8 +285,8 @@ const getBuscarAvaliacaoByNomeAtividade = async (nome) => {
             dadosByNomeAtividadeAvaliacaoJSON.quantidade = dadosByNomeAtividadeAvaliacao.length;
             dadosByNomeAtividadeAvaliacaoJSON.Avaliacaos = dadosByNomeAtividadeAvaliacao;
 
-            console.log(dadosByNomeAvaliacaoJSON);
-            return dadosByNomeAvaliacaoJSON;
+
+            return dadosByNomeAtividadeAvaliacaoJSON;
         } else {
             return false;
         }
@@ -297,7 +297,7 @@ const getBuscarAvaliacaoByNomeAtividade = async (nome) => {
 
 };
 
-<<<<<<< HEAD
+
 //Retorna um Avaliacao pelo tempo previsto
 const getBuscarAvaliacaoByTempoPrevisto = async (tempo) => {
 
@@ -327,8 +327,7 @@ const getBuscarAvaliacaoByTempoPrevisto = async (tempo) => {
 
 };
 
-=======
->>>>>>> d4c138067d135ab73beb8f03a87828a5badcf6c5
+
 //Retorna um avaliacao pelo ID
 const getBuscarAvaliacaoByID = async (id) => {
 
@@ -368,10 +367,9 @@ module.exports = {
     getBuscarAvaliacaoByNomeAtividade,
     getBuscarAvaliacaoByNomeCriterio,
     getBuscarAvaliacaoByNomeProfessor,
-<<<<<<< HEAD
     getBuscarAvaliacaoByTempoPrevisto,
-=======
->>>>>>> d4c138067d135ab73beb8f03a87828a5badcf6c5
+
+
     getBuscarAvaliacaoByMatricula
 }
 

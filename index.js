@@ -1817,7 +1817,7 @@ app.get('/v1/senai/usinagem/avaliacao', cors(), async function (request, respons
     let tempoPrevisto = request.query.tempo_previsto;
 
     if (idAvaliacao !== undefined) {
-        let dadosAvaliacao = await controllerAvaliacao.getBuscarAvaliacaoByID(id)
+        let dadosAvaliacao = await controllerAvaliacao.getBuscarAvaliacaoByID(idAvaliacao)
 
         response.json(dadosAvaliacao)
         response.status(dadosAvaliacao.status)
@@ -1858,7 +1858,7 @@ app.get('/v1/senai/usinagem/avaliacao', cors(), async function (request, respons
         
     }else{
 
-        let dadosTempo = await controllerTempoAtividade.getTempoAtividade();
+        let dadosTempo = await controllerAvaliacao.getAllAvaliacoes();
 
         response.json(dadosTempo)
         response.status(dadosTempo.status)
