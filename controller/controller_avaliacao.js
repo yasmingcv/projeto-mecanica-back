@@ -15,7 +15,7 @@ var matriculaDAO = require('../model/DAO/matricula_atividadeDAO.js');
 //Import do arquivo de configuração das variáveis, constantes e funções globais
 var message = require('./modulo/config.js');
 
-//Inserir um novo Curso
+//Insere uma nova Avaliação
 const inserirAvaliacao = async (dadosAvaliacao) => {
     console.log(dadosAvaliacao);
     let idCriterioStatus = criterioDAO.selectByIdCriterio(dadosAvaliacao.id_criterio);
@@ -68,7 +68,7 @@ const inserirAvaliacao = async (dadosAvaliacao) => {
 
 }
 
-//Atualizar um Avaliacao existente
+//Atualiza um Avaliacao existente
 const atualizarAvaliacao = async (dadosAvaliacao, idAvaliacao) => {
 
     //Validação para campos obrigatórios e numero de caracteres
@@ -125,7 +125,7 @@ const atualizarAvaliacao = async (dadosAvaliacao, idAvaliacao) => {
     }
 }
 
-//Deletar um Avaliacao existente
+//Deleta um Avaliacao existente
 const deletarAvaliacao = async (idAvaliacao) => {
 
     //validação de ID incorreto ou não informado
@@ -152,7 +152,7 @@ const deletarAvaliacao = async (idAvaliacao) => {
     }
 }
 
-//Retorna a lista de todos os cursos
+//Retorna a lista de todos as avaliações
 const getAllAvaliacoes = async () => {
 
     let dadosAvaliacaosJSON = {}
@@ -166,7 +166,7 @@ const getAllAvaliacoes = async () => {
         //Criando um JSON com o atributo avaliacao, para encaminhar um array de avaliacao
         dadosAvaliacaosJSON.status = message.SUCCESS_REQUEST.status;
         dadosAvaliacaosJSON.quantidade = dadosAvaliacaos.length;
-        dadosAvaliacaosJSON.avaliacao = dadosAvaliacaos;
+        dadosAvaliacaosJSON.avaliacoes = dadosAvaliacaos;
         return dadosAvaliacaosJSON;
     } else {
         return message.ERROR_NOT_FOUND;
@@ -177,20 +177,20 @@ const getAllAvaliacoes = async () => {
 //Retorna um Avaliacao pela matricula do aluno
 const getBuscarAvaliacaoByMatricula = async (numero) => {
 
-    let numeroAvaliacao = numero
+    let numeroMatricula = numero
 
-    let dadosByNomeAvaliacaoJSON = {}
+    let dadosByMatriculaAvaliacaoJSON = {}
 
-    if (isNaN(numeroAvaliacao) || numeroAvaliacao !== undefined || numeroAvaliacao !== '') {
+    if (isNaN(numeroMatricula) || numeroMatricula !== undefined || numeroMatricula !== '') {
 
         //chama a função do arquivo DAO que irá retornar todos os registros do DB
-        let dadosByNomeAvaliacao = await avaliacaoDAO.selectByMatriculaAlunoAvaliacao(nomeAvaliacao);
+        let dadosByMatriculaAvaliacao = await avaliacaoDAO.selectByMatriculaAlunoAvaliacao(nomeAvaliacao);
 
-        if (dadosByNomeAvaliacao) {
+        if (dadosByMatriculaAvaliacao) {
             //Criando um JSON com o atrbuto avaliacao, para encaminhar um array de avaliacao
-            dadosByNomeAvaliacaoJSON.status = message.SUCCESS_REQUEST.status;
-            dadosByNomeAvaliacaoJSON.quantidade = dadosByNomeAvaliacao.length;
-            dadosByNomeAvaliacaoJSON.Avaliacaos = dadosByNomeAvaliacao;
+            dadosByMatriculaAvaliacaoJSON.status = message.SUCCESS_REQUEST.status;
+            dadosByMatriculaAvaliacaoJSON.quantidade = dadosByMatriculaAvaliacao.length;
+            dadosByMatriculaAvaliacaoJSON.avaliacoes = dadosByMatriculaAvaliacao;
 
             console.log(dadosByNomeAvaliacaoJSON);
             return dadosByNomeAvaliacaoJSON;
@@ -204,23 +204,82 @@ const getBuscarAvaliacaoByMatricula = async (numero) => {
 
 };
 
-//Retorna um Avaliacao pela matricula do aluno
-const getBuscarAvaliacaoByNomeProfessor = async (numero) => {
+//Retorna um Avaliacao pelo nome do criterio
+const getBuscarAvaliacaoByNomeCriterio = async (criterio) => {
 
-    let numeroAvaliacao = numero
+    let nomeCriterio = criterio;
+
+    let dadosByCriterioAvaliacaoJSON = {}
+
+    if (isNaN(nomeCriterio) || nomeCriterio !== undefined || nomeCriterio !== '') {
+
+        //chama a função do arquivo DAO que irá retornar todos os registros do DB
+        let dadosByCriterioAvaliacao = await avaliacaoDAO.selectByCriterioAvaliacao(nomeCriterio);
+
+        if (dadosByCriterioAvaliacao) {
+            //Criando um JSON com o atrbuto avaliacao, para encaminhar um array de avaliacao
+            dadosByCriterioAvaliacaoJSON.status = message.SUCCESS_REQUEST.status;
+            dadosByCriterioAvaliacaoJSON.quantidade = dadosByCriterioAvaliacao.length;
+            dadosByCriterioAvaliacaoJSON.Avaliacaos = dadosByCriterioAvaliacao;
+
+            return dadosByCriterioAvaliacaoJSON;
+        } else {
+            return false;
+        }
+    } else {
+
+        return false;
+    }
+
+};
+
+//Retorna um Avaliacao pelo nome do professor
+const getBuscarAvaliacaoByNomeProfessor = async (nome) => {
+
+    let nomeProfessor = nome
+
+    let dadosByNomeProfessorAvaliacaoJSON = {}
+
+    if (!isNaN(nomeProfessor) || nomeProfessor !== undefined || nomeProfessor !== '') {
+
+        //chama a função do arquivo DAO que irá retornar todos os registros do DB
+        let dadosByNomeProfessorAvaliacao = await avaliacaoDAO.selectByNomeProfessorAvaliacao(nomeProfessor);
+
+        if (dadosByNomeProfessorAvaliacao) {
+            //Criando um JSON com o atrbuto avaliacao, para encaminhar um array de avaliacao
+            dadosByNomeProfessorAvaliacaoJSON.status = message.SUCCESS_REQUEST.status;
+            dadosByNomeProfessorAvaliacaoJSON.quantidade = dadosByNomeProfessorAvaliacao.length;
+            dadosByNomeProfessorAvaliacaoJSON.Avaliacoes = dadosByNomeProfessorAvaliacao;
+
+            console.log(dadosByNomeProfessorAvaliacaoJSON);
+            return dadosByNomeProfessorAvaliacaoJSON;
+        } else {
+            return false;
+        }
+    } else {
+
+        return false;
+    }
+
+};
+
+//Retorna um Avaliacao pelo nome de uma atividade do aluno
+const getBuscarAvaliacaoByNomeAtividade = async (nome) => {
+
+    let nomeAtividade = nome
 
     let dadosByNomeAvaliacaoJSON = {}
 
-    if (isNaN(numeroAvaliacao) || numeroAvaliacao !== undefined || numeroAvaliacao !== '') {
+    if ( nomeAtividade !== undefined || nomeAtividade !== '') {
 
         //chama a função do arquivo DAO que irá retornar todos os registros do DB
-        let dadosByNomeAvaliacao = await avaliacaoDAO.selectByMatriculaAlunoAvaliacao(nomeAvaliacao);
+        let dadosByNomeAtividadeAvaliacao = await avaliacaoDAO.selectByNomeAtividadeAvaliacao(nomeAvaliacao);
 
-        if (dadosByNomeAvaliacao) {
+        if (dadosByNomeAtividadeAvaliacao) {
             //Criando um JSON com o atrbuto avaliacao, para encaminhar um array de avaliacao
-            dadosByNomeAvaliacaoJSON.status = message.SUCCESS_REQUEST.status;
-            dadosByNomeAvaliacaoJSON.quantidade = dadosByNomeAvaliacao.length;
-            dadosByNomeAvaliacaoJSON.Avaliacaos = dadosByNomeAvaliacao;
+            dadosByNomeAtividadeAvaliacaoJSON.status = message.SUCCESS_REQUEST.status;
+            dadosByNomeAtividadeAvaliacaoJSON.quantidade = dadosByNomeAtividadeAvaliacao.length;
+            dadosByNomeAtividadeAvaliacaoJSON.Avaliacaos = dadosByNomeAtividadeAvaliacao;
 
             console.log(dadosByNomeAvaliacaoJSON);
             return dadosByNomeAvaliacaoJSON;
@@ -233,8 +292,6 @@ const getBuscarAvaliacaoByNomeProfessor = async (numero) => {
     }
 
 };
-
-
 
 //Retorna um avaliacao pelo ID
 const getBuscarAvaliacaoByID = async (id) => {
@@ -272,6 +329,9 @@ module.exports = {
     deletarAvaliacao,
     getAllAvaliacoes,
     getBuscarAvaliacaoByID,
+    getBuscarAvaliacaoByNomeAtividade,
+    getBuscarAvaliacaoByNomeCriterio,
+    getBuscarAvaliacaoByNomeProfessor,
     getBuscarAvaliacaoByMatricula
 }
 

@@ -46,8 +46,6 @@ const insertAvaliacao = async (dadosAvaliacao) => {
 
 }
 
-
-
 const updateAvaliacao = async (dadosAvaliacao) => {
 
     const sql = `
