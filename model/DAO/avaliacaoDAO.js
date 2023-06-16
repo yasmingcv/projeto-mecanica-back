@@ -46,6 +46,8 @@ const insertAvaliacao = async (dadosAvaliacao) => {
 
 }
 
+
+
 const updateAvaliacao = async (dadosAvaliacao) => {
 
     const sql = `
@@ -188,167 +190,11 @@ from tbl_avaliacao
 
     //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
     console.log(sql);
-    let rsMatriculaAluno = await prisma.$queryRawUnsafe(sql)
+    let rsNomeCurso = await prisma.$queryRawUnsafe(sql)
 
     //Valida se o banco de dados retornou algum registro 
-    if (rsMatriculaAluno.length > 0) {
-        return rsMatriculaAluno;
-    } else {
-        return false;
-    }
-
-};
-
-const selectByNomeProfessorAvaliacao = async (nome) => {
-
-    let nomeProfessor = nome;
-
-    //ScriptSQL para buscar todos os itens no BD
-    let sql = `    
-    select tbl_avaliacao.avaliacao_aluno, tbl_avaliacao.avaliacao_professor, tbl_avaliacao.observacao, tbl_avaliacao.id_criterio, tbl_avaliacao.id_professor, tbl_avaliacao.id_tempo, tbl_avaliacao.id_atividade, tbl_avaliacao.id_matricula_aluno,
-    tbl_criterio.id as id_criterio, tbl_criterio.criterio as criterio,
-    tbl_professor.id as id_professor, tbl_professor.nome as nome_professor,
-    tbl_tempo.id as id_tempo, date_format( tbl_tempo.inicio,'%d/%m/%Y') as data_inicio, time_format(tbl_tempo.inicio, '%H:%i:%s') as hora_inicio,date_format( tbl_tempo.termino,'%d/%m/%Y') as data_termino , time_format(tbl_tempo.termino, '%H:%i:%s') as hora_termino, time_format(tbl_tempo.tempo_liquido, '%H:%i:%s') as tempo_liquido,
-    tbl_atividade.nome as nome_atividade, tbl_atividade.tempo_previsto as tempo_previsto_atividade,
-    tbl_matricula_aluno.id as id_matricula_aluno, tbl_matricula_aluno.numero_matricula as matricula_aluno
-from tbl_avaliacao
-     inner join tbl_criterio
-        on tbl_criterio.id = tbl_avaliacao.id_criterio
-    inner join tbl_professor
-        on tbl_professor.id = tbl_avaliacao.id_professor
-    inner join tbl_tempo
-        on tbl_tempo.id = tbl_avaliacao.id_tempo
-    inner join tbl_atividade
-        on tbl_atividade.id = tbl_avaliacao.id_atividade
-    inner join tbl_matricula_aluno
-        on tbl_matricula_aluno.id = tbl_avaliacao.id_matricula_aluno
-                             where tbl_professor.nome like '%${nomeProfessor}%';
-                             `;
-
-
-    //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
-    let rsNomeProfessor = await prisma.$queryRawUnsafe(sql)
-
-    //Valida se o banco de dados retornou algum registro 
-    if (rsNomeProfessor.length > 0) {
-        return rsNomeProfessor;
-    } else {
-        return false;
-    }
-
-};
-
-const selectByNomeAtividadeAvaliacao = async (nome) => {
-
-    let nomeAtividade = nome;
-
-    //ScriptSQL para buscar todos os itens no BD
-    let sql = `    
-    select tbl_avaliacao.avaliacao_aluno, tbl_avaliacao.avaliacao_professor, tbl_avaliacao.observacao, tbl_avaliacao.id_criterio, tbl_avaliacao.id_professor, tbl_avaliacao.id_tempo, tbl_avaliacao.id_atividade, tbl_avaliacao.id_matricula_aluno,
-    tbl_criterio.id as id_criterio, tbl_criterio.criterio as criterio,
-    tbl_professor.id as id_professor, tbl_professor.nome as nome_professor,
-    tbl_tempo.id as id_tempo, date_format( tbl_tempo.inicio,'%d/%m/%Y') as data_inicio, time_format(tbl_tempo.inicio, '%H:%i:%s') as hora_inicio,date_format( tbl_tempo.termino,'%d/%m/%Y') as data_termino , time_format(tbl_tempo.termino, '%H:%i:%s') as hora_termino, time_format(tbl_tempo.tempo_liquido, '%H:%i:%s') as tempo_liquido,
-    tbl_atividade.nome as nome_atividade, tbl_atividade.tempo_previsto as tempo_previsto_atividade,
-    tbl_matricula_aluno.id as id_matricula_aluno, tbl_matricula_aluno.numero_matricula as matricula_aluno
-from tbl_avaliacao
-     inner join tbl_criterio
-        on tbl_criterio.id = tbl_avaliacao.id_criterio
-    inner join tbl_professor
-        on tbl_professor.id = tbl_avaliacao.id_professor
-    inner join tbl_tempo
-        on tbl_tempo.id = tbl_avaliacao.id_tempo
-    inner join tbl_atividade
-        on tbl_atividade.id = tbl_avaliacao.id_atividade
-    inner join tbl_matricula_aluno
-        on tbl_matricula_aluno.id = tbl_avaliacao.id_matricula_aluno
-                             where tbl_atividade.nome like  '%${nomeAtividade}%';
-                             `;
-
-
-    //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
-    let rsNomeAtividade = await prisma.$queryRawUnsafe(sql)
-
-    //Valida se o banco de dados retornou algum registro 
-    if (rsNomeAtividade.length > 0) {
-        return rsNomeAtividade;
-    } else {
-        return false;
-    }
-
-};
-
-const selectByCriterioAvaliacao = async (criterio) => {
-
-    let nomeCriterio = criterio;
-
-    //ScriptSQL para buscar todos os itens no BD
-    let sql = `    
-    select tbl_avaliacao.avaliacao_aluno, tbl_avaliacao.avaliacao_professor, tbl_avaliacao.observacao, tbl_avaliacao.id_criterio, tbl_avaliacao.id_professor, tbl_avaliacao.id_tempo, tbl_avaliacao.id_atividade, tbl_avaliacao.id_matricula_aluno,
-    tbl_criterio.id as id_criterio, tbl_criterio.criterio as criterio,
-    tbl_professor.id as id_professor, tbl_professor.nome as nome_professor,
-    tbl_tempo.id as id_tempo, date_format( tbl_tempo.inicio,'%d/%m/%Y') as data_inicio, time_format(tbl_tempo.inicio, '%H:%i:%s') as hora_inicio,date_format( tbl_tempo.termino,'%d/%m/%Y') as data_termino , time_format(tbl_tempo.termino, '%H:%i:%s') as hora_termino, time_format(tbl_tempo.tempo_liquido, '%H:%i:%s') as tempo_liquido,
-    tbl_atividade.nome as nome_atividade, tbl_atividade.tempo_previsto as tempo_previsto_atividade,
-    tbl_matricula_aluno.id as id_matricula_aluno, tbl_matricula_aluno.numero_matricula as matricula_aluno
-from tbl_avaliacao
-     inner join tbl_criterio
-        on tbl_criterio.id = tbl_avaliacao.id_criterio
-    inner join tbl_professor
-        on tbl_professor.id = tbl_avaliacao.id_professor
-    inner join tbl_tempo
-        on tbl_tempo.id = tbl_avaliacao.id_tempo
-    inner join tbl_atividade
-        on tbl_atividade.id = tbl_avaliacao.id_atividade
-    inner join tbl_matricula_aluno
-        on tbl_matricula_aluno.id = tbl_avaliacao.id_matricula_aluno
-                             where tbl_criterio.criterio like '%${nomeCriterio}%';
-                             `;
-
-
-    //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
-    let rsNomeCriterio = await prisma.$queryRawUnsafe(sql)
-
-    //Valida se o banco de dados retornou algum registro 
-    if (rsNomeCriterio.length > 0) {
-        return rsNomeCriterio;
-    } else {
-        return false;
-    }
-
-};
-
-const selectByTempoPrevistoAvaliacao = async (tempo) => {
-
-    let tempoPrevisto = tempo;
-
-    //ScriptSQL para buscar todos os itens no BD
-    let sql = `    
-    select tbl_avaliacao.avaliacao_aluno, tbl_avaliacao.avaliacao_professor, tbl_avaliacao.observacao, tbl_avaliacao.id_criterio, tbl_avaliacao.id_professor, tbl_avaliacao.id_tempo, tbl_avaliacao.id_atividade, tbl_avaliacao.id_matricula_aluno,
-    tbl_criterio.id as id_criterio, tbl_criterio.criterio as criterio,
-    tbl_professor.id as id_professor, tbl_professor.nome as nome_professor,
-    tbl_tempo.id as id_tempo, date_format( tbl_tempo.inicio,'%d/%m/%Y') as data_inicio, time_format(tbl_tempo.inicio, '%H:%i:%s') as hora_inicio,date_format( tbl_tempo.termino,'%d/%m/%Y') as data_termino , time_format(tbl_tempo.termino, '%H:%i:%s') as hora_termino, time_format(tbl_tempo.tempo_liquido, '%H:%i:%s') as tempo_liquido,
-    tbl_atividade.nome as nome_atividade, tbl_atividade.tempo_previsto as tempo_previsto_atividade,
-    tbl_matricula_aluno.id as id_matricula_aluno, tbl_matricula_aluno.numero_matricula as matricula_aluno
-from tbl_avaliacao
-     inner join tbl_criterio
-        on tbl_criterio.id = tbl_avaliacao.id_criterio
-    inner join tbl_professor
-        on tbl_professor.id = tbl_avaliacao.id_professor
-    inner join tbl_tempo
-        on tbl_tempo.id = tbl_avaliacao.id_tempo
-    inner join tbl_atividade
-        on tbl_atividade.id = tbl_avaliacao.id_atividade
-    inner join tbl_matricula_aluno
-        on tbl_matricula_aluno.id = tbl_avaliacao.id_matricula_aluno
-                             where tbl_atividade.tempo_previsto like  '%${tempoPrevisto}%';
-                             `;
-
-
-    //$queryRawUnsafe() - Permite interpretar uma variável como sendo um scriptSQL
-    let rsTempoPrevisto = await prisma.$queryRawUnsafe(sql)
-
-    //Valida se o banco de dados retornou algum registro 
-    if (rsTempoPrevisto.length > 0) {
-        return rsTempoPrevisto;
+    if (rsNomeCurso.length > 0) {
+        return rsNomeCurso;
     } else {
         return false;
     }
