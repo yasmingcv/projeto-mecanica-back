@@ -133,7 +133,7 @@ const getAdministradores = async function () {
         dadosAdmJSON.message = message.SUCCESS_REQUEST.message
         dadosAdmJSON.status = message.SUCCESS_REQUEST.status //200
         dadosAdmJSON.quantidade = dadosAdm.length
-        dadosAdmJSON.alunos = dadosAdm
+        dadosAdmJSON.administradores = dadosAdm
 
         return dadosAdmJSON
 
