@@ -197,12 +197,35 @@ const getBuscarProfessorID = async (id) => {
 
 };
 
+const autenticarProfessor = async function (email, senha) {
+    const jwt = require('../middleware/middlewareJWT.js')
+
+    const dadosProfessor = await professorDAO.selectProfessorAuthentication(email, senha)
+
+    let dadosProfessorJSON = {}
+
+    if (dadosProfessor) {
+        //Gera o token pelo jwt
+        let tokenUser = await jwt.createJWT(dadosProfessor.id)
+
+        dadosProfessorJSON.status = message.SUCCESS_REQUEST.status
+        dadosProfessorJSON.professor = dadosProfessor
+        dadosProfessorJSON.token = tokenUser
+
+        return dadosProfessorJSON
+    } else {
+        return message.ERROR_UNAUTHORIZED //401
+    }
+
+}
+
 module.exports = {
     inserirProfessor,
     atualizarProfessor,
     deletarProfessor,
     getProfessores,
     getBuscarProfessorID,
-    getBuscarProfessorNome
+    getBuscarProfessorNome,
+    autenticarProfessor
 }
 

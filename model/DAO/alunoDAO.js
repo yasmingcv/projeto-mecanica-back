@@ -110,11 +110,24 @@ const selectLastId = async function (){
 
 }
 
+const selectAlunoAuthentication = async function (email, senha){
+    let sql = `select * from tbl_aluno where email = "${email}" and senha = "${senha}"`
+
+    let rsAluno = await prisma.$queryRawUnsafe(sql)
+
+    if(rsAluno.length > 0){
+        return rsAluno
+    } else {
+        return false
+    }
+}
+
 module.exports = {
     insertAluno,
     updateAluno,
     selectByIdAluno,
     selectAllAlunos,
     selectLastId,
-    deleteAluno
+    deleteAluno,
+    selectAlunoAuthentication
 }

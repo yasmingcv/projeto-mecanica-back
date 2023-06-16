@@ -13,6 +13,7 @@ const ERROR_INVALID_CONTENT_TYPE = {status: 415, message: 'O tipo de mídia Cont
 const ERROR_INVALID_ID = {status: 400, message: 'O ID informado na requisição não é válido ou não foi encaminhado.'}
 const ERROR_INVALID_NAME = {status: 400, message: 'O nome informado na requisição não é válido ou não foi encaminhado.'}
 const ERROR_DATA_CONFLICT = {status: 409, message: 'Os dados informados não podem ser inseridos pois já existe um registro com esse(s) dado(s).'}
+const ERROR_UNAUTHORIZED = {status: 401, message: 'Usuário não autorizado'}
 
 /***************************************MENSAGENS DE SUCESSO**************************************/
 const SUCCESS_CREATED_ITEM = {status: 201, message: 'Item criado com sucesso.'}
@@ -33,5 +34,6 @@ module.exports = {
     SUCCESS_DELETED_ITEM,
     SUCCESS_REQUEST,
     ERROR_INVALID_NAME,
-    ERROR_DATA_CONFLICT
+    ERROR_DATA_CONFLICT,
+    ERROR_UNAUTHORIZED
 }

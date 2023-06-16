@@ -32,6 +32,9 @@ app.use((request, response, next) => {
     next()
 })
 
+//Import do JWT
+const jwt = require('./middleware/middlewareJWT.js')
+
 //Import das controllers
 var controllerAluno = require('./controller/controller_aluno.js');
 var controllerProfessor = require('./controller/controller_professor.js');
@@ -54,8 +57,38 @@ var controllerMatriculaAtividade = require('./controller/controller_matricula_at
 var controllerMatriculaTurmaSubturma = require('./controller/controller_matricula_turma_subturma.js')
 var controllerTempoAtividade = require('./controller/controller_tempo_atividade.js')
 var controllerUnidadeCurricularProfessor  = require('./controller/controller_unidade_curricular_professor.js')
+var controllerAvaliacao  = require('./controller/controller_avaliacao.js')
 
 /**************************************************** ALUNOS *****************************************************/
+
+//Receber o token encaminhado nas requisições e solicitar a validação
+const verifyJWT = async function (request, response, next) {
+
+    //Recebe o token encaminhado no header
+    let token = request.headers['x-acces-token']
+
+    //Valida a autenticidade do token
+    const autenticidadeToken = await jwt.validateJWT(token)
+
+    //Verifica se a aplicação irá continuar ou irá parar 
+    if (autenticidadeToken) {
+        next()
+    } else {
+        return response.status(401).end()
+    }
+
+}
+
+//Autenticar aluno com email e senha
+app.post('/v1/senai/usinagem/aluno/autenticar', cors(), bodyParserJSON, async function (request, response){
+    let dadosBody = request.body
+
+    let resultDadosAluno = await controllerAluno.autenticarAluno(dadosBody.email, dadosBody.senha)
+
+    response.status(resultDadosAluno.status)
+    response.json(resultDadosAluno)
+})
+
 
 //EndPoint para inserir um novo aluno
 app.post('/v1/senai/usinagem/aluno', cors(), bodyParserJSON, async function (request, response) {
@@ -127,6 +160,16 @@ app.delete('/v1/senai/usinagem/aluno/:id', cors(), async function (request, resp
 })
 
 /**************************************************** PROFESSOR *****************************************************/
+
+//Autenticar professor com email e senha
+app.post('/v1/senai/usinagem/professor/autenticar', cors(), bodyParserJSON, async function (request, response){
+    let dadosBody = request.body
+
+    let resultDadosProfessor = await controllerProfessor.autenticarProfessor(dadosBody.email, dadosBody.senha)
+
+    response.status(resultDadosProfessor.status)
+    response.json(resultDadosProfessor)
+})
 
 // Endpoint: Retorna todos os professores
 app.get('/v1/senai/usinagem/professor', cors(), async function (request, response) {
@@ -241,6 +284,16 @@ app.delete('/v1/senai/usinagem/professor/:id', cors(), async function (request, 
 
 
 /**************************************************** ADMINISTRADOR *****************************************************/
+
+//Autenticar administrador com email e senha
+app.post('/v1/senai/usinagem/administrador/autenticar', cors(), bodyParserJSON, async function (request, response){
+    let dadosBody = request.body
+
+    let resultDadosAdministrador = await controllerAdministrador.autenticarAdministrador(dadosBody.email, dadosBody.senha)
+
+    response.status(resultDadosAdministrador.status)
+    response.json(resultDadosAdministrador)
+})
 
 //EndPoint: lista todos os administradores
 app.get('/v1/senai/usinagem/administrador', cors(), async function (request, response){
@@ -1743,6 +1796,161 @@ app.delete('/v1/senai/usinagem/unidade-curricular-professor/:id', cors(), async 
     response.status(resultDadosUnidadeCurricularProfessor.status)
     response.json(resultDadosUnidadeCurricularProfessor)
 });
+
+/****************************************************** AVALIAÇÃO ******************************************************************************/
+
+// getBuscarAvaliacaoByMatricula
+// getBuscarAvaliacaoByNomeCriterio
+// getBuscarAvaliacaoByNomeProfessor
+// getBuscarAvaliacaoByNomeAtividade
+// getBuscarAvaliacaoByTempoPrevisto
+
+//EndPoint: retorna todas Avaliações ou somente alguns filtrados por uma matricula, criterio, 
+//nome de um professor, nome de uma atividade ou tempo previsto 
+app.get('/v1/senai/usinagem/avaliacao', cors(), async function (request, response, next){
+
+    let idAvaliacao = request.query.id;
+    let numeroMatricula = request.query.matricula;
+    let nomeCriterio = request.query.criterio;
+    let nomeProfessor = request.query.nome_professor;
+    let nomeAtividade = request.query.nome_atividade;
+    let tempoPrevisto = request.query.tempo_previsto;
+
+    if (idAvaliacao !== undefined) {
+        let dadosAvaliacao = await controllerAvaliacao.getBuscarAvaliacaoByID(id)
+
+        response.json(dadosAvaliacao)
+        response.status(dadosAvaliacao.status)
+        
+    }else if (numeroMatricula !== undefined) {
+
+        let dadosMatriculaAvaliacao = await controllerAvaliacao.getBuscarAvaliacaoByMatricula(numeroMatricula)
+
+        response.json(dadosMatriculaAvaliacao)
+        response.status(dadosMatriculaAvaliacao.status)
+        
+    }else if (nomeCriterio !== undefined) {
+
+        let dadosCriterioAvaliacao = await controllerAvaliacao.getBuscarAvaliacaoByNomeCriterio(nomeCriterio)
+
+        response.json(dadosCriterioAvaliacao)
+        response.status(dadosCriterioAvaliacao.status)
+        
+    }else if (nomeProfessor !== undefined) {
+        let dadosNomeProfessorAvaliacao = await controllerAvaliacao.getBuscarAvaliacaoByNomeProfessor(nomeProfessor)
+
+        response.json(dadosNomeProfessorAvaliacao)
+        response.status(dadosNomeProfessorAvaliacao.status)
+        
+    }else if (nomeAtividade !== undefined) {
+
+        let dadosNomeAtividadeAvaliacao = await controllerAvaliacao.getBuscarAvaliacaoByNomeAtividade(nomeAtividade)
+
+        response.json(dadosNomeAtividadeAvaliacao)
+        response.status(dadosNomeAtividadeAvaliacao.status)
+        
+    } else if (tempoPrevisto !== undefined) {
+
+        let dadosTempoPrevistoAvaliacao = await controllerAvaliacao.getBuscarAvaliacaoByTempoPrevisto(tempoPrevisto)
+
+        response.json(dadosTempoPrevistoAvaliacao)
+        response.status(dadosTempoPrevistoAvaliacao.status)
+        
+    }else{
+
+        let dadosTempo = await controllerTempoAtividade.getTempoAtividade();
+
+        response.json(dadosTempo)
+        response.status(dadosTempo.status)
+    }
+
+
+});
+
+//EndPoint: atualiza uma Avaliação, filtrando pelo ID
+app.put('/v1/senai/usinagem/avaliacao/:id', cors(), bodyParserJSON, async function (request, response){
+
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+
+        //Recebe o ID da atividade pelo parametro
+        let id = request.params.id
+        //Recebe os dados da atividade encaminhados no corpo da requisição
+        let dadosBody = request.body
+        
+        //Encaminha os dados para a controlller
+        let resultDadosAvaliacao = await controllerAvaliacao.atualizarAvaliacao(dadosBody, id)
+
+        response.status(resultDadosAvaliacao.status)
+        response.json(resultDadosAvaliacao)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+
+    }
+});
+
+//EndPoint: insere uma nova Avaliação
+app.post('/v1/senai/usinagem/avaliacao', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe os dados encaminhados na requisição
+        let dadosBody = request.body
+
+        let resultDadosAvaliacao = await controllerAvaliacao.inserirAvaliacao(dadosBody)
+
+        response.status(resultDadosAvaliacao.status)
+        response.json(resultDadosAvaliacao)
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+});
+
+//EndPoint: atualiza uma Avaliação, filtrando pelo ID
+app.put('/v1/senai/usinagem/avaliacao/:id', cors(), bodyParserJSON, async function (request, response){
+    let contentType = request.headers['content-type']
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() == 'application/json') {
+        //Recebe o ID da atividade pelo parametro
+        let id = request.params.id
+        //Recebe os dados da atividade encaminhados no corpo da requisição
+        let dadosBody = request.body
+        
+        //Encaminha os dados para a controlller
+        let resultDadosAvaliacao = await controllerAvaliacao.atualizarAvaliacao(dadosBody, id)
+
+        response.status(resultDadosAvaliacao.status)
+        response.json(resultDadosAvaliacao)
+
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+
+    }
+});
+
+//EndPoint: apaga uma Avaliação filtrando pelo ID
+app.delete('/v1/senai/usinagem/avaliacao/:id', cors(), async function (request, response){
+    let id = request.params.id
+
+    let resultDadosAvaliacao = await controllerAvaliacao.deletarAvaliacao(id)
+
+    response.status(resultDadosAvaliacao.status)
+    response.json(resultDadosAvaliacao)
+});
+
+
+
+
+
+
+
 
 
 
