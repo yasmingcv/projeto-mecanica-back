@@ -161,6 +161,18 @@ const selectLastId = async () => {
 
 };
 
+const selectProfessorAuthentication = async function (email, senha){
+    let sql = `select * from tbl_professor where email = "${email}" and senha = "${senha}"`
+
+    let rsProfessor = await prisma.$queryRawUnsafe(sql)
+
+    if(rsProfessor.length > 0){
+        return rsProfessor
+    } else {
+        return false
+    }
+}
+
 
 module.exports = {
     insertProfessor,
@@ -169,5 +181,6 @@ module.exports = {
     selectAllProfessores,
     selectByIdProfessor,
     selectByNameProfessor,
-    selectLastId
+    selectLastId,
+    selectProfessorAuthentication
 };

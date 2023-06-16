@@ -142,10 +142,35 @@ const getAdministradores = async function () {
     }
 }
 
+const autenticarAdministrador = async function (email, senha) {
+    const jwt = require('../middleware/middlewareJWT.js')
+
+    const dadosAdministrador = await administradorDAO.selectAdministradorAuthentication(email, senha)
+
+    let dadosAdministradorJSON = {}
+
+    if (dadosAdministrador) {
+        //Gera o token pelo jwt
+        let tokenUser = await jwt.createJWT(dadosAdministrador.id)
+
+        dadosAdministradorJSON.status = message.SUCCESS_REQUEST.status
+        dadosAdministradorJSON.administrador = dadosAdministrador
+        dadosAdministradorJSON.token = tokenUser
+
+        return dadosAdministradorJSON
+    } else {
+        return message.ERROR_UNAUTHORIZED //401
+    }
+
+}
+
+
+
 module.exports = {
     inserirAdministrador,
     atualizarAdministrador,
     deletarAdministrador,
     getBuscarAdministradorID,
-    getAdministradores
+    getAdministradores,
+    autenticarAdministrador
 }

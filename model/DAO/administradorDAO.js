@@ -99,11 +99,24 @@ const selectLastId = async function (){
 
 }
 
+const selectAdministradorAuthentication = async function (email, senha){
+    let sql = `select * from tbl_administrador where email = "${email}" and senha = "${senha}"`
+
+    let rsAdm = await prisma.$queryRawUnsafe(sql)
+
+    if(rsAdm.length > 0){
+        return rsAdm
+    } else {
+        return false
+    }
+}
+
 module.exports = {
     insertAdministrador,
     updateAdministrador,
     deleteAdministrador,
     selectAllAdministradores,
     selectByIdAdministrador,
-    selectLastId
+    selectLastId,
+    selectAdministradorAuthentication
 }
